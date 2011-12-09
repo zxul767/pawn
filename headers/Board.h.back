@@ -1,0 +1,118 @@
+/*============================================================================
+  Class Name: Board
+
+  Responsabilities: 
+  
+  -Keep game status and board
+  -Make legal moves
+  -Undo moves
+  -Label moves
+
+  Date: August 26, 2007
+  ===========================================================================*/
+
+#ifndef BOARD_H
+#define BOARD_H
+
+#include <string>
+#include <iostream>
+
+#include "common.h"
+#include "Piece.h"
+
+class Move;
+
+using std::string;
+using std::ostream;
+using std::endl;
+
+class Board
+{
+ public:
+   Board ();
+   virtual ~Board ();
+
+   /*==========================================================================
+     CONSTANTS
+     ========================================================================*/
+   static const u_int SQUARES = 64;
+   static const u_int SIZE    = 8;
+   static const u_int PLAYERS = 2;
+
+   enum CastleSide {
+      KING_SIDE, QUEEN_SIDE
+   };
+
+   enum GameStatus {
+      GAME_OVER, PENDING_GAME
+   };
+
+   enum Error {
+      KING_LEFT_IN_CHECK, OPPONENTS_TURN, WRONG_MOVEMENT, GAME_FINISHED,
+      NO_PIECE_IN_SQUARE, NO_ERROR
+   };
+
+   /*==========================================================================
+     METHODS
+     ========================================================================*/
+
+   virtual void clear () = 0;
+   virtual void reset () = 0;
+
+   virtual bool load_game (const string& file) = 0;
+   virtual bool save_game (const string& file) = 0;
+   
+   virtual bool add_piece (const string& location, 
+                           Piece::Type piece, 
+                           Piece::Player player) = 0;
+
+   virtual bool add_piece (u_int square, 
+                           Piece::Type piece, 
+                           Piece::Player player) = 0;
+
+   virtual bool remove_piece (const string& location) = 0;
+   virtual bool remove_piece (u_int square) = 0;
+
+   virtual Error make_move (Move& move, bool is_computer_move) = 0;
+   virtual bool  undo_move () = 0;
+
+   virtual void  label_move (Move& move) const = 0;
+
+   virtual bool  is_king_in_check () const = 0;
+   virtual bitboard attacks_to (u_int location, bool include_king) const = 0;
+
+   // ACCESSORS
+   virtual bitboard get_moves (Piece::Type piece, u_int square) const = 0;
+   virtual bitboard get_all_pieces () const = 0;
+   virtual bitboard get_pieces (Piece::Player player) const = 0;
+   virtual bitboard get_pieces (Piece::Player player, 
+                                Piece::Type piece) const = 0;
+   
+   virtual bool is_en_passant_on () const = 0;
+   virtual bool can_castle (Piece::Player player, CastleSide side) const = 0;
+   virtual bool is_castled (Piece::Player player, CastleSide side) const = 0;
+
+   virtual u_int get_en_passant_square () const = 0;
+   virtual u_int get_initial_king_square (Piece::Player player) const = 0;
+ 
+   virtual Piece::Player get_piece_color (u_int square) const = 0;
+   virtual Piece::Player get_turn () const = 0;
+   virtual Piece::Type   get_piece (u_int square) const = 0;
+
+   // MUTATORS
+   virtual void set_game_status (GameStatus status) = 0;
+   virtual void set_en_passant (u_int en_passant_capture_square) = 0;
+   virtual void set_turn (Piece::Player player) = 0;
+   virtual void set_castling_privilege (Piece::Player player, 
+                                        CastleSide side, bool value) = 0;
+
+   // STATIC
+   static bool is_inside_board (int row, int col);
+   static bool is_inside_board (u_int row, u_int col);
+   static bool is_inside_board (u_int square);
+
+   // OVERLOADED OPERATORS
+   friend ostream& operator << (ostream& out, const Board& board);
+};
+
+#endif // BOARD_H
