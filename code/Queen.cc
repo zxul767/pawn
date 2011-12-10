@@ -30,7 +30,7 @@ Queen::~Queen ()
   it is PLAYER's turn (moves that leave the king in check are also included)
   ===========================================================================*/
 bitboard
-Queen::get_moves (u_int square, Player player, const Board* board) const
+Queen::get_moves (uint square, Player player, const Board* board) const
 {
    bitboard attacks = bishop->get_moves (square, player, board);
    attacks |= rook->get_moves (square, player, board);
@@ -39,7 +39,7 @@ Queen::get_moves (u_int square, Player player, const Board* board) const
 }
 
 bitboard
-Queen::get_potential_moves (u_int square, Player player) const
+Queen::get_potential_moves (uint square, Player player) const
 {
    bitboard moves = bishop->get_potential_moves (square, player);
    moves |= rook->get_potential_moves (square, player);

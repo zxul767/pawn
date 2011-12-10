@@ -22,9 +22,9 @@ class Queen : public Piece
    Queen ();
    ~Queen ();
 
-   bitboard get_moves (u_int square, Player player, const Board* board) const;
+   bitboard get_moves (uint square, Player player, const Board* board) const;
 
-   bitboard get_potential_moves (u_int square, Player player) const;
+   bitboard get_potential_moves (uint square, Player player) const;
 
  private:
    // Queen's moves are simply the combination of Rook and Bishop's moves

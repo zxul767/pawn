@@ -19,13 +19,13 @@ class King : public Piece
    King ();
    ~King ();
                 
-   bitboard get_moves (u_int square, 
+   bitboard get_moves (uint square, 
                        Player player, 
                        const Board* board) const;
 
-   bitboard get_potential_moves (u_int square, Player player) const;
+   bitboard get_potential_moves (uint square, Player player) const;
 
-   static bitboard get_neighbors (u_int position);
+   static bitboard get_neighbors (uint position);
 
  private:
    void compute_moves ();

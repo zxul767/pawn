@@ -9,8 +9,8 @@ class FitnessEvaluator;
 class GeneticAlgorithm
 {
  public:
-   GeneticAlgorithm (u_int             population_size, 
-                     u_int             n_iterations,
+   GeneticAlgorithm (uint             population_size, 
+                     uint             n_iterations,
                      double            mutation_probability,
                      FitnessEvaluator* fitness);
 
@@ -24,9 +24,9 @@ class GeneticAlgorithm
    void initialize_population ();
    void evaluate_population ();
    void select_breeding_individuals (vector<Chromosome>& population,
-                                     u_int breeding_population_size, 
+                                     uint breeding_population_size, 
                                      vector<Chromosome>& selection);
-   void reduce_population (u_int size);
+   void reduce_population (uint size);
    void add_on_population (const vector<Chromosome>& elements);
    bool converge ();
 
@@ -35,8 +35,8 @@ class GeneticAlgorithm
    void set_duration_fitness  (vector<Chromosome>& sub_population,
                                Chromosome::Outcome population_type);
 
-   u_int              population_size;
-   u_int              n_iterations;
+   uint              population_size;
+   uint              n_iterations;
    double             mutation_probability;
    FitnessEvaluator*  fitness_evaluator;
 

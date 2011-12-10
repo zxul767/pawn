@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 
+#include "common.h"
+
 using std::vector;
 using std::pair;
 using std::string;
@@ -19,7 +21,7 @@ class Chromosome
    Chromosome ();
 
    // Create an individual with random features
-   Chromosome (u_int n_features);
+   Chromosome (uint n_features);
 
    Chromosome (const Chromosome& copy);
    Chromosome (const vector<int>& features);
@@ -34,24 +36,24 @@ class Chromosome
 
    // ACCESSORS
    double  get_fitness () const;
-   bool    get_gene (u_int position) const;
+   bool    get_gene (uint position) const;
    string  get_genes () const;
-   u_int   get_game_duration () const;
+   uint   get_game_duration () const;
    Outcome get_result () const;
-   u_int   how_many_features () const;
+   uint   how_many_features () const;
    double  get_cumulative_probability () const;
    double  get_selection_probability () const;
    int     get_material_balance () const;
 
-   void flip   (u_int position);
-   void set    (u_int position);
-   void unset  (u_int position);
+   void flip   (uint position);
+   void set    (uint position);
+   void unset  (uint position);
 
    // MUTATORS
    void  set_fitness (double fitness);
    void  set_selection_probability (double probability);
    void  set_cumulative_probability (double probability);
-   void  set_game_duration (u_int n_moves);
+   void  set_game_duration (uint n_moves);
    void  set_material_balance (int material);
    void  set_result (Outcome result);
 
@@ -64,7 +66,7 @@ class Chromosome
 
  private:
    // CONSTANTS
-   static const u_int BITS_PER_FEATURE = 9;
+   static const uint BITS_PER_FEATURE = 9;
 
    // ATTRIBUTES
    vector<int>  features;
@@ -75,7 +77,7 @@ class Chromosome
    double  fitness;
 
    Outcome result;
-   u_int   game_duration; // in number of moves
+   uint   game_duration; // in number of moves
    int     material_balance;
 
    // METHODS

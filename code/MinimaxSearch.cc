@@ -23,7 +23,7 @@ MinimaxSearch::~MinimaxSearch ()
 }
 
 Search::Result
-MinimaxSearch::get_best_move (u_int max_depth,
+MinimaxSearch::get_best_move (uint max_depth,
                               Board* board,
                               Move& best_move)
 {
@@ -40,12 +40,12 @@ MinimaxSearch::get_best_move (u_int max_depth,
 }
 
 int
-MinimaxSearch::minimax (u_int depth, Result& result)
+MinimaxSearch::minimax (uint depth, Result& result)
 {
    vector<Move>  moves;
    Move          best_move;
    int           tentative_value, node_value;
-   u_int         n_moves_made;
+   uint         n_moves_made;
    Result        this_result = NORMAL_EVALUATION;
 
    generator->generate_moves (board, moves, MoveGenerator::ALL);
@@ -59,7 +59,7 @@ MinimaxSearch::minimax (u_int depth, Result& result)
    node_value = MATE_VALUE;
    n_moves_made = 0;
 
-   for (u_int i = 0, n = moves.size (); i < n; ++i)
+   for (uint i = 0, n = moves.size (); i < n; ++i)
    {
       if (board->make_move (moves[i], true) == Board::NO_ERROR)
       {

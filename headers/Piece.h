@@ -14,19 +14,19 @@ class Piece
    Piece () { }
    virtual ~Piece () { }
 
-   static const u_int PIECES = 6;
+   static const uint PIECES = 6;
 
    // Number of directions a bishop or rook can move to.
-   static const u_int RAYS = 4;
+   static const uint RAYS = 4;
 
    // Number of jumps a knight can make in the center of the board.
-   static const u_int KNIGHT_MOVES = 8;
+   static const uint KNIGHT_MOVES = 8;
 
    // Number of moves a king can make in the center of the board.
-   static const u_int KING_MOVES = 8;
+   static const uint KING_MOVES = 8;
 
    // Number of moves a pawn can make in the center of the board.
-   static const u_int PAWN_MOVES = 3;
+   static const uint PAWN_MOVES = 3;
 
    enum Type { 
       PAWN,
@@ -62,11 +62,11 @@ class Piece
 
    static string pieceString (Type piece_type);
 
-   virtual bitboard get_moves (u_int        square, 
+   virtual bitboard get_moves (uint        square, 
                                Player       player, 
                                const Board* board) const = 0;
 
-   virtual bitboard get_potential_moves (u_int  square, 
+   virtual bitboard get_potential_moves (uint  square, 
                                          Player player) const = 0;
 };
 

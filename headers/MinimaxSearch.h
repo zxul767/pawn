@@ -13,7 +13,7 @@ class PositionEvaluator;
 class MinimaxSearch : public Search
 {
  private:
-   int minimax (u_int depth, Result& result);
+   int minimax (uint depth, Result& result);
    
    MoveGenerator*     generator;
    PositionEvaluator* evaluator;
@@ -26,7 +26,7 @@ class MinimaxSearch : public Search
    MinimaxSearch (PositionEvaluator* evaluator, MoveGenerator* generator);
    ~MinimaxSearch ();
 
-   Result get_best_move (u_int max_depth, Board* board, Move& best_move);
+   Result get_best_move (uint max_depth, Board* board, Move& best_move);
    void   load_factor_weights (vector<int>& weights);
 };
 

@@ -24,10 +24,10 @@ Util::loaded = Util::load_to_bitboard ();
 bool
 Util::load_to_bitboard ()
 {
-   const static u_int SQUARES = 64;
+   const static uint SQUARES = 64;
    bitboard           one = 1;
 
-   for (u_int i = 0; i < SQUARES; ++i)
+   for (uint i = 0; i < SQUARES; ++i)
       to_bitboard.push_back (one << i);
    
    return true;
@@ -143,10 +143,10 @@ Util::LSB_position (bitboard bitvector)
  |                                                                             |
  | Precondition: bitboard is a 64-bit integer type.                            |
  ==============================================================================*/
-u_int 
+uint 
 Util::count_set_bits (bitboard bitvector)
 {
-//    u_int n_bits = 0;
+//    uint n_bits = 0;
 
 //    while (bitvector)
 //    {
@@ -175,21 +175,21 @@ Util::count_set_bits (bitboard bitvector)
    bitvector = (((0xFFFFFFFF00000000uLL & bitvector) >> 0x20) + 
                 ((0x00000000FFFFFFFFuLL & bitvector)));
 
-   return (u_int) bitvector;
+   return (uint) bitvector;
 }
 
-u_llong
+ullong
 Util::rand64 ()
 {
-   return (((u_llong) rand ()) ^ 
-           ((u_llong) rand () << 15) ^ 
-           ((u_llong) rand () << 30) ^ 
-           ((u_llong) rand () << 45) ^ 
-           ((u_llong) rand () << 60));
+   return (((ullong) rand ()) ^ 
+           ((ullong) rand () << 15) ^ 
+           ((ullong) rand () << 30) ^ 
+           ((ullong) rand () << 45) ^ 
+           ((ullong) rand () << 60));
 }
 
 void
-Util::to_binary (u_llong value)
+Util::to_binary (ullong value)
 {
    if (value > 0)
    {

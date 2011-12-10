@@ -2,6 +2,8 @@
 #define FITNESS_EVALUATOR_H
 
 #include <string>
+#include "common.h"
+
 class Search;
 class Board;
 class Chromosome;
@@ -15,7 +17,7 @@ class FitnessEvaluator
    ~FitnessEvaluator ();
 
    double evaluate  (Chromosome& a, Chromosome& b);
-   static const u_int MAX_ALLOWED_MOVEMENTS = 70;
+   static const uint MAX_ALLOWED_MOVEMENTS = 70;
 
  private:
    Search*             engine;

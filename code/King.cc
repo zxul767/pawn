@@ -34,7 +34,7 @@ King::~King ()
   PLAYER's turn to move (moves that leave the king in check are also included)
   ============================================================================*/
 bitboard
-King::get_moves (u_int square, Player player, const Board* board) const
+King::get_moves (uint square, Player player, const Board* board) const
 {
    if (!Board::is_inside_board (square))
       return 0;
@@ -82,7 +82,7 @@ King::get_moves (u_int square, Player player, const Board* board) const
 }
 
 bitboard
-King:: get_potential_moves (u_int square, Player player) const
+King:: get_potential_moves (uint square, Player player) const
 {
    if (Board::is_inside_board (square))
       return moves_from[square];
@@ -97,11 +97,11 @@ King::compute_moves ()
    int dx[KING_MOVES] = {-1,  0, +1, +1, +1,  0, -1, -1};
    int dy[KING_MOVES] = {+1, +1, +1,  0, -1, -1, -1,  0};
 
-   for (u_int square = 0; square < Board::SQUARES; square++)
+   for (uint square = 0; square < Board::SQUARES; square++)
       moves_from[square] = 0;
 
-   for (u_int row = 0; row < Board::SIZE; ++row)
-      for (u_int col = 0; col < Board::SIZE; ++col)
+   for (uint row = 0; row < Board::SIZE; ++row)
+      for (uint col = 0; col < Board::SIZE; ++col)
       {         
          /*==========================================================
            Traverse all eight directions a king can move to:
@@ -121,9 +121,9 @@ King::compute_moves ()
            Jumps occur in clockwise order from 0 to 7.
            ============================================================*/
                         
-         u_int square = row * Board::SIZE + col;
+         uint square = row * Board::SIZE + col;
                         
-         for (u_int jump = 0; jump < KING_MOVES; jump++)
+         for (uint jump = 0; jump < KING_MOVES; jump++)
          {
             int y = row + dy[jump];
             int x = col + dx[jump];
@@ -135,7 +135,7 @@ King::compute_moves ()
 }
 
 bitboard
-King::get_neighbors (u_int position)
+King::get_neighbors (uint position)
 {
    if (Board::is_inside_board (position))
       return neighbors[position];
@@ -147,7 +147,7 @@ King::compute_neighbors ()
 {
    Piece*   king = new King ();
 
-   for (u_int position = 0; position < Board::SQUARES; ++position)
+   for (uint position = 0; position < Board::SQUARES; ++position)
    {
       bitboard neighborhood     = king->get_potential_moves (position, Piece::WHITE);
       bitboard actual_neighbors = neighborhood;

@@ -96,7 +96,7 @@ FileReader::is_empty_line (const string& line) const
    if (line.empty ())
       return true;
 
-   for (u_int i = 0; i < line.length (); ++i)
+   for (uint i = 0; i < line.length (); ++i)
       if (!isspace (line[i]))
 	 return false;
    return true;
@@ -150,7 +150,7 @@ FileReader::tokenize (const string&   input,
 bool
 FileReader::set_variable (string& input)
 {
-   u_int          index_variable, index_value;
+   uint          index_variable, index_value;
    vector<string> tokens;
    string         delimiters = " :,";
 
@@ -160,7 +160,7 @@ FileReader::set_variable (string& input)
       if (!variable_was_found (tokens[0], &index_variable))
 	 return false;
 
-      for (u_int i = 1; i < tokens.size (); ++i)
+      for (uint i = 1; i < tokens.size (); ++i)
 	 if (value_was_found (index_variable, tokens[i], &index_value))
 	    set_value (index_variable, tokens[i], index_value);
 	 else
@@ -171,9 +171,9 @@ FileReader::set_variable (string& input)
 
 bool
 FileReader::variable_was_found (const string& input, 
-                                u_int*        index_variable)
+                                uint*        index_variable)
 {
-   for (u_int i = 0; i < variables.size (); i++)
+   for (uint i = 0; i < variables.size (); i++)
       if (input == variables[i])
       {
          *index_variable = i;
@@ -183,9 +183,9 @@ FileReader::variable_was_found (const string& input,
 }
 
 bool
-FileReader::value_was_found (u_int         index_variable, 
+FileReader::value_was_found (uint         index_variable, 
                              const string& input,
-                             u_int*        index_value)
+                             uint*        index_value)
 {
    int index = index_variable;
 
@@ -195,7 +195,7 @@ FileReader::value_was_found (u_int         index_variable,
    if (index_variable >= 2 && index_variable <= 6)
       index = 2;
 
-   for (u_int i = 0; i < 2; i++)
+   for (uint i = 0; i < 2; i++)
       if (input == values[index][i])
       {
          *index_value = i;
@@ -205,9 +205,9 @@ FileReader::value_was_found (u_int         index_variable,
 }
 
 bool
-FileReader::set_value (u_int         index_variable, 
+FileReader::set_value (uint         index_variable, 
                        const string& token, 
-                       u_int         index_value)
+                       uint         index_value)
 {
    if (index_variable == 0)
    {
@@ -240,25 +240,25 @@ FileReader::set_value (u_int         index_variable,
 }
 
 Board::GameStatus
-FileReader::get_status (u_int index_value) const
+FileReader::get_status (uint index_value) const
 {
    return (index_value == 0? Board:: GAME_OVER: Board::PENDING_GAME);
 }
 
 Piece::Player
-FileReader::get_turn (u_int index_value) const
+FileReader::get_turn (uint index_value) const
 {
    return (index_value == 0? Piece:: WHITE: Piece:: BLACK);
 }
 
 bool
-FileReader::get_boolean (u_int index_value) const
+FileReader::get_boolean (uint index_value) const
 {
    return (index_value == 0? true: false);
 }
 
 Piece::Player
-FileReader::get_color (u_int variable) const
+FileReader::get_color (uint variable) const
 {
    if (variable == 2 || variable == 3 || (variable >= 7 && variable <= 12))
       return Piece:: WHITE;
@@ -267,7 +267,7 @@ FileReader::get_color (u_int variable) const
 }
 
 Board::CastleSide
-FileReader::get_side (u_int variable) const
+FileReader::get_side (uint variable) const
 {
    if (variable == 3 || variable == 5)
       return Board::QUEEN_SIDE;
@@ -276,7 +276,7 @@ FileReader::get_side (u_int variable) const
 }
 
 Piece::Type
-FileReader::get_type (u_int variable) const
+FileReader::get_type (uint variable) const
 {
    if (variable == 7 || variable == 13)
       return Piece:: PAWN;

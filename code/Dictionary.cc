@@ -6,10 +6,10 @@
 using std::cerr;
 using std::endl;
 
-map<u_short, u_int> Dictionary::possible_size;
-u_int               Dictionary::size;
+map<ushort, uint> Dictionary::possible_size;
+uint               Dictionary::size;
 
-Dictionary:: Dictionary (u_int size)
+Dictionary:: Dictionary (uint size)
 {
    set_possible_size ();
 
@@ -40,9 +40,9 @@ Dictionary:: exists (const board_key& board)
 bool
 Dictionary:: add_entry (const board_key& board, int score, 
                         flag accuracy, 
-								const Move &best, u_int depth)
+								const Move &best, uint depth)
 {
-   hash_map<board_key, hash_info, hasher, hasher>::iterator i = 
+   unordered_map<board_key, hash_info, hasher, hasher>::iterator i = 
       entry.find (board);
 
    // This board is already in the table, so just try to update it
@@ -75,7 +75,7 @@ Dictionary:: get_data (const board_key& board, Dictionary::hash_info& data)
 {
 	if (exists (board))
 	{
-		hash_map<board_key, hash_info, hasher, hasher>::iterator iter = 
+		unordered_map<board_key, hash_info, hasher, hasher>::iterator iter = 
          entry.find (board);
 
 		data = (*iter).second;
@@ -88,7 +88,7 @@ Dictionary:: get_data (const board_key& board, Dictionary::hash_info& data)
 void
 Dictionary:: show_all ()
 {
-	hash_map<board_key, hash_info, hasher, hasher>::iterator dictionary_iter;
+	unordered_map<board_key, hash_info, hasher, hasher>::iterator dictionary_iter;
 
 	cerr << "\nThe original elements [Key : Value] are : ";
 
@@ -107,13 +107,13 @@ Dictionary:: show_all ()
 }
 
 
-u_int
+uint
 Dictionary::get_size () const
 {
    return entry.size ();
 }
 
-u_int
+uint
 Dictionary::get_capacity () const
 {
    return hash_size;

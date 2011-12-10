@@ -206,8 +206,8 @@ Move::translate_to_square (const string&   notation,
 {
    if (is_valid_notation (notation))
    {
-      u_short column = toupper (notation[0]) - 'A';
-      u_short row    = (Board::SIZE - 1) - (notation[1] - '1');
+      ushort column = toupper (notation[0]) - 'A';
+      ushort row    = (Board::SIZE - 1) - (notation[1] - '1');
        
       square = (Board::Squares) (row * Board::SIZE + column);
       return true;

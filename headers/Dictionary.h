@@ -1,7 +1,7 @@
 #ifndef DICTIONARY_H
 #define DICTIONARY_H
 
-#include <ext/hash_map>
+#include <unordered_map>
 #include <map>
 
 #include "common.h"
@@ -21,8 +21,8 @@ class Dictionary
    
 	   struct board_key
       {
-         u_llong hash_key;
-         u_llong hash_lock;
+         ullong hash_key;
+         ullong hash_lock;
       };
 
 		struct hash_info
@@ -31,25 +31,25 @@ class Dictionary
 			flag    accuracy;
 			Move    best;
 
-			u_short depth;
+			ushort depth;
 		};
 
-		Dictionary (u_int hash_size = 0);
+		Dictionary (uint hash_size = 0);
 
 		bool  add_entry (const board_key& board, int score, 
                        flag accuracy, 
-                       const Move& best, u_int depth);
+                       const Move& best, uint depth);
 		bool  exists    (const board_key& board);
 		bool  get_data  (const board_key& board, hash_info& data);
 		void  show_all  ();
-      u_int get_size  () const;
-      u_int get_capacity () const;
+      uint get_size  () const;
+      uint get_capacity () const;
       void  reset () ;
 
       static void set_possible_size ();
 
-      static map<u_short, u_int> possible_size;
-      static const u_short       MAX_MEMORY = 256;
+      static map<ushort, uint> possible_size;
+      static const ushort       MAX_MEMORY = 256;
       static size_t              size;
 
 	private:		
@@ -66,8 +66,8 @@ class Dictionary
          }
       };
 
-      u_int     hash_size;
-      hash_map  <board_key, hash_info, hasher, hasher> entry;	  
+      uint     hash_size;
+      unordered_map  <board_key, hash_info, hasher, hasher> entry;	  
 };
 
 #endif // HASH_DICTIONARY_H

@@ -64,10 +64,10 @@ MaeBoard::load_zobrist ()
 {
   srand (RANDOM_SEED);
 
-  for (u_int i = 0; i < PIECE_TYPES; ++i)
-    for (u_int j = 0; j < PLAYERS; ++j)
-      for (u_int k = 0; k < SQUARES; ++k)
-         for (u_int m = 0; m < N_HASH_KEYS; ++m)
+  for (uint i = 0; i < PIECE_TYPES; ++i)
+    for (uint j = 0; j < PLAYERS; ++j)
+      for (uint k = 0; k < SQUARES; ++k)
+         for (uint m = 0; m < N_HASH_KEYS; ++m)
             zobrist[i][j][k][m] = Util::rand64 ();
   
   turn_key = Util::rand64 ();
@@ -78,7 +78,7 @@ MaeBoard::load_zobrist ()
 
   // This is a waste of memory, since only 16 squares can be possible
   // en-passant capture squares, but this avoids dealing with awful offsets  
-  for (u_int i = 0; i < SQUARES; ++i)
+  for (uint i = 0; i < SQUARES; ++i)
         en_passant_key[i] = Util::rand64 ();
 
   hash_key  = 0;
@@ -297,8 +297,8 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
    // Remove the pawn captured en-passant
    if (move.get_type () == Move::EN_PASSANT_CAPTURE)
    {
-      u_int offset = (is_whites_turn ? SIZE: -((int) SIZE));
-      u_int position = (Util::MSB_position (en_passant_capture_square) + offset);
+      uint offset = (is_whites_turn ? SIZE: -((int) SIZE));
+      uint position = (Util::MSB_position (en_passant_capture_square) + offset);
       remove_piece (Squares (position));
    }
 
@@ -315,7 +315,7 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
       if (move.get_type () == Move::EN_PASSANT_CAPTURE)
       {
          int   offset = (is_whites_turn ? SIZE: -((int) SIZE));
-         u_int position = Util::MSB_position (en_passant_capture_square) + offset;
+         uint position = Util::MSB_position (en_passant_capture_square) + offset;
          add_piece (Squares (position), Piece::PAWN, opponent);
       }
 
@@ -335,7 +335,7 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
 
    // Record this board so we can detect threefold repetition conditions
    Record::board_key key = {hash_key, hash_lock};
-   u_short times = 0;
+   ushort times = 0;
    if (!position_counter.add_record (key, times) && times == 3)
       return DRAW_BY_REPETITION;
 
@@ -500,7 +500,7 @@ MaeBoard::Error
 MaeBoard::can_move (const Move& move) const
 {
    bitboard valid_moves;
-   u_short  start = move.from ();
+   ushort  start = move.from ();
 
    // Is the player trying to move his opponent's pieces?
    if (player != board[start].player)
@@ -526,8 +526,8 @@ MaeBoard::can_move (const Move& move) const
 void
 MaeBoard::label_move (Move& move) const
 {
-   u_short     start = move.from ();
-   u_short     end   = move.to ();
+   ushort     start = move.from ();
+   ushort     end   = move.to ();
    Piece::Type piece = move.get_moving_piece ();
 
    if (Util::to_bitboard[end] & ~all_pieces) // Apparently simple moves
@@ -627,7 +627,7 @@ MaeBoard::threats_to (Squares location, Piece::Type type, bool include_king) con
 bool
 MaeBoard::is_king_in_check () const
 {
-   u_int king_location = Util::MSB_position (piece[player][Piece::KING]);
+   uint king_location = Util::MSB_position (piece[player][Piece::KING]);
 
    // The second argument is set to FALSE since one invariant of this class is
    // that no king can be in check by the other (such thing is illegal)
@@ -694,8 +694,8 @@ MaeBoard::handle_en_passant_move (const Move& move)
 void
 MaeBoard::handle_castling_privileges (const Move& move)
 {
-   u_short start = move.from ();
-   u_short end = move.to ();
+   ushort start = move.from ();
+   ushort end = move.to ();
 
    // Check whether castling is still possible after this move is made
    if (move.get_moving_piece () == Piece::KING)
@@ -897,13 +897,13 @@ MaeBoard::get_pieces (Piece::Player player,
    return this->piece[player][piece];
 }
 
-u_llong
+ullong
 MaeBoard::get_hash_key () const
 {
   return hash_key;
 }
    
-u_llong 
+ullong 
 MaeBoard::get_hash_lock () const
 {
    return hash_lock;
@@ -957,10 +957,10 @@ MaeBoard::get_piece (Squares square) const
    return board[square].piece;
 }
 
-u_int
+uint
 MaeBoard::get_move_number () const
 {
-   u_int game_moves = game_history.size ();
+   uint game_moves = game_history.size ();
 
    if (game_moves % 2 == 1)
       game_moves++;
@@ -972,7 +972,7 @@ MaeBoard::get_move_number () const
   Return the number of times THIS board configuration has been seen during the 
   present game.
   ===========================================================================*/
-u_short 
+ushort 
 MaeBoard::get_repetition_count () const
 {
    Record::board_key key = {hash_key, hash_lock};

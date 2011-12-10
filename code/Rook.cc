@@ -30,7 +30,7 @@ Rook::~Rook ()
   here.
   ============================================================================*/
 bitboard
-Rook::get_moves (u_int square, Piece::Player player, const Board* board) const
+Rook::get_moves (uint square, Piece::Player player, const Board* board) const
 {
    bitboard          attacks = 0;
    bitboard          blocking_pieces;
@@ -61,7 +61,7 @@ Rook::get_moves (u_int square, Piece::Player player, const Board* board) const
   Return all possible moves from SQUARE, assuming the board is empty.
   ============================================================================*/
 bitboard
-Rook::get_potential_moves (u_int square, Player player) const
+Rook::get_potential_moves (uint square, Player player) const
 {
    if (Board::is_inside_board (square))
       return all_moves_from[square];
@@ -81,13 +81,13 @@ Rook::compute_moves ()
    
    for (Board::Squares square = Board::a8; square <= Board::h1; ++square)
    {
-      for (u_int ray = 0; ray < Piece::RAYS; ++ray)
+      for (uint ray = 0; ray < Piece::RAYS; ++ray)
          moves_from[square][ray] = 0;
       all_moves_from[square] = 0;
    }
 
-   for (u_int row = 0; row < Board::SIZE; ++row)
-      for (u_int col = 0; col < Board::SIZE; ++col)
+   for (uint row = 0; row < Board::SIZE; ++row)
+      for (uint col = 0; col < Board::SIZE; ++col)
       {
          Board::Squares square = Board::Squares (row * Board::SIZE + col);
          RowColumn ray;

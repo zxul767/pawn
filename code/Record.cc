@@ -1,9 +1,9 @@
 #include "Record.h"
 
 bool
-Record:: add_record (const board_key& key, u_short& times)
+Record:: add_record (const board_key& key, ushort& times)
 {
-   hash_map<board_key, u_short, hasher, hasher>::iterator i = 
+   unordered_map<board_key, ushort, hasher, hasher>::iterator i = 
       record.find (key);
 
    if (i != record.end ())
@@ -14,7 +14,7 @@ Record:: add_record (const board_key& key, u_short& times)
       return false;
    }
 
-   record.insert (pair<board_key, u_short>(key, 1));
+   record.insert (pair<board_key, ushort>(key, 1));
 
    return true;
 }
@@ -22,7 +22,7 @@ Record:: add_record (const board_key& key, u_short& times)
 bool
 Record:: decrease_record (const board_key& key)
 {
-   hash_map<board_key, u_short, hasher, hasher>::iterator i = 
+   unordered_map<board_key, ushort, hasher, hasher>::iterator i = 
       record.find (key);
 
    if (i != record.end())
@@ -38,10 +38,10 @@ Record:: decrease_record (const board_key& key)
    return false;
 }
 
-u_short
+ushort
 Record::get_repetitions (const board_key& key) const
 {
-   hash_map<board_key, u_short, hasher, hasher>::const_iterator i = 
+   unordered_map<board_key, ushort, hasher, hasher>::const_iterator i = 
       record.find (key);
 
    if (i != record.end ())

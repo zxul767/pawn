@@ -63,7 +63,7 @@ SimpleMoveGenerator::generate_moves (Board*         board,
    // Sort captures by Most-Valuable-Victim / Least-Valuable-Attacker ratio
    sort (captures.begin (), captures.end ());
 
-   for (u_int i = 0, n = captures.size (); i < n; ++i)
+   for (uint i = 0, n = captures.size (); i < n; ++i)
       moves.insert (moves.begin (), captures[i]);
 
    return moves.size () != 0;
@@ -76,7 +76,7 @@ SimpleMoveGenerator::generate_moves (Board*         board,
 bool
 SimpleMoveGenerator::generate_moves (Board*         board, 
                                      vector<Move>&  moves,
-                                     u_short        flags)
+                                     ushort        flags)
 {
    SimpleEvaluator evaluator;
 
@@ -176,22 +176,22 @@ SimpleMoveGenerator::generate_moves (Board*         board,
    sort (captures.begin (), captures.end ());
 
    // Add captures
-   for (u_int i = 0, n = captures.size (); i < n; ++i)
+   for (uint i = 0, n = captures.size (); i < n; ++i)
       moves.push_back (captures[i]);
 
    // Add checks and check evasions
-   for (u_int i = 0, n = checks.size (); i < n; ++i)
+   for (uint i = 0, n = checks.size (); i < n; ++i)
       moves.push_back (checks[i]);
 
-   for (u_int i = 0, n = check_evasions.size (); i < n; ++i)
+   for (uint i = 0, n = check_evasions.size (); i < n; ++i)
       moves.push_back (check_evasions[i]);
 
    // Add pawn promotions
-   for (u_int i = 0, n = promotions.size (); i < n; ++i)
+   for (uint i = 0, n = promotions.size (); i < n; ++i)
       moves.push_back (promotions[i]);
 
    // Add the rest of the moves
-   for (u_int i = 0, n = other_moves.size (); i < n; ++i)
+   for (uint i = 0, n = other_moves.size (); i < n; ++i)
       moves.push_back (other_moves[i]);
 
    return moves.size () != 0;

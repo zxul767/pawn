@@ -69,10 +69,10 @@ class MaeBoard : public Board
    Piece::Player get_piece_color (Squares square) const;
    Piece::Player get_turn () const;
    Piece::Type   get_piece (Squares square) const;
-   u_llong       get_hash_key () const;
-   u_llong       get_hash_lock () const;
-   u_int         get_move_number () const;
-   u_short       get_repetition_count () const;
+   ullong       get_hash_key () const;
+   ullong       get_hash_lock () const;
+   uint         get_move_number () const;
+   ushort       get_repetition_count () const;
 
    // MUTATORS
    void set_game_status (GameStatus status);
@@ -90,10 +90,10 @@ class MaeBoard : public Board
    /*==========================================================================
      PRIVATE CONSTANTS
      ========================================================================*/
-   static const u_int    PIECE_TYPES  =  6;
-   static const u_int    CASTLE_SIDES =  2;
-   static const u_int    RANDOM_SEED  =  8;
-   static const u_int    N_HASH_KEYS  =  2;
+   static const uint    PIECE_TYPES  =  6;
+   static const uint    CASTLE_SIDES =  2;
+   static const uint    RANDOM_SEED  =  8;
+   static const uint    N_HASH_KEYS  =  2;
    static const Square   EMPTY_SQUARE;
 
    /*==========================================================================
@@ -106,12 +106,12 @@ class MaeBoard : public Board
    Square   board[SQUARES];
 
    // Hash key information
-   u_llong        zobrist[PIECE_TYPES][PLAYERS][SQUARES][N_HASH_KEYS];
-   u_llong        hash_key;
-   u_llong        hash_lock;
-   u_llong        turn_key;
-   u_llong        castle_key[PLAYERS][CASTLE_SIDES];
-   u_llong        en_passant_key[SQUARES];
+   ullong        zobrist[PIECE_TYPES][PLAYERS][SQUARES][N_HASH_KEYS];
+   ullong        hash_key;
+   ullong        hash_lock;
+   ullong        turn_key;
+   ullong        castle_key[PLAYERS][CASTLE_SIDES];
+   ullong        en_passant_key[SQUARES];
 
    // Special moves information
    bool           can_do_castle[PLAYERS][CASTLE_SIDES];
@@ -129,7 +129,7 @@ class MaeBoard : public Board
    Record position_counter;
 
    // Counter used to detect draws by the 50-move rule
-   u_int fifty_move_counter;        
+   uint fifty_move_counter;        
 
    // Game history needed to undo moves
    stack<BoardStatus> game_history;

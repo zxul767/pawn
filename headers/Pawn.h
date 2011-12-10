@@ -23,29 +23,29 @@ class Pawn : public Piece
    Pawn ();
    ~Pawn ();
 
-   bitboard get_moves (u_int square, Player player, const Board* board) const;
+   bitboard get_moves (uint square, Player player, const Board* board) const;
 
-   bitboard get_side_moves   (u_int square, Player player) const;
-   bitboard get_double_move  (u_int square, Player player) const;
-   bitboard get_capture_move (u_int square, Player player, 
+   bitboard get_side_moves   (uint square, Player player) const;
+   bitboard get_double_move  (uint square, Player player) const;
+   bitboard get_capture_move (uint square, Player player, 
                               RowColumn direction) const;
 
-   bitboard get_potential_moves (u_int square, Player player) const;
+   bitboard get_potential_moves (uint square, Player player) const;
 
  private:
 
-   bitboard get_simple_moves (u_int square, Player player) const;
+   bitboard get_simple_moves (uint square, Player player) const;
 
    void     compute_moves ();
-   bitboard compute_simple_moves (u_int square, Player player) const;
-   bitboard compute_side_moves   (u_int square, Player player) const;
-   bitboard compute_capture_move (u_int square, Player player, 
+   bitboard compute_simple_moves (uint square, Player player) const;
+   bitboard compute_side_moves   (uint square, Player player) const;
+   bitboard compute_capture_move (uint square, Player player, 
                                   RowColumn direction) const;
 
-   bool  is_second_row (u_int row, Player player) const;
-   bool  is_valid_row  (u_int row, Player player) const;
-   u_int get_row       (u_int square) const;
-   u_int get_column    (u_int square) const;
+   bool  is_second_row (uint row, Player player) const;
+   bool  is_valid_row  (uint row, Player player) const;
+   uint get_row       (uint square) const;
+   uint get_column    (uint square) const;
    
    bitboard moves_from[Board::SQUARES][Board::PLAYERS];
    bitboard simple_moves_from[Board::SQUARES][Board::PLAYERS];

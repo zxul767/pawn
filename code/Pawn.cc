@@ -27,7 +27,7 @@ Pawn::~Pawn ()
   PLAYER's turn to move (moves that leave the king in check are also included)
   ============================================================================*/
 bitboard
-Pawn::get_moves (u_int square, Player player, const Board* board) const
+Pawn::get_moves (uint square, Player player, const Board* board) const
 {
    Piece::Player opponent = WHITE;
 
@@ -83,7 +83,7 @@ Pawn::get_moves (u_int square, Player player, const Board* board) const
   Return all possible moves from SQUARE, assuming the board is empty.
   ============================================================================*/
 bitboard
-Pawn::get_potential_moves (u_int square, Player player) const
+Pawn::get_potential_moves (uint square, Player player) const
 {
    if (Board::is_inside_board (square))
       return moves_from[square][player];   
@@ -96,14 +96,14 @@ Pawn::get_potential_moves (u_int square, Player player) const
   and assuming it is PLAYER's turn to play.
   =============================================================================*/
 bitboard 
-Pawn::get_capture_move (u_int     square, 
+Pawn::get_capture_move (uint     square, 
                         Player    player, 
                         RowColumn direction) const
 {
    if (Board::is_inside_board (square))
       if (direction == EAST || direction == WEST)
       {
-         u_int side = (direction == EAST ? 0 : 1);
+         uint side = (direction == EAST ? 0 : 1);
          return capture_moves_from[square][player][side];
       }
    return 0;
@@ -114,7 +114,7 @@ Pawn::get_capture_move (u_int     square,
   PLAYER's turn to play.
   =============================================================================*/
 bitboard 
-Pawn::get_simple_moves (u_int square, Player player) const
+Pawn::get_simple_moves (uint square, Player player) const
 {
    if (Board::is_inside_board (square))
       return simple_moves_from[square][player];
@@ -126,13 +126,13 @@ Pawn::get_simple_moves (u_int square, Player player) const
   second row for PLAYER
   =============================================================================*/
 bitboard
-Pawn::get_double_move (u_int square, Player player) const
+Pawn::get_double_move (uint square, Player player) const
 {  
    if (!Board::is_inside_board (square))
       return 0;
 
-   u_int offset = Board::SIZE + Board::SIZE;
-   u_int end_square;
+   uint offset = Board::SIZE + Board::SIZE;
+   uint end_square;
 
    if (is_second_row (get_row (square), player)) 
    {
@@ -151,7 +151,7 @@ Pawn::get_double_move (u_int square, Player player) const
   legality of en-passant captures, as well as on setting the en-passant flag.
   =============================================================================*/
 bitboard 
-Pawn::get_side_moves (u_int square, Player player) const
+Pawn::get_side_moves (uint square, Player player) const
 {
    if (Board:: is_inside_board (square))
       return side_moves_from[square][player];
@@ -165,10 +165,10 @@ Pawn::get_side_moves (u_int square, Player player) const
 void
 Pawn:: compute_moves ()
 {   
-   for (u_int row = 0; row < Board::SIZE; ++row)
-      for (u_int col = 0; col < Board::SIZE; ++col)
+   for (uint row = 0; row < Board::SIZE; ++row)
+      for (uint col = 0; col < Board::SIZE; ++col)
       {
-         u_int square = row * Board::SIZE + col;
+         uint square = row * Board::SIZE + col;
          
          for (Player player = WHITE; player <= BLACK; ++player)
          {
@@ -204,7 +204,7 @@ Pawn:: compute_moves ()
   SQUARE
   =============================================================================*/
 bitboard
-Pawn::compute_side_moves (u_int square, Player player) const
+Pawn::compute_side_moves (uint square, Player player) const
 {
    bitboard side_moves = 0;
    int      dx[PAWN_MOVES-1] = { -1, +1 };
@@ -212,7 +212,7 @@ Pawn::compute_side_moves (u_int square, Player player) const
    int column = (int) get_column (square);
    int row = (int) get_row (square);
    
-   for (u_int i = 0; i < PAWN_MOVES-1; i++)
+   for (uint i = 0; i < PAWN_MOVES-1; i++)
    {
       int x = column + dx[i];
       if (Board::is_inside_board (row, x) && is_valid_row (row, player))
@@ -226,7 +226,7 @@ Pawn::compute_side_moves (u_int square, Player player) const
   pawn on SQUARE, assuming it is PLAYER'S turn to move.
   =============================================================================*/
 bitboard
-Pawn::compute_capture_move (u_int square,
+Pawn::compute_capture_move (uint square,
                             Player player,
                             RowColumn direction) const
 {
@@ -239,7 +239,7 @@ Pawn::compute_capture_move (u_int square,
    
    int column = (int) get_column (square);
    int row = (int) get_row (square);        
-   u_int position = (direction == EAST? 1: 0);
+   uint position = (direction == EAST? 1: 0);
    
    int x = column + dx[position];
    int y = row + (player == WHITE ? -dy[position]: dy[position]);
@@ -255,7 +255,7 @@ Pawn::compute_capture_move (u_int square,
   assumming it is PLAYER's turn to move.
   =============================================================================*/
 bitboard
-Pawn::compute_simple_moves (u_int square,
+Pawn::compute_simple_moves (uint square,
                             Player player) const
 {
    bitboard simple_moves = 0;
@@ -265,9 +265,9 @@ Pawn::compute_simple_moves (u_int square,
    int row = (int) get_row (square);
    
    // Pawns on their first move can advance two squares
-   u_int MOVES = is_second_row (row, player) ? 2: 1;
+   uint MOVES = is_second_row (row, player) ? 2: 1;
    
-   for (u_int i = 0; i < MOVES; i++)
+   for (uint i = 0; i < MOVES; i++)
    {
       int y = row + (player == WHITE? -dy[i]: dy[i]);
       if (Board::is_inside_board (y, column) && is_valid_row (row, player))
@@ -282,7 +282,7 @@ Pawn::compute_simple_moves (u_int square,
   otherwise.
   =============================================================================*/
 bool
-Pawn:: is_second_row (u_int row, Player player) const
+Pawn:: is_second_row (uint row, Player player) const
 {
    if (player == WHITE)
       return row == Board::SIZE-2;
@@ -294,8 +294,8 @@ Pawn:: is_second_row (u_int row, Player player) const
   Return the row corresponding to SQUARE on the chess board.
   Precondition: SQUARE is in [0, Board::SQUARES)
   =============================================================================*/
-u_int
-Pawn:: get_row (u_int square) const
+uint
+Pawn:: get_row (uint square) const
 {  
    return (square / Board::SIZE);
 }
@@ -304,8 +304,8 @@ Pawn:: get_row (u_int square) const
   Return the column corresponding to SQUARE on the chess board.
   Precondition: SQUARE is in [0, Board::SQUARES)
   =============================================================================*/
-u_int
-Pawn:: get_column (u_int square) const
+uint
+Pawn:: get_column (uint square) const
 {   
    return square % Board::SIZE;
 }
@@ -314,7 +314,7 @@ Pawn:: get_column (u_int square) const
   Return TRUE if a pawn of side COLOR can be on ROW; return FALSE otherwise.
   =============================================================================*/
 bool
-Pawn:: is_valid_row (u_int row, Player color) const
+Pawn:: is_valid_row (uint row, Player color) const
 {
    if (color == WHITE)
       return row != Board::SIZE-1;

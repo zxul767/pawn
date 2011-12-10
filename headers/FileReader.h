@@ -34,21 +34,21 @@ class FileReader
    bool is_empty_line      (const string& line) const;
    bool set_variable       (string& input);
                         
-   bool variable_was_found (const string& input, u_int* index_variable);
-   bool value_was_found    (u_int index_variable, const string& input, 
-                            u_int *index_value);
-   bool set_value          (u_int index_variable, const string& token, 
-                            u_int index_value);
-   bool get_boolean        (u_int index_value) const;
+   bool variable_was_found (const string& input, uint* index_variable);
+   bool value_was_found    (uint index_variable, const string& input, 
+                            uint *index_value);
+   bool set_value          (uint index_variable, const string& token, 
+                            uint index_value);
+   bool get_boolean        (uint index_value) const;
 
    void tokenize (const string& input, vector<string>& tokens, 
 		  const string& delimiters = " ") const;
 
-   Board::GameStatus  get_status (u_int index_value) const;
-   Piece::Player      get_turn   (u_int index_value) const;
-   Piece::Player      get_color  (u_int variable) const;
-   Board::CastleSide  get_side   (u_int variable) const;
-   Piece::Type        get_type   (u_int variable) const;
+   Board::GameStatus  get_status (uint index_value) const;
+   Piece::Player      get_turn   (uint index_value) const;
+   Piece::Player      get_color  (uint variable) const;
+   Board::CastleSide  get_side   (uint variable) const;
+   Piece::Type        get_type   (uint variable) const;
 };
 
 #endif

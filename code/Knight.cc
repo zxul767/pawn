@@ -27,7 +27,7 @@ Knight::~Knight ()
   PLAYER's turn to move (moves that leave the king in check are also included)
   ============================================================================*/
 bitboard
-Knight::get_moves (u_int          square, 
+Knight::get_moves (uint          square, 
                    Player         player, 
                    const Board*   board) const
 {
@@ -41,7 +41,7 @@ Knight::get_moves (u_int          square,
   Return all possible moves from SQUARE, assuming the board is empty.
   ============================================================================*/
 bitboard 
-Knight::get_potential_moves (u_int square, Player player) const
+Knight::get_potential_moves (uint square, Player player) const
 {
    if (Board::is_inside_board (square))
       return moves_from[square];
@@ -59,11 +59,11 @@ Knight::compute_moves ()
    int dx[KNIGHT_MOVES] = {+1, +2, +2, +1, -1, -2, -2, -1};
    int dy[KNIGHT_MOVES] = {-2, -1, +1, +2, +2, +1, -1, -2};
 
-   for (u_int square = 0; square < Board::SQUARES; ++square)
+   for (uint square = 0; square < Board::SQUARES; ++square)
       moves_from[square] = 0;
 
-   for (u_int row = 0; row < Board::SIZE; ++row)
-      for (u_int col = 0; col < Board::SIZE; ++col)
+   for (uint row = 0; row < Board::SIZE; ++row)
+      for (uint col = 0; col < Board::SIZE; ++col)
       {
          /*====================================================================
            Traverse all eight directions a knight can move to:
@@ -81,8 +81,8 @@ Knight::compute_moves ()
            +------------------------+
 
            ===================================================================*/
-         u_int square = row * Board::SIZE + col;
-         for (u_int jump = 0; jump < KNIGHT_MOVES; ++jump)
+         uint square = row * Board::SIZE + col;
+         for (uint jump = 0; jump < KNIGHT_MOVES; ++jump)
          {
             int y = row + dy[jump];
             int x = col + dx[jump];

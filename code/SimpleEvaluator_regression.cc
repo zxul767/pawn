@@ -59,7 +59,7 @@ SimpleEvaluator::static_evaluation (const Board* board) const
 int 
 SimpleEvaluator::material_value (bitboard piece, Piece::Type piece_type) const
 {
-   u_int counter = Util::count_set_bits (piece);
+   uint counter = Util::count_set_bits (piece);
    return (counter * piece_value[piece_type]);
 }
 
@@ -173,7 +173,7 @@ SimpleEvaluator::get_piece_value (Piece::Type piece_type) const
 void
 SimpleEvaluator::load_factor_weights (vector<int>& weights)
 {
-   for (u_int i = 0; i < weights.size (); ++i)
+   for (uint i = 0; i < weights.size (); ++i)
    {
       if (i >= factor_weight.size ())
          break;

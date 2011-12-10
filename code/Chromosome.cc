@@ -10,11 +10,11 @@ Chromosome::Chromosome ()
 }
 
 // Create a random chromosome
-Chromosome::Chromosome (u_int n_features)
+Chromosome::Chromosome (uint n_features)
 {   
    initialize_data ();
 
-   for (u_int i = 0; i < n_features * BITS_PER_FEATURE; ++i)
+   for (uint i = 0; i < n_features * BITS_PER_FEATURE; ++i)
    {
       gene_string.push_back ((rand () & 1) ? true : false);
    }
@@ -30,7 +30,7 @@ Chromosome::Chromosome (const Chromosome& copy)
    this->material_balance = copy.material_balance;
    this->result = copy.result;
 
-   for (u_int i = 0; i < copy.gene_string.size (); ++i)
+   for (uint i = 0; i < copy.gene_string.size (); ++i)
       this->gene_string.push_back (copy.get_gene (i));
 }
 
@@ -66,7 +66,7 @@ Chromosome::decode (vector<int>& features)
 
    std::cerr << "Decoding chromosome" << std::endl;
    features.clear ();
-   for (u_int i = 0, j = 0; i < gene_string.size (); ++i, ++j)
+   for (uint i = 0, j = 0; i < gene_string.size (); ++i, ++j)
    {
       if (gene_string[i])
       {
@@ -86,11 +86,11 @@ Chromosome::decode (vector<int>& features)
 void
 Chromosome::mutate (double probability)
 {
-   for (u_int i=1; i<=features.size(); ++i)
+   for (uint i=1; i<=features.size(); ++i)
    {
       if ((RAND_MAX * probability) <= rand ())
       {
-         u_int position = rand() % gene_string.size();
+         uint position = rand() % gene_string.size();
          flip (position);
       }
    }
@@ -105,10 +105,10 @@ Chromosome::reproduce (Chromosome&  other,
 
    vector<bool> first_born;
    vector<bool> second_born;
-   u_int i = 0;
+   uint i = 0;
 
 
-   for (u_int k=0; k<gene_string.size(); ++k)
+   for (uint k=0; k<gene_string.size(); ++k)
    {
       first_born.push_back(false);
       second_born.push_back(false);
@@ -134,14 +134,14 @@ Chromosome::reproduce (Chromosome&  other,
 }
 
 void
-Chromosome::flip (u_int position)
+Chromosome::flip (uint position)
 {
    if (position < gene_string.size ())
       gene_string[position] = !gene_string[position];
 }
 
 void
-Chromosome::set (u_int position)
+Chromosome::set (uint position)
 {
    if (position < gene_string.size ())
       gene_string[position] = true;
@@ -150,13 +150,13 @@ Chromosome::set (u_int position)
 void
 Chromosome::encode (const vector<int>& features)
 {
-   u_int locus = 0;
+   uint locus = 0;
    std::cerr << "encoding features into chromosome" << std::endl;
 
-   for (u_int i = 0; i < features.size (); ++i)
+   for (uint i = 0; i < features.size (); ++i)
    {
       int feature_value = features[i];
-      for (u_int j = 0; j < BITS_PER_FEATURE; ++j, ++locus)
+      for (uint j = 0; j < BITS_PER_FEATURE; ++j, ++locus)
       {
          if (feature_value & (1 << j))
             gene_string.push_back (true);
@@ -166,7 +166,7 @@ Chromosome::encode (const vector<int>& features)
    }
 }
 
-u_int
+uint
 Chromosome::how_many_features () const
 {
    return gene_string.size () / BITS_PER_FEATURE;
@@ -179,7 +179,7 @@ Chromosome::get_fitness () const
 }
 
 bool
-Chromosome::get_gene (u_int position) const
+Chromosome::get_gene (uint position) const
 {
    if (position < gene_string.size ())
       return gene_string[position];
@@ -194,12 +194,12 @@ string
 Chromosome::get_genes () const
 {
    string genes = "";
-   for (u_int i = 0; i < gene_string.size (); ++i)
+   for (uint i = 0; i < gene_string.size (); ++i)
          genes += (gene_string[i] ? "1" : "0");
    return genes;
 }
 
-u_int
+uint
 Chromosome::get_game_duration () const
 {
    return game_duration;
@@ -248,7 +248,7 @@ Chromosome::set_cumulative_probability (double probability)
 }
 
 void
-Chromosome::set_game_duration (u_int game_duration)
+Chromosome::set_game_duration (uint game_duration)
 {
    this->game_duration = game_duration;
 }
@@ -271,7 +271,7 @@ Chromosome::operator == (const Chromosome& other) const
    if (this->gene_string.size () != other.gene_string.size ())
       return false;
 
-   for (u_int i = 0, n = other.gene_string.size (); i < n; ++i)
+   for (uint i = 0, n = other.gene_string.size (); i < n; ++i)
       if (this->gene_string[i] != other.gene_string[i])
          return false;
 
@@ -299,7 +299,7 @@ Chromosome::operator = (const Chromosome& other)
    this->material_balance = material_balance;
 
    this->gene_string.clear ();
-   for (u_int i = 0; i < other.gene_string.size (); ++i)
+   for (uint i = 0; i < other.gene_string.size (); ++i)
       this->gene_string.push_back (other.get_gene (i));
 
    return *this;
@@ -312,7 +312,7 @@ operator << (ostream& out, const Chromosome& other)
    //out << "Won game:\t" << (other.is_winner ? "YES" : "NO") << '\n';
    out << "Game result:\t" << other.result << '\n';
    out << "Game duration:\t" << other.game_duration << '\n';
-   for (u_int i = 0; i < other.gene_string.size (); ++i)
+   for (uint i = 0; i < other.gene_string.size (); ++i)
       out << (other.gene_string[i] ? '1' : '0');
    out << "\n\n";
 

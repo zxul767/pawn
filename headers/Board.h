@@ -35,9 +35,9 @@ class Board
    /*==========================================================================
      CONSTANTS
      ========================================================================*/
-   static const u_int SQUARES = 64;
-   static const u_int SIZE    = 8;
-   static const u_int PLAYERS = 2;
+   static const uint SQUARES = 64;
+   static const uint SIZE    = 8;
+   static const uint PLAYERS = 2;
 
    enum Squares {
       a8, b8, c8, d8, e8, f8, g8, h8,
@@ -117,10 +117,10 @@ class Board
    virtual Piece::Player get_piece_color (Squares square) const = 0;
    virtual Piece::Player get_turn () const = 0;
    virtual Piece::Type   get_piece (Squares square) const = 0;
-   virtual u_llong       get_hash_key () const = 0;
-   virtual u_llong       get_hash_lock () const = 0;
-   virtual u_int         get_move_number () const = 0;
-   virtual u_short       get_repetition_count () const = 0;
+   virtual ullong       get_hash_key () const = 0;
+   virtual ullong       get_hash_lock () const = 0;
+   virtual uint         get_move_number () const = 0;
+   virtual ushort       get_repetition_count () const = 0;
 
    // MUTATORS
    virtual void set_game_status (GameStatus status) = 0;
@@ -132,8 +132,8 @@ class Board
 
    // STATIC
    static bool is_inside_board (int row, int col);
-   static bool is_inside_board (u_int row, u_int col);
-   static bool is_inside_board (u_int square);
+   static bool is_inside_board (uint row, uint col);
+   static bool is_inside_board (uint square);
 
    // OVERLOADED OPERATORS
    friend ostream& operator << (ostream& out, const Board& board);

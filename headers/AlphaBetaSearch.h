@@ -17,8 +17,8 @@ class Dictionary;
 class AlphaBetaSearch : public Search
 {
  private:
-   int  alpha_beta (u_int depth, int alpha, int beta);
-   int  quiescence (u_int depth, int alpha, int beta);
+   int  alpha_beta (uint depth, int alpha, int beta);
+   int  quiescence (uint depth, int alpha, int beta);
    int  iterative_deepening (vector<Move>& PV);
 
    void print_statistics (vector<Move>& PV);
@@ -32,7 +32,7 @@ class AlphaBetaSearch : public Search
    Board*             board;
 
    Result result;
-   u_int  hash_table_hits;
+   uint  hash_table_hits;
    Move   best_move;
 
    bool debugging;
@@ -42,7 +42,7 @@ class AlphaBetaSearch : public Search
    AlphaBetaSearch (PositionEvaluator* evaluator, MoveGenerator* generator);
    ~AlphaBetaSearch ();
    
-   Result get_best_move (u_int depth, Board* board, Move& best_move);
+   Result get_best_move (uint depth, Board* board, Move& best_move);
 };
 
 #endif // ALPHA_BETA_SEARCH_H

@@ -60,7 +60,7 @@ AlphaBetaSearch::print_statistics (vector<Move>& PV)
 {
    if (n_internal_nodes)
    {
-      average_branching_factor = (u_int)
+      average_branching_factor = (uint)
          ((double)(average_branching_factor / n_internal_nodes) + 0.5);
    }
 
@@ -71,7 +71,7 @@ AlphaBetaSearch::print_statistics (vector<Move>& PV)
    cerr << "Nodes evaluated: " << n_nodes_evaluated << endl;
    cerr << "Hash table hits: " << hash_table_hits << endl;
    cerr << "Principal variation: " << endl;
-   for (u_int i = 0; i < PV.size (); ++i)
+   for (uint i = 0; i < PV.size (); ++i)
       cout << PV[i] << endl; 
    cout << "--------------------------------------------------" << endl;
 }
@@ -94,7 +94,7 @@ AlphaBetaSearch::reset_statistics ()
  | STALEMATE, DRAW_BY_REPETITION.                                              |
  ==============================================================================*/
 Search::Result
-AlphaBetaSearch::get_best_move (u_int  depth, 
+AlphaBetaSearch::get_best_move (uint  depth, 
                                 Board* board, 
                                 Move&  best_move)
 {
@@ -140,8 +140,8 @@ AlphaBetaSearch::get_best_move (u_int  depth,
 int
 AlphaBetaSearch::iterative_deepening (vector<Move>& PV)
 {
-   u_int max_ply          = this->max_depth;
-   u_int expanding_offset = 1 << 6;
+   uint max_ply          = this->max_depth;
+   uint expanding_offset = 1 << 6;
    int   alpha, beta;
 
    // This estimation of the negamax value may be really wrong if we are in
@@ -149,7 +149,7 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& PV)
    root_value = evaluator->static_evaluation (board);
    this->turn_debugging (false);
 
-   for (u_int depth = 1; depth <= max_ply; ++depth)
+   for (uint depth = 1; depth <= max_ply; ++depth)
    {
       //cerr << "--------------------------------------------------" << endl;
       //cerr << "ITERATION #" << depth << endl;
@@ -206,12 +206,12 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& PV)
  | root node has the advantage, and negative if not.                           |
  ==============================================================================*/
 int
-AlphaBetaSearch::alpha_beta (u_int depth, 
+AlphaBetaSearch::alpha_beta (uint depth, 
                              int   alpha, 
                              int   beta)
 {
    vector<Move>  moves;
-   u_short       best_index = 0;
+   ushort       best_index = 0;
    int           tentative_value;
    int           best = MATE_VALUE; // Initially the best you can do is lose the game!
 
@@ -273,8 +273,8 @@ AlphaBetaSearch::alpha_beta (u_int depth,
       }
    }
 
-   u_int n_moves_made = 0;
-   for (u_int i = 0, n = moves.size (); i < n; ++i)
+   uint n_moves_made = 0;
+   for (uint i = 0, n = moves.size (); i < n; ++i)
    {
       Board::Error error = board->make_move (moves[i], true);
       if (error == Board::KING_LEFT_IN_CHECK)
@@ -337,7 +337,7 @@ AlphaBetaSearch::alpha_beta (u_int depth,
    {
       // Store this board configuration along with its negamax value or the
       // lower/upper bound found. Also store the depth to which it was explored.
-      u_int real_depth = max_depth - depth;
+      uint real_depth = max_depth - depth;
       Dictionary::flag accuracy;
       if (best >= beta)       accuracy = Dictionary::UBOUND;
       else if (best > alpha)  accuracy = Dictionary::EXACT;
@@ -358,14 +358,14 @@ AlphaBetaSearch::alpha_beta (u_int depth,
  | by MAX_QUIESCENCE_DEPTH.                                                  |
  ============================================================================*/
 int
-AlphaBetaSearch::quiescence (u_int depth,
+AlphaBetaSearch::quiescence (uint depth,
                              int   alpha, 
                              int   beta)
 {
    vector<Move> moves;
    int          tentative_value, node_value;
    int          best = MATE_VALUE;
-   u_short      best_index = 0;
+   ushort      best_index = 0;
    
    ++n_nodes_evaluated;
    node_value = evaluator->static_evaluation (board);
@@ -446,7 +446,7 @@ AlphaBetaSearch::quiescence (u_int depth,
    }
 
    n_internal_nodes++;
-   for (u_int i = 0, n = moves.size (); i < n; ++i)
+   for (uint i = 0, n = moves.size (); i < n; ++i)
    {
       Board::Error error = board->make_move (moves[i], true);
       if (error == Board::KING_LEFT_IN_CHECK)

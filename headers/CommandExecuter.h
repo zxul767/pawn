@@ -2,6 +2,8 @@
 #define COMMAND_EXECUTER_H
 
 #include <string>
+#include "common.h"
+
 using std::string;
 
 class Command;
@@ -19,7 +21,7 @@ class CommandExecuter
    void show_possible_moves ();
    void make_user_move (const string& command);
    void think ();
-   void train_by_GA (u_int population_size, u_int n_generations, 
+   void train_by_GA (uint population_size, uint n_generations, 
                      double mutation_probability);
 
  private:

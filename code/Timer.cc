@@ -1,5 +1,7 @@
 #include <sstream>
 #include <iostream>
+#include <cstdlib>
+
 #include "Timer.h"
 
 Timer::Timer (double time_out)
@@ -26,7 +28,7 @@ Timer::stop ()
    end = clock ();
 }
 
-void 
+void
 Timer::set_clock (double time_out)
 {
    this->time_out = time_out;
@@ -56,11 +58,14 @@ Timer::elapsed_time ()
 
 void
 Timer::sleep () const
-{   
+{
    if (time_out > 0)
    {
       std::ostringstream sleep_command;
       sleep_command << "sleep " << time_out;
-      system (sleep_command.str().c_str ());
+      if (system (sleep_command.str().c_str ()))
+      {
+         std::cerr << "sleep command failed" << std::endl;
+      }
    }
 }

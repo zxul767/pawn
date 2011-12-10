@@ -25,13 +25,13 @@ Board::is_inside_board (int row, int col)
 }
 
 bool 
-Board::is_inside_board (u_int row, u_int col)
+Board::is_inside_board (uint row, uint col)
 {
    return (row < SIZE) && (col < SIZE);
 }
 
 bool 
-Board::is_inside_board (u_int square)
+Board::is_inside_board (uint square)
 {
    return (square < SQUARES);
 }
@@ -39,7 +39,7 @@ Board::is_inside_board (u_int square)
 ostream& 
 operator << (ostream& out, const Board& board)
 {
-   static const u_int nplayers = Board::PLAYERS;
+   static const uint nplayers = Board::PLAYERS;
 
    static const string 
       piece_to_string[][nplayers] = { { "  P  ", " *P* " },
@@ -51,12 +51,12 @@ operator << (ostream& out, const Board& board)
       };
    
    out << "  -------------------------------------------------" << endl;
-   for (u_int row = 0; row < Board::SIZE; ++row)
+   for (uint row = 0; row < Board::SIZE; ++row)
    {
       out << "  |     |     |     |     |     |     |     |     |" << endl;
       out << (Board::SIZE - row) << ' ';
 
-      for (u_int col = 0; col < Board::SIZE; ++col)
+      for (uint col = 0; col < Board::SIZE; ++col)
       {
          out << '|';
          

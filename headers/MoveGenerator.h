@@ -28,7 +28,7 @@ class MoveGenerator
      Return a vector of legal moves from the current BOARD configuration
      =====================================================================*/
    virtual bool generate_moves (Board*  board, vector<Move>& moves, 
-                                u_short flags) = 0;
+                                ushort flags) = 0;
 
    virtual bool generate_moves (Board* board, vector<Move>& moves) = 0;
    virtual bool generate_en_prise_evations (Board* board, vector<Move>& moves) = 0;

@@ -12,8 +12,8 @@ class BoardStatus
                 bitboard    en_passant, 
                 bool        can_castle_king,
                 bool        can_castle_queen,
-                u_llong     hash_key,
-                u_llong     hash_lock)
+                ullong     hash_key,
+                ullong     hash_lock)
       {
          this->move = move;
          this->en_passant_capture_square = en_passant;
@@ -47,13 +47,13 @@ class BoardStatus
          return can_castle_queen;
       }
 
-   u_llong
+   ullong
       get_hash_key () const
    {
       return hash_key;
    }
 
-   u_llong
+   ullong
       get_hash_lock () const
    {
       return hash_lock;
@@ -64,8 +64,8 @@ class BoardStatus
    bitboard en_passant_capture_square;
    bool     can_castle_king;
    bool     can_castle_queen;
-   u_llong  hash_key;
-   u_llong  hash_lock;
+   ullong  hash_key;
+   ullong  hash_lock;
 };
 
 #endif // BOARD_STATUS_H
