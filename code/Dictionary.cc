@@ -7,7 +7,7 @@ using std::cerr;
 using std::endl;
 
 map<ushort, uint> Dictionary::possible_size;
-uint               Dictionary::size;
+size_t Dictionary::size;
 
 Dictionary:: Dictionary (uint size)
 {

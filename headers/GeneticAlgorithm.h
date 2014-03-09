@@ -14,7 +14,7 @@ class GeneticAlgorithm
                      double            mutation_probability,
                      FitnessEvaluator* fitness);
 
-   static const double SELECTION_PERCENTAGE = 0.65;
+   static constexpr double SELECTION_PERCENTAGE = 0.65;
 
    void       run ();
    void       set_seed (Chromosome& seed);

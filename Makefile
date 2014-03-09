@@ -2,7 +2,7 @@
 ## August 27, 2007
 
 CPP = g++
-CXXFLAGS = -I./headers -g -ansi -Wall -O2 -std=c++0x
+CXXFLAGS = -I./headers -g -Wall -Werror -O2 -std=c++11
 LD = -lm
 OBJECTS = mae.o \
 	common.o \

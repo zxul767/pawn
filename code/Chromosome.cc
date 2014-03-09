@@ -296,7 +296,7 @@ Chromosome::operator = (const Chromosome& other)
    //this->is_winner = other.is_winner;
    this->result = other.result;
    this->game_duration = other.game_duration;
-   this->material_balance = material_balance;
+   this->material_balance = other.material_balance;
 
    this->gene_string.clear ();
    for (uint i = 0; i < other.gene_string.size (); ++i)
