@@ -365,7 +365,6 @@ AlphaBetaSearch::quiescence (uint depth,
    vector<Move> moves;
    int          tentative_value, node_value;
    int          best = MATE_VALUE;
-   ushort      best_index = 0;
    
    ++n_nodes_evaluated;
    node_value = evaluator->static_evaluation (board);
@@ -473,7 +472,6 @@ AlphaBetaSearch::quiescence (uint depth,
             result = NORMAL_EVALUATION;
 
          best = tentative_value;
-         best_index = i;         
          if (best >= beta) // Alpha-beta cutoff
             break;
       }
