@@ -42,7 +42,7 @@ Dictionary:: add_entry (const board_key& board, int score,
                         flag accuracy, 
 								const Move &best, uint depth)
 {
-   unordered_map<board_key, hash_info, hasher, hasher>::iterator i = 
+   unordered_map<board_key, hash_info, hasher, comparer>::iterator i = 
       entry.find (board);
 
    // This board is already in the table, so just try to update it
@@ -75,7 +75,7 @@ Dictionary:: get_data (const board_key& board, Dictionary::hash_info& data)
 {
 	if (exists (board))
 	{
-		unordered_map<board_key, hash_info, hasher, hasher>::iterator iter = 
+		unordered_map<board_key, hash_info, hasher, comparer>::iterator iter = 
          entry.find (board);
 
 		data = (*iter).second;
@@ -88,7 +88,7 @@ Dictionary:: get_data (const board_key& board, Dictionary::hash_info& data)
 void
 Dictionary:: show_all ()
 {
-	unordered_map<board_key, hash_info, hasher, hasher>::iterator dictionary_iter;
+	unordered_map<board_key, hash_info, hasher, comparer>::iterator dictionary_iter;
 
 	cerr << "\nThe original elements [Key : Value] are : ";
 
@@ -96,7 +96,6 @@ Dictionary:: show_all ()
         dictionary_iter != entry.end(); 
         dictionary_iter++)
 	{
-      //		cerr << endl << "[" << dictionary_iter->first << "] : ";
 		cerr << endl << "    score : " << (dictionary_iter->second).score;
 		cerr << endl << " accuracy : " << (dictionary_iter->second).accuracy;
 		cerr << endl << "best move : " << (dictionary_iter->second).best;

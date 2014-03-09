@@ -25,20 +25,23 @@ public:
    static const size_t size = 4142027;
 
 private:
-   struct hasher
+   class hasher
    {
+   public:
       size_t operator ()(const board_key& board) const
          {
             return (size_t) (board.hash_key % size);
          }
-
+   };
+   class comparer
+   {
+   public:
       bool operator ()(const board_key& board, const board_key& other) const
          {
             return board.hash_lock == other.hash_lock;
          }
    };
-
-   unordered_map <board_key, ushort, hasher, hasher> record;
+   unordered_map <board_key, ushort, hasher, comparer> record;
 };
 
 #endif // RECORD_H

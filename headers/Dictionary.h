@@ -13,8 +13,7 @@ using std::map;
 
 class Dictionary
 {
-
- public:
+public:
    
   enum flag {EXACT, UBOUND, LBOUND, UNKNOWN};
    
@@ -51,22 +50,27 @@ class Dictionary
   static const ushort       MAX_MEMORY = 256;
   static size_t              size;
 
- private:               
-  struct hasher
+private:                
+  class hasher
   {
+  public:
     size_t operator ()(const board_key& board) const
     {
       return (size_t) board.hash_key % size;
     }
+  };
 
+  class comparer 
+  {
+  public:
     bool operator ()(const board_key& board, const board_key& other) const
     {
       return board.hash_lock == other.hash_lock;
     }
   };
 
-  uint     hash_size;
-  unordered_map  <board_key, hash_info, hasher, hasher> entry;    
+  uint hash_size;
+  unordered_map  <board_key, hash_info, hasher, comparer> entry;          
 };
 
 #endif // HASH_DICTIONARY_H
