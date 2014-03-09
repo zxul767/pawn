@@ -53,13 +53,18 @@ class Dictionary
       static size_t              size;
 
 	private:		
-      struct hasher
+      class hasher
       {
+      public:
          size_t operator ()(const board_key& board) const
          {
             return (size_t) board.hash_key % size;
          }
+      };
 
+      class comparer 
+      {
+      public:
          bool operator ()(const board_key& board, const board_key& other) const
          {
             return board.hash_lock == other.hash_lock;
@@ -67,7 +72,7 @@ class Dictionary
       };
 
       uint     hash_size;
-      unordered_map  <board_key, hash_info, hasher, hasher> entry;	  
+      unordered_map  <board_key, hash_info, hasher, comparer> entry;	  
 };
 
 #endif // HASH_DICTIONARY_H

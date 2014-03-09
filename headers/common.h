@@ -14,7 +14,7 @@ using std::vector;
 class Util
 {
  public:
-   static const double      EPSILON = 1E-6;
+   static constexpr double      EPSILON = 1E-6;
    static const bitboard    one = 1;
    static const int         INFINITUM = (INT_MAX >> 1);
 

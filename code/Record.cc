@@ -3,7 +3,7 @@
 bool
 Record:: add_record (const board_key& key, ushort& times)
 {
-   unordered_map<board_key, ushort, hasher, hasher>::iterator i = 
+   unordered_map<board_key, ushort, hasher, comparer>::iterator i = 
       record.find (key);
 
    if (i != record.end ())
@@ -22,7 +22,7 @@ Record:: add_record (const board_key& key, ushort& times)
 bool
 Record:: decrease_record (const board_key& key)
 {
-   unordered_map<board_key, ushort, hasher, hasher>::iterator i = 
+   unordered_map<board_key, ushort, hasher, comparer>::iterator i = 
       record.find (key);
 
    if (i != record.end())
@@ -41,7 +41,7 @@ Record:: decrease_record (const board_key& key)
 ushort
 Record::get_repetitions (const board_key& key) const
 {
-   unordered_map<board_key, ushort, hasher, hasher>::const_iterator i = 
+   unordered_map<board_key, ushort, hasher, comparer>::const_iterator i = 
       record.find (key);
 
    if (i != record.end ())

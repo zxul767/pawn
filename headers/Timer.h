@@ -23,7 +23,7 @@ class Timer
    double  time_elapsed;
    clock_t begin, end;
 
-   static const double EPSILON = 1E-7;
+   static constexpr double EPSILON = 1E-7;
 };
 
 #endif // TIMER_H
