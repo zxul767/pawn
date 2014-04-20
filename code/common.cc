@@ -42,6 +42,25 @@ Util::load_to_bitboard ()
 int
 Util::MSB_position (bitboard bitvector)
 {
+   //   static u_int shift[] = { 32, 16, 8, 4, 2, 1 };
+   // static bitboard masks[] = { 0xFFFFFFFF00000000LL,
+   //                             0x00000000FFFF0000LL,
+   //                             0x000000000000FF00LL,
+   //                             0x00000000000000F0LL,
+   //                             0x000000000000000CLL,
+   //                             0x0000000000000002LL };
+
+   // if (bitvector == 0) return -1;
+
+   // u_int position = 64;
+   // for (u_int i = 0; i < 6; ++i)
+   //    if (masks[i] & bitvector)
+   //       bitvector >>= shift[i];
+   //    else
+   //       position -= shift[i];
+
+   // return position-1;
+
    if (bitvector == 0) return -1;
 
    int position = 0;
@@ -88,6 +107,26 @@ Util::MSB_position (bitboard bitvector)
 int
 Util::LSB_position (bitboard bitvector)
 {
+   //   static u_int shift[] = { 32, 16, 8, 4, 2, 1 };
+   // static bitboard masks[] = { 0x00000000FFFFFFFFLL,
+   //                             0x000000000000FFFFLL,
+   //                             0x00000000000000FFLL,
+   //                             0x000000000000000FLL,
+   //                             0x0000000000000003LL,
+   //                             0x0000000000000001LL };
+
+   // if (bitvector == 0) return -1;
+
+   // u_int position = 1;
+   // for (u_int i = 0; i < 6; ++i)
+   //    if (!(masks[i] & bitvector))
+   //    {
+   //       bitvector >>= shift[i];
+   //       position += shift[i];
+   //    }
+
+   // return position-1;
+   
    if (bitvector == 0) return -1;
 
    int position = 0;
