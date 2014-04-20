@@ -217,7 +217,8 @@ $(TARBALL_NAME) : clean Makefile initial.in
 .PHONY: clean
 
 clean : clean-backups
-	-rm -f *.o $(MAIN_EXEC) $(TEST_EXEC)
+	-find . -name "*.o" -type f -print0 | xargs -0 rm -f
+	-rm -f code/$(MAIN_EXEC) code/$(TEST_EXEC)
 
 clean-backups :
 	-find . -name "*~" -type f -print0 | xargs -0 rm -f
