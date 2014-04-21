@@ -14,7 +14,7 @@ OBJECTS = mae.o \
 	Pawn.o Rook.o Knight.o Bishop.o Queen.o King.o Piece.o \
 	Chromosome.o FitnessEvaluator.o GeneticAlgorithm.o
 
-TEST_EXEC = test_piece test_timer
+TEST_EXEC =
 MAIN_EXEC = mae
 TARBALL_NAME = MaE
 
@@ -34,18 +34,6 @@ all: $(MAIN_EXEC)
 # MAIN EXECUTABLE
 $(MAIN_EXEC) : $(OBJECTS)
 
-test_piece : test_piece.o \
-	Board.o FileReader.o \
-	Move.o \
-	common.o \
-	Pawn.o Rook.o Knight.o Bishop.o Queen.o King.o
-
-test_timer : test_timer.o \
-	Timer.o \
-	common.o
-
-test: test.o common.o
-
 # TEST FILES
 mae.o : mae.cc \
 	common.h \
@@ -54,18 +42,6 @@ mae.o : mae.cc \
 	Move.h MoveGenerator.h \
 	Command.h CommandReader.h CommandExecuter.h \
 	Search.h AlphaBetaSearch.h MinimaxSearch.h Timer.h Dictionary.h
-
-test_piece.o : test_piece.cc \
-	common.h \
-	Board.h Square.h BoardStatus.h \
-	Piece.h Pawn.h Rook.h Knight.h Bishop.h Queen.h King.h \
-	Move.h
-
-test_timer.o : test_timer.cc \
-	Timer.h \
-	common.h
-
-test.o : test.cc common.h
 
 # USEFUL TO VARIOUS MODULES
 common.o : common.cc common.h
