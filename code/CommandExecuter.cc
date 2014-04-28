@@ -21,10 +21,7 @@
 #include <vector>
 #include <cstdlib>
 
-using std::cout;
-using std::cerr;
-using std::vector;
-using std::endl;
+using namespace std;
 
 CommandExecuter::CommandExecuter (Board*  board,
                                   Search* search_engine,
@@ -249,16 +246,16 @@ CommandExecuter::train_by_GA (uint  population_size,
                               uint  n_generations,
                               double mutation_probability)
 {
-   FitnessEvaluator* fitness_evaluator = new FitnessEvaluator (search_engine);
+  unique_ptr<FitnessEvaluator> fitness_evaluator(new FitnessEvaluator (search_engine));
 
    cerr << "About to start the Genetic Algorithm" << endl;
    cerr << "Population size:\t" << population_size << endl;
    cerr << "Generations to run:\t" << n_generations << endl;
    cerr << "Mutation probability:\t" << mutation_probability << endl;
 
-   GeneticAlgorithm* GA =
-      new GeneticAlgorithm (population_size, n_generations,
-                            mutation_probability, fitness_evaluator);
+   unique_ptr<GeneticAlgorithm> 
+     GA(new GeneticAlgorithm (population_size, n_generations,
+                              mutation_probability, fitness_evaluator.get()));
 
    vector<int> features_a;
    features_a.push_back (80);
@@ -294,7 +291,4 @@ CommandExecuter::train_by_GA (uint  population_size,
      double evaluation = fitness_evaluator->evaluate (a, b);
      cerr << "Evaluation: " << evaluation << endl;
    */
-
-   delete GA;
-   delete fitness_evaluator;
 }

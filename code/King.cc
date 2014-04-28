@@ -14,6 +14,8 @@
 #include "King.h"
 #include <iostream>
 
+using namespace std;
+
 const bool
 King::neighbors_computed = King::compute_neighbors ();
 
@@ -145,7 +147,7 @@ King::get_neighbors (uint position)
 bool
 King::compute_neighbors ()
 {
-   Piece*   king = new King ();
+  unique_ptr<Piece> king(new King());
 
    for (uint position = 0; position < Board::SQUARES; ++position)
    {
@@ -163,7 +165,6 @@ King::compute_neighbors ()
 
       neighbors[position] = actual_neighbors ^ (Util::one << position);
    }
-   delete king;
    return true;
 }
 
