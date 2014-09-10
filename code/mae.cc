@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include "MaeBoard.h"
 #include "Timer.h"

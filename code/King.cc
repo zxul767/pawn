@@ -13,6 +13,7 @@
 
 #include "King.h"
 #include <iostream>
+#include <memory>
 
 using namespace std;
 
