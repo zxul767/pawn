@@ -31,7 +31,7 @@ using std::cout;
 using std::endl;
 
 AlphaBetaSearch::AlphaBetaSearch (PositionEvaluator* evaluator,
-                                  MoveGenerator*     generator) 
+                                  MoveGenerator*     generator)
 {
    board            = 0;
    this->generator  = generator;
@@ -41,8 +41,8 @@ AlphaBetaSearch::AlphaBetaSearch (PositionEvaluator* evaluator,
    debugging = false;
 }
 
-AlphaBetaSearch::~AlphaBetaSearch () 
-{ 
+AlphaBetaSearch::~AlphaBetaSearch ()
+{
    delete hash_table;
 }
 
@@ -56,7 +56,7 @@ AlphaBetaSearch::~AlphaBetaSearch ()
  | (f) Number of times the hash table effectively saved computation time     |
  ============================================================================*/
 void
-AlphaBetaSearch::print_statistics (vector<Move>& PV)
+AlphaBetaSearch::print_statistics (vector<Move>& principal_variation)
 {
    if (n_internal_nodes)
    {
@@ -71,8 +71,8 @@ AlphaBetaSearch::print_statistics (vector<Move>& PV)
    cerr << "Nodes evaluated: " << n_nodes_evaluated << endl;
    cerr << "Hash table hits: " << hash_table_hits << endl;
    cerr << "Principal variation: " << endl;
-   for (uint i = 0; i < PV.size (); ++i)
-      cout << PV[i] << endl; 
+   for (uint i = 0; i < principal_variation.size (); ++i)
+      cout << principal_variation[i] << endl;
    cout << "--------------------------------------------------" << endl;
 }
 
@@ -94,20 +94,20 @@ AlphaBetaSearch::reset_statistics ()
  | STALEMATE, DRAW_BY_REPETITION.                                              |
  ==============================================================================*/
 Search::Result
-AlphaBetaSearch::get_best_move (uint  depth, 
-                                Board* board, 
+AlphaBetaSearch::get_best_move (uint  depth,
+                                Board* board,
                                 Move&  best_move)
 {
-   Result winner[Board::PLAYERS][Board::PLAYERS] = {{WHITE_MATES, BLACK_MATES}, 
+   Result winner[Board::PLAYERS][Board::PLAYERS] = {{WHITE_MATES, BLACK_MATES},
                                                     {BLACK_MATES, WHITE_MATES}};
-   if (board == 0) 
+   if (board == 0)
       return Search::ERROR;
 
    this->board     = board;
    this->max_depth = depth;
 
-   vector<Move> PV;
-   root_value = iterative_deepening (PV);
+   vector<Move> principal_variation;
+   root_value = iterative_deepening (principal_variation);
 
    if (abs (root_value) == abs(MATE_VALUE))
       result = winner[root_value > 0 ? 0 : 1][board->get_turn ()];
@@ -115,12 +115,12 @@ AlphaBetaSearch::get_best_move (uint  depth,
    else if (root_value == DRAW_VALUE && result == STALEMATE)
       result = STALEMATE;
 
-   else 
+   else
       result = NORMAL_EVALUATION;
 
-   // If we are not using transposition tables, we cannot reconstruct the PV
-   if (PV.size () > 0)
-      best_move = PV[0];
+   // If we are not using transposition tables, we cannot reconstruct the principal variation
+   if (principal_variation.size () > 0)
+      best_move = principal_variation[0];
    else
       best_move = this->best_move;
 
@@ -135,10 +135,10 @@ AlphaBetaSearch::get_best_move (uint  depth,
  | outside the alpha-beta windows)                                         |
  |                                                                         |
  | Return the minimax value of THIS->BOARD and the principal variation in  |
- | PV.                                                                     |
+ | PRINCIPAL_VARIATION.                                                                     |
  ==========================================================================*/
 int
-AlphaBetaSearch::iterative_deepening (vector<Move>& PV)
+AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
 {
    uint max_ply          = this->max_depth;
    uint expanding_offset = 1 << 6;
@@ -172,7 +172,7 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& PV)
 
          if (abs (root_value) == abs(MATE_VALUE))
             break;
-         
+
          if (root_value > alpha && root_value < beta)
          {
             expanding_offset >>= 1;
@@ -184,15 +184,15 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& PV)
    //cerr << "Negamax value: " << root_value << endl;
    //cerr << best_move << endl;
 
-   PV.clear ();
-   build_PV (board, PV);
+   principal_variation.clear ();
+   build_principal_variation (board, principal_variation);
 
    // This extra code is put here to avoid breaking the program when we
    // disable the use of transposition tables
-   if (PV.size () == 0)
-      PV.push_back (best_move);
-   //print_statistics (PV);
-      
+   if (principal_variation.size () == 0)
+      principal_variation.push_back (best_move);
+   //print_statistics (principal_variation);
+
    return root_value;
 }
 
@@ -206,8 +206,8 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& PV)
  | root node has the advantage, and negative if not.                           |
  ==============================================================================*/
 int
-AlphaBetaSearch::alpha_beta (uint depth, 
-                             int   alpha, 
+AlphaBetaSearch::alpha_beta (uint depth,
+                             int   alpha,
                              int   beta)
 {
    vector<Move>  moves;
@@ -225,8 +225,8 @@ AlphaBetaSearch::alpha_beta (uint depth,
    {
       if (data.depth >= max_depth - depth)
          if (data.accuracy == Dictionary::EXACT ||
-             (data.accuracy == Dictionary::UBOUND && data.score >= beta) ||
-             (data.accuracy == Dictionary::LBOUND && data.score <= alpha))
+             (data.accuracy == Dictionary::UPPER_BOUND && data.score >= beta) ||
+             (data.accuracy == Dictionary::LOWER_BOUND && data.score <= alpha))
          {
             if (board->get_repetition_count () == 1)
             {
@@ -241,7 +241,7 @@ AlphaBetaSearch::alpha_beta (uint depth,
 
    // BASE CASE
    if (depth >= max_depth)
-   {  
+   {
       // Quiescence search may return a value that is well below the current
       // node evaluation, meaning that all captures considered are really bad.
       ++n_nodes_evaluated;
@@ -249,19 +249,19 @@ AlphaBetaSearch::alpha_beta (uint depth,
       int quiescence_value = quiescence (0, alpha, beta);
       return Util::max (node_value, quiescence_value);
    }
-   
+
    generator->generate_moves (board, moves);
    if (moves.size () == 0)
    {
       if (!board->is_king_in_check ())
       {
          ++n_nodes_evaluated;
-         return evaluator->static_evaluation (board);         
+         return evaluator->static_evaluation (board);
       }
       return MATE_VALUE;
    }
 
-   // Improve move ordering by examining the PV node at this ply found in the previous
+   // Improve move ordering by examining the principal_variation node at this ply found in the previous
    // iteration or maybe in a search previously done with a narrower alpha-beta window
    if (hash_hit)
    {
@@ -281,17 +281,17 @@ AlphaBetaSearch::alpha_beta (uint depth,
          continue;
 
       ++n_moves_made;
-      
+
       if (error == Board::DRAW_BY_REPETITION)
       {
          tentative_value = DRAW_VALUE;
       }
       else if (error == Board::NO_ERROR)
-         tentative_value = 
+         tentative_value =
             -alpha_beta (depth + 1, -beta, -Util::max (alpha, best));
       else
       {
-         cerr << "fatal error returned by board during search: " 
+         cerr << "fatal error returned by board during search: "
               << error << " when making move " << moves[i] << endl;
          cerr << (*board) << endl;
 
@@ -299,7 +299,7 @@ AlphaBetaSearch::alpha_beta (uint depth,
       }
 
       if (!board->undo_move ())
-      {         
+      {
          cerr << "fatal error: couldn't undo." << endl;
          abort ();
       }
@@ -312,10 +312,10 @@ AlphaBetaSearch::alpha_beta (uint depth,
             result = NORMAL_EVALUATION;
 
          best = tentative_value;
-         best_index = i;         
+         best_index = i;
          if (best >= beta) // Alpha-beta cutoff
             break;
-      }      
+      }
    }
 
    average_branching_factor += n_moves_made;
@@ -331,7 +331,7 @@ AlphaBetaSearch::alpha_beta (uint depth,
          cerr << "Draw by stalemate" << endl;
          result = STALEMATE;
          best = DRAW_VALUE;
-      }      
+      }
    }
    else
    {
@@ -339,10 +339,10 @@ AlphaBetaSearch::alpha_beta (uint depth,
       // lower/upper bound found. Also store the depth to which it was explored.
       uint real_depth = max_depth - depth;
       Dictionary::flag accuracy;
-      if (best >= beta)       accuracy = Dictionary::UBOUND;
+      if (best >= beta)       accuracy = Dictionary::UPPER_BOUND;
       else if (best > alpha)  accuracy = Dictionary::EXACT;
-      else                    accuracy = Dictionary::LBOUND;
-      
+      else                    accuracy = Dictionary::LOWER_BOUND;
+
       hash_table->add_entry (key, best, accuracy, moves[best_index], real_depth);
       best_move = moves[best_index];
       n_internal_nodes++;
@@ -359,13 +359,13 @@ AlphaBetaSearch::alpha_beta (uint depth,
  ============================================================================*/
 int
 AlphaBetaSearch::quiescence (uint depth,
-                             int   alpha, 
+                             int   alpha,
                              int   beta)
 {
    vector<Move> moves;
    int          tentative_value, node_value;
    int          best = MATE_VALUE;
-   
+
    ++n_nodes_evaluated;
    node_value = evaluator->static_evaluation (board);
 
@@ -374,9 +374,9 @@ AlphaBetaSearch::quiescence (uint depth,
    if (node_value >= beta)
    {
       if (debugging)
-      {    
+      {
          cerr << (board->get_turn () == Piece::WHITE ? "WHITE":"BLACK") << endl;
-         cerr << "Static value of node exceeds BETA: " 
+         cerr << "Static value of node exceeds BETA: "
               << node_value << " >= " << beta << endl;
          cerr << (*board) << endl;
          std::cin.get ();
@@ -395,7 +395,7 @@ AlphaBetaSearch::quiescence (uint depth,
       if (debugging)
       {
          cerr << (board->get_turn () == Piece::WHITE ? "WHITE":"BLACK") << endl;
-         cerr << "MAX_QUIESCENCE_DEPTH exceeded but not in check: " 
+         cerr << "MAX_QUIESCENCE_DEPTH exceeded but not in check: "
               << node_value << endl;
          cerr << (*board) << endl;
          std::cin.get ();
@@ -403,8 +403,8 @@ AlphaBetaSearch::quiescence (uint depth,
       ++n_leaf_nodes;
       return node_value;
    }
-   generator->generate_moves (board, moves, 
-                              MoveGenerator::CAPTURES | 
+   generator->generate_moves (board, moves,
+                              MoveGenerator::CAPTURES |
                               MoveGenerator::CHECKS   |
                               MoveGenerator::CHECK_EVASIONS |
                               MoveGenerator::PAWN_PROMOTIONS);
@@ -492,7 +492,7 @@ AlphaBetaSearch::quiescence (uint depth,
  | false otherwise -all errors detected here are serious bugs, so watch out! |
  ============================================================================*/
 bool
-AlphaBetaSearch::build_PV (Board* board, vector<Move>& PV)
+AlphaBetaSearch::build_principal_variation (Board* board, vector<Move>& principal_variation)
 {
    Dictionary::board_key key = {board->get_hash_key (), board->get_hash_lock ()};
    Dictionary::hash_info data;
@@ -503,15 +503,15 @@ AlphaBetaSearch::build_PV (Board* board, vector<Move>& PV)
 
    if (hash_table->get_data (key, data))
    {
-      PV.push_back (data.best);
+      principal_variation.push_back (data.best);
       Board::Error error = board->make_move (data.best, true);
 
       if (error == Board::NO_ERROR)
       {
-         if (!build_PV (board, PV))
+         if (!build_principal_variation (board, principal_variation))
          {
             cerr << "couldn't build rest of path" << endl;
-            PV.pop_back ();
+            principal_variation.pop_back ();
             return_value = false;
          }
          if (!board->undo_move ())
@@ -520,7 +520,7 @@ AlphaBetaSearch::build_PV (Board* board, vector<Move>& PV)
             abort ();
          }
       }
-      else if (error != Board::KING_LEFT_IN_CHECK && 
+      else if (error != Board::KING_LEFT_IN_CHECK &&
                error != Board::DRAW_BY_REPETITION)
       {
          if (!board->undo_move ())
@@ -557,4 +557,3 @@ AlphaBetaSearch::load_factor_weights (vector<int>& weights)
    hash_table->reset ();
    evaluator->load_factor_weights (weights);
 }
-

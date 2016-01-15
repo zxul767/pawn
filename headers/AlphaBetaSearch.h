@@ -19,11 +19,11 @@ class AlphaBetaSearch : public Search
  private:
    int  alpha_beta (uint depth, int alpha, int beta);
    int  quiescence (uint depth, int alpha, int beta);
-   int  iterative_deepening (vector<Move>& PV);
+   int  iterative_deepening (vector<Move>& principal_variation);
 
-   void print_statistics (vector<Move>& PV);
+   void print_statistics (vector<Move>& principal_variation);
    void reset_statistics ();
-   bool build_PV (Board* board, vector<Move>& PV);
+   bool build_principal_variation (Board* board, vector<Move>& principal_variation);
    void load_factor_weights (vector<int>& weights);
 
    PositionEvaluator* evaluator;
@@ -41,7 +41,7 @@ class AlphaBetaSearch : public Search
  public:
    AlphaBetaSearch (PositionEvaluator* evaluator, MoveGenerator* generator);
    ~AlphaBetaSearch ();
-   
+
    Result get_best_move (uint depth, Board* board, Move& best_move);
 };
 

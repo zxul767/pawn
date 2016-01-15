@@ -14,9 +14,9 @@ using std::map;
 class Dictionary
 {
 public:
-   
-  enum flag {EXACT, UBOUND, LBOUND, UNKNOWN};
-   
+
+  enum flag {EXACT, UPPER_BOUND, LOWER_BOUND, UNKNOWN};
+
   struct board_key
   {
     ullong hash_key;
@@ -34,8 +34,8 @@ public:
 
   Dictionary (uint hash_size = 0);
 
-  bool  add_entry (const board_key& board, int score, 
-                   flag accuracy, 
+  bool  add_entry (const board_key& board, int score,
+                   flag accuracy,
                    const Move& best, uint depth);
   bool  exists    (const board_key& board);
   bool  get_data  (const board_key& board, hash_info& data);
@@ -50,7 +50,7 @@ public:
   static const ushort       MAX_MEMORY = 256;
   static size_t              size;
 
-private:                
+private:
   class hasher
   {
   public:
@@ -60,7 +60,7 @@ private:
     }
   };
 
-  class comparer 
+  class comparer
   {
   public:
     bool operator ()(const board_key& board, const board_key& other) const
@@ -70,8 +70,7 @@ private:
   };
 
   uint hash_size;
-  unordered_map  <board_key, hash_info, hasher, comparer> entry;          
+  unordered_map  <board_key, hash_info, hasher, comparer> entry;
 };
 
 #endif // HASH_DICTIONARY_H
-
