@@ -1,20 +1,17 @@
 /*============================================================================
- | Class name: AlphaBetaSearch                                               |
- |                                                                           |
- | Responsabilities:                                                         |
- | -Implement the Search interface.                                          |
- |                                                                           |
- | Techniques used to improve performance of the basic Negamax algorithm:    |
- |                                                                           |
- | => Fail-soft alpha-beta pruning                                           |
- | => Iterative deepening search (IDS)                                       |
- | => Quiescence Search                                                      |
- | => Aspiration search integrated within the IDS                            |
- | => Transposition tables                                                   |
- |                                                                           |
- | Date: September 01, 2007                                                  |
- ============================================================================*/
+   Class name: AlphaBetaSearch
 
+   Responsabilities:
+   -Implement the Search interface.
+
+   Techniques used to improve performance of the basic Negamax algorithm:
+
+   => Fail-soft alpha-beta pruning
+   => Iterative deepening search (IDS)
+   => Quiescence Search
+   => Aspiration search integrated within the IDS
+   => Transposition tables
+ ============================================================================*/
 #include "Board.h"
 #include "AlphaBetaSearch.h"
 #include "MoveGenerator.h"
@@ -46,15 +43,6 @@ AlphaBetaSearch::~AlphaBetaSearch ()
    delete hash_table;
 }
 
-/*============================================================================
- | Output information regarding:                                             |
- | (a) Principal Variation                                                   |
- | (b) Number of nodes evaluated                                             |
- | (c) Negamax value of the root node examined in the previous search        |
- | (d) Number of leaf nodes                                                  |
- | (e) Average branching factor during the previous search                   |
- | (f) Number of times the hash table effectively saved computation time     |
- ============================================================================*/
 void
 AlphaBetaSearch::print_statistics (vector<Move>& principal_variation)
 {
@@ -87,11 +75,11 @@ AlphaBetaSearch::reset_statistics ()
 }
 
 /*==============================================================================
- | Return in BEST_MOVE the most promising move that can be made in the current |
- | BOARD, doing a search of DEPTH levels.                                      |
- |                                                                             |
- | Possible results are: NORMAL_EVALUATION, WHITE_MATES, BLACK_MATES,          |
- | STALEMATE, DRAW_BY_REPETITION.                                              |
+   Return in BEST_MOVE the most promising move that can be made in the current
+   BOARD, doing a search of DEPTH levels.
+
+   Possible results are: NORMAL_EVALUATION, WHITE_MATES, BLACK_MATES,
+   STALEMATE, DRAW_BY_REPETITION.
  ==============================================================================*/
 Search::Result
 AlphaBetaSearch::get_best_move (uint  depth,
@@ -128,14 +116,14 @@ AlphaBetaSearch::get_best_move (uint  depth,
 }
 
 /*==========================================================================
- | Perform an iterative deepening search using THIS->BOARD as the root     |
- | node. Include Aspiration Search within the main loop to increase the    |
- | overall performance. Transposition tables help here very much in cases  |
- | where a re-search is needed (i.e. the value returned by alpha-beta      |
- | outside the alpha-beta windows)                                         |
- |                                                                         |
- | Return the minimax value of THIS->BOARD and the principal variation in  |
- | PRINCIPAL_VARIATION.                                                                     |
+   Perform an iterative deepening search using THIS->BOARD as the root
+   node. Include Aspiration Search within the main loop to increase the
+   overall performance. Transposition tables help here very much in cases
+   where a re-search is needed (i.e. the value returned by alpha-beta
+   outside the alpha-beta windows)
+
+   Return the minimax value of THIS->BOARD and the principal variation in
+   PRINCIPAL_VARIATION.
  ==========================================================================*/
 int
 AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
@@ -160,15 +148,12 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
       while (1)
       {
          reset_statistics ();
+
          // Close window around the likely real value of the root node.
          alpha = root_value - expanding_offset;
          beta  = root_value + expanding_offset;
 
-         //cerr << "[" << alpha << "," << beta << "]" << endl;
-
          root_value = alpha_beta (0, alpha, beta);
-
-         //cerr << "Negamax value: " << root_value << endl;
 
          if (abs (root_value) == abs(MATE_VALUE))
             break;
@@ -181,29 +166,26 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
          expanding_offset <<= 1;
       }
    }
-   //cerr << "Negamax value: " << root_value << endl;
-   //cerr << best_move << endl;
 
    principal_variation.clear ();
    build_principal_variation (board, principal_variation);
 
-   // This extra code is put here to avoid breaking the program when we
-   // disable the use of transposition tables
+   // Ensure that the code still works even if transposition tables are
+   // removed
    if (principal_variation.size () == 0)
       principal_variation.push_back (best_move);
-   //print_statistics (principal_variation);
 
    return root_value;
 }
 
 /*==============================================================================
- | Perform a minimax search with alpha-beta pruning, evaluating all lines of   |
- | play to level DEPTH, and continuing with Quiescence search at the leaf      |
- | nodes                                                                       |
- |                                                                             |
- | Return the minimax value of the node represented by the current board in    |
- | THIS->BOARD. Note that this value is positive if the player in turn at the  |
- | root node has the advantage, and negative if not.                           |
+   Perform a minimax search with alpha-beta pruning, evaluating all lines of
+   play to level DEPTH, and continuing with Quiescence search at the leaf
+   nodes
+
+   Return the minimax value of the node represented by the current board in
+   THIS->BOARD. Note that this value is positive if the player in turn at the
+   root node has the advantage, and negative if not.
  ==============================================================================*/
 int
 AlphaBetaSearch::alpha_beta (uint depth,
@@ -352,10 +334,10 @@ AlphaBetaSearch::alpha_beta (uint depth,
 }
 
 /*============================================================================
- | Perform a quiescence search taking into account only lines of captures.   |
- |                                                                           |
- | Return the score of the best line of play within the horizon established  |
- | by MAX_QUIESCENCE_DEPTH.                                                  |
+   Perform a quiescence search taking into account only lines of captures.
+
+   Return the score of the best line of play within the horizon established
+   by MAX_QUIESCENCE_DEPTH.
  ============================================================================*/
 int
 AlphaBetaSearch::quiescence (uint depth,
@@ -486,10 +468,10 @@ AlphaBetaSearch::quiescence (uint depth,
 }
 
 /*============================================================================
- | Build the principal variation rooted at BOARD and until a leaf is reached |
- |                                                                           |
- | Return true if there was no problem building the principal variation, and |
- | false otherwise -all errors detected here are serious bugs, so watch out! |
+   Build the principal variation rooted at BOARD and until a leaf is reached
+
+   Return true if there was no problem building the principal variation, and
+   false otherwise -all errors detected here are serious bugs, so watch out!
  ============================================================================*/
 bool
 AlphaBetaSearch::build_principal_variation (Board* board, vector<Move>& principal_variation)
@@ -547,10 +529,9 @@ AlphaBetaSearch::build_principal_variation (Board* board, vector<Move>& principa
 }
 
 /*============================================================================
- | Load a set of weights for the position evaluator to use. This may result  |
- | in a change of performance, according as to how accurate the weights are  |
+   Load a set of weights for the position evaluator to use. This may result
+   in a change of performance, according as to how accurate the weights are
  ============================================================================*/
-
 void
 AlphaBetaSearch::load_factor_weights (vector<int>& weights)
 {

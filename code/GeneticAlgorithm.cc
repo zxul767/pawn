@@ -27,41 +27,11 @@ GeneticAlgorithm::run ()
    uint k = (uint)(population_size * SELECTION_PERCENTAGE);
    if (k & 1) ++k;
 
-   /*vector<Chromosome::Outcome> out;
-     out.push_back(Chromosome::WIN);
-     out.push_back(Chromosome::LOSS);
-     out.push_back(Chromosome::DRAW);
-   */
-
    for (uint i = 0; i < n_iterations; ++i)
    {
       std::cerr << "iteration # " << i << std::endl;
 
       evaluate_population ();
-
-      // Testing with random values
-      /*for (uint i=0; i<population_size; ++i)
-        {
-        population[i].set_fitness (Util::random(3.0/9.0, 6.0/9.0));
-        population[i].set_result (out[rand()%3]);
-        population[i].set_material_balance(rand()%100);
-        population[i].set_game_duration(rand()%50);
-        }
-
-        sort (population.begin(), population.end());
-        for (uint i=0; i<population_size;++i)
-        std::cerr << population[i].get_fitness() << ',';
-        std::cerr << '\n';
-
-        set_actual_fitness ();
-
-        sort (population.begin(), population.end());
-        std::cerr << "\n new fitness\n";
-        for (uint i=0; i<population_size;++i)
-        std::cerr << population[i].get_fitness() << ',';
-        std::cerr << '\n';
-      */
-
       set_actual_fitness ();
 
       vector<Chromosome> parents;

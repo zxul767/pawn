@@ -35,17 +35,16 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
    a.decode (features[0]);
    b.decode (features[1]);
 
-   /**************************************************************************
+   /*--------------------------------------------------------------------------
      Set up a game between the two and see who wins and by how much...
      Use a single engine, just load and unload the factor weights after
      every move...
-   ***************************************************************************/
+     -------------------------------------------------------------------------*/
    Timer* timer = new Timer ();
    timer->start ();
 
    board->reset ();
    cerr << (*board) << endl;
-   //std::cin.get ();
 
    // Chromosome A plays white
    Search::Result result;
@@ -60,7 +59,7 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
 
       Move move;
       result = engine->get_best_move (3, board, move);
-      if (result == Search::WHITE_MATES || 
+      if (result == Search::WHITE_MATES ||
           result == Search::BLACK_MATES ||
           result == Search::STALEMATE) break;
 
@@ -109,27 +108,27 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
             else
                result = Search::WHITE_MATES;
          }
-       
+
          break;
       }
 
    } while (true);
 
    timer->stop ();
-   cerr << "Time elapsed: " << timer->elapsed_time () 
+   cerr << "Time elapsed: " << timer->elapsed_time ()
         << " seconds " << endl;
 
    // EVALUATE WHO WON AND BY HOW MUCH...
    if (result == Search::STALEMATE || result == Search::DRAW_BY_REPETITION)
    {
       evaluation = 1.0 / 2.0;
-      cerr << "Draw" << endl;      
+      cerr << "Draw" << endl;
       b.set_result (Chromosome::DRAW);
    }
    else
    {
       evaluation = 6.0 / 9.0;
-   
+
       if (result == Search::WHITE_MATES)
       {
          evaluation = 1 - evaluation;
@@ -141,15 +140,13 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
          cerr << "black mates" << endl;
          b.set_result (Chromosome::WIN);
       }
-      
+
       b.set_game_duration (board->get_move_number ());
    }
 
    b.set_material_balance (evaluator->evaluate_material(board));
    b.set_fitness (evaluation);
-   //cerr << "Final Position" << endl;
-   //cerr << (*board) << endl;
-   
+
    delete timer;
 
    return evaluation;

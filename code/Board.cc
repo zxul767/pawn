@@ -1,11 +1,10 @@
 /*==============================================================================
- | Class name: Board                                                           |
- |                                                                             |
- | Responsabilities:                                                           |
- | -Provide an interface for a chess board using bitboards as the basic data   |
- |  structure                                                                  |
- |                                                                             |
- | Date: September 1, 2007                                                     |
+   Class name: Board
+
+   Responsabilities:
+   -Provide an interface for a chess board using bitboards as the basic data
+    structure
+
  ==============================================================================*/
 
 #include "Board.h"
@@ -18,30 +17,30 @@ Board::~Board ()
 {
 }
 
-bool 
+bool
 Board::is_inside_board (int row, int col)
 {
    return (row >= 0 && row < (int)SIZE) && (col >= 0 && col < (int)SIZE);
 }
 
-bool 
+bool
 Board::is_inside_board (uint row, uint col)
 {
    return (row < SIZE) && (col < SIZE);
 }
 
-bool 
+bool
 Board::is_inside_board (uint square)
 {
    return (square < SQUARES);
 }
 
-ostream& 
+ostream&
 operator << (ostream& out, const Board& board)
 {
    static const uint nplayers = Board::PLAYERS;
 
-   static const string 
+   static const string
       piece_to_string[][nplayers] = { { "  P  ", " *P* " },
                                       { "  N  ", " *N* " },
                                       { "  B  ", " *B* " },
@@ -49,7 +48,7 @@ operator << (ostream& out, const Board& board)
                                       { "  Q  ", " *Q* " },
                                       { "  K  ", " *K* " },
       };
-   
+
    out << "  -------------------------------------------------" << endl;
    for (uint row = 0; row < Board::SIZE; ++row)
    {
@@ -59,7 +58,7 @@ operator << (ostream& out, const Board& board)
       for (uint col = 0; col < Board::SIZE; ++col)
       {
          out << '|';
-         
+
          Board::Squares square = (Board::Squares) (row * Board::SIZE + col);
          Piece::Player  player = board.get_piece_color (square);
          Piece::Type    piece  = board.get_piece (square);
@@ -76,7 +75,7 @@ operator << (ostream& out, const Board& board)
       out << '|' << endl;
       out << "  -------------------------------------------------" << endl;
    }
-   
+
    // Display algebraic coordinates
    out << "     a     b     c     d     e     f     g     h   " << endl;
 

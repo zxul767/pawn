@@ -1,11 +1,9 @@
 /*==============================================================================
-  | Class name: CommandExecuter                                                 |
-  |                                                                             |
-  | Responsabilities:                                                           |
-  | -Carry out the commands provided by the user (a list of available commands  |
-  |  can be found in Command.h)                                                 |
-  |                                                                             |
-  | Date: September 1, 2007                                                     |
+    Class name: CommandExecuter
+
+    Responsabilities:
+    => Carry out the commands provided by the user (a list of available commands
+    can be found in Command.h)
   ==============================================================================*/
 
 #include "CommandExecuter.h"
@@ -86,8 +84,8 @@ CommandExecuter::execute (const Command& command)
 }
 
 /*==============================================================================
-  | Show the set of all valid moves starting from the current configuration of  |
-  | THIS->BOARD.                                                                |
+    Show the set of all valid moves starting from the current configuration of
+    THIS->BOARD.
   ==============================================================================*/
 void
 CommandExecuter::show_possible_moves ()
@@ -113,7 +111,7 @@ CommandExecuter::show_possible_moves ()
 }
 
 /*==============================================================================
-  | Communicate to the engine a move made by the user in the GUI                   |
+    Communicate to the engine a move made by the user in the GUI
   ==============================================================================*/
 void
 CommandExecuter::make_user_move (const string& command)
@@ -154,8 +152,8 @@ CommandExecuter::make_user_move (const string& command)
 }
 
 /*==============================================================================
-  | Query the engine for the most promising move and communicate the response   |
-  | to the GUI. It also communicates check mates and draws.                     |
+    Query the engine for the most promising move and communicate the response
+    to the GUI. It also communicates check mates and draws.
   ==============================================================================*/
 void
 CommandExecuter::think ()
@@ -254,7 +252,7 @@ CommandExecuter::train_by_GA (uint  population_size,
    cerr << "Generations to run:\t" << n_generations << endl;
    cerr << "Mutation probability:\t" << mutation_probability << endl;
 
-   unique_ptr<GeneticAlgorithm> 
+   unique_ptr<GeneticAlgorithm>
      GA(new GeneticAlgorithm (population_size, n_generations,
                               mutation_probability, fitness_evaluator.get()));
 
@@ -268,28 +266,7 @@ CommandExecuter::train_by_GA (uint  population_size,
    GA->set_seed (seed);
    GA->run ();
 
-   /*
-     vector<int> best_features;
-     GA->get_fittest_member ().decode (best_features);
-     search_engine->load_factor_weights (best_features);
-   */
-
-   /*
-
-     vector<int> features_b;
-
-     features_a.push_back (30);
-     features_a.push_back (10);
-     features_a.push_back (20);
-     features_a.push_back (10);
-
-     features_b.push_back (10);
-     features_b.push_back (25);
-     features_b.push_back (10);
-     features_b.push_back (0);
-
-     Chromosome a (features_a), b (features_b);
-     double evaluation = fitness_evaluator->evaluate (a, b);
-     cerr << "Evaluation: " << evaluation << endl;
-   */
+   vector<int> best_features;
+   GA->get_fittest_member ().decode (best_features);
+   search_engine->load_factor_weights (best_features);
 }

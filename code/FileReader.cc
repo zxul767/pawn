@@ -1,12 +1,10 @@
 /*==============================================================================
- | Class name: FileReader                                                      |
- |                                                                             |
- | Responsabilities:                                                           |
- | -Load and save games to disk using an ad hoc protocol.                      |
- |                                                                             |
- | Future improvements: Use the PGN protocol to write and read games.          |
- |                                                                             |
- | Date: September 1, 2007                                                     |
+   Class name: FileReader
+
+   Responsabilities:
+   -Load and save games to disk using an ad hoc protocol.
+
+   Future improvements: Use the PGN protocol to write and read games.
  ==============================================================================*/
 
 #include "FileReader.h"
@@ -14,7 +12,7 @@
 
 FileReader:: FileReader ()
 {
-   values = new vector<string>[3];   
+   values = new vector<string>[3];
 }
 
 FileReader:: ~FileReader ()
@@ -37,30 +35,30 @@ bool
 FileReader::load_variables ()
 {
    variables.push_back ("GAME_STATUS");
-        
+
    variables.push_back ("TURN");
-        
+
    variables.push_back ("CASTLE_WHITE_KING");
    variables.push_back ("CASTLE_WHITE_QUEEN");
    variables.push_back ("CASTLE_BLACK_KING");
    variables.push_back ("CASTLE_BLACK_QUEEN");
-        
+
    variables.push_back ("EN_PASSANT");
-        
+
    variables.push_back ("WHITE_PAWN");
    variables.push_back ("WHITE_KNIGHT");
    variables.push_back ("WHITE_BISHOP");
    variables.push_back ("WHITE_ROOK");
    variables.push_back ("WHITE_QUEEN");
    variables.push_back ("WHITE_KING");
-        
+
    variables.push_back ("BLACK_PAWN");
    variables.push_back ("BLACK_KNIGHT");
    variables.push_back ("BLACK_BISHOP");
    variables.push_back ("BLACK_ROOK");
    variables.push_back ("BLACK_QUEEN");
    variables.push_back ("BLACK_KING");
-        
+
    return true;
 }
 
@@ -69,13 +67,13 @@ FileReader::load_values ()
 {
    values[0].push_back ("OVER");
    values[0].push_back ("PENDING");
-        
+
    values[1].push_back ("WHITE");
    values[1].push_back ("BLACK");
-        
+
    values[2].push_back ("TRUE");
    values[2].push_back ("FALSE");
-        
+
    return true;
 }
 
@@ -90,7 +88,7 @@ FileReader::load_file ()
    return true;
 }
 
-bool 
+bool
 FileReader::is_empty_line (const string& line) const
 {
    if (line.empty ())
@@ -110,7 +108,7 @@ FileReader::set_variables ()
 
    if (!load_file ())
       return false;
-                
+
    while (!input.eof ())
    {
       input >> c;
@@ -132,8 +130,8 @@ FileReader::set_variables ()
 }
 
 void
-FileReader::tokenize (const string&   input, 
-                      vector<string>& tokens, 
+FileReader::tokenize (const string&   input,
+                      vector<string>& tokens,
                       const string&   delimiters) const
 {
    string::size_type begin = input.find_first_not_of (delimiters, 0);
@@ -154,7 +152,7 @@ FileReader::set_variable (string& input)
    vector<string> tokens;
    string         delimiters = " :,";
 
-   tokenize (input, tokens, delimiters);   
+   tokenize (input, tokens, delimiters);
    if (tokens.size () > 1)
    {
       if (!variable_was_found (tokens[0], &index_variable))
@@ -170,7 +168,7 @@ FileReader::set_variable (string& input)
 }
 
 bool
-FileReader::variable_was_found (const string& input, 
+FileReader::variable_was_found (const string& input,
                                 uint*        index_variable)
 {
    for (uint i = 0; i < variables.size (); i++)
@@ -178,12 +176,12 @@ FileReader::variable_was_found (const string& input,
       {
          *index_variable = i;
          return true;
-      }                
+      }
    return false;
 }
 
 bool
-FileReader::value_was_found (uint         index_variable, 
+FileReader::value_was_found (uint         index_variable,
                              const string& input,
                              uint*        index_value)
 {
@@ -191,7 +189,7 @@ FileReader::value_was_found (uint         index_variable,
 
    if (index_variable >= 7 && index_variable <= 18)
       return true;
-                
+
    if (index_variable >= 2 && index_variable <= 6)
       index = 2;
 
@@ -200,13 +198,13 @@ FileReader::value_was_found (uint         index_variable,
       {
          *index_value = i;
          return true;
-      }                
+      }
    return false;
 }
 
 bool
-FileReader::set_value (uint         index_variable, 
-                       const string& token, 
+FileReader::set_value (uint         index_variable,
+                       const string& token,
                        uint         index_value)
 {
    if (index_variable == 0)
@@ -219,8 +217,8 @@ FileReader::set_value (uint         index_variable,
    }
    else if (index_variable >= 2 && index_variable <= 5)
    {
-      board->set_castling_privilege (get_color(index_variable), 
-                                     get_side (index_variable), 
+      board->set_castling_privilege (get_color(index_variable),
+                                     get_side (index_variable),
                                      get_boolean (index_value));
    }
    else if (index_variable == 6)
@@ -235,7 +233,7 @@ FileReader::set_value (uint         index_variable,
                         );
    }
    else return false;
-        
+
    return true;
 }
 
@@ -262,7 +260,7 @@ FileReader::get_color (uint variable) const
 {
    if (variable == 2 || variable == 3 || (variable >= 7 && variable <= 12))
       return Piece:: WHITE;
-        
+
    return Piece:: BLACK;
 }
 
@@ -271,7 +269,7 @@ FileReader::get_side (uint variable) const
 {
    if (variable == 3 || variable == 5)
       return Board::QUEEN_SIDE;
-                
+
    return Board::KING_SIDE;
 }
 
@@ -288,6 +286,6 @@ FileReader::get_type (uint variable) const
       return Piece:: ROOK;
    if (variable == 3 || variable == 5 || variable == 11 || variable == 17)
       return Piece:: QUEEN;
-                
+
    return Piece:: KING;
 }

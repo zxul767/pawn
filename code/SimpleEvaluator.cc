@@ -218,137 +218,19 @@ SimpleEvaluator::king_safety_value (const Board*  board,
    return safety_value;
 }
 
-/*
-  int
-  SimpleEvaluator::king_safety_value (const Board *board,
-  Piece::Player player) const
-  {
-  vector<Piece::Type> enemies;
-  vector<Piece::Type> friends;
-  King* king_object = new King ();
+int
+SimpleEvaluator::get_piece_value (Piece::Type piece_type) const
+{
+  return piece_value[piece_type];
+}
 
-  bitboard king = board->get_pieces(player, Piece::KING);
-  int      position  = Util::MSB_position (king), score = 0;
-  int      initial_king_pos = position;
-  int      square;
-
-  bitboard neighbors = king_object->get_potential_moves (position, Piece::WHITE);
-  bitboard attacks, defence;
-  while (neighbors)
-  {
-  position = Util::MSB_position (neighbors);
-  attacks = board->attacks_to(Board::Squares(position), false);
-  while (attacks)
-  {
-  square = Util::MSB_position (attacks);
-  enemies.push_back (board->get_piece (Board::Squares(square)));
-  attacks ^= (Util::one << square);
-  }
-
-  defence = board->get_pieces (player);
-  defence ^= (Util::one << initial_king_pos);
-  while (defence)
-  {
-  square = Util::MSB_position (defence);
-  Piece::Type piece = board->get_piece(Board::Squares(square));
-  if (board->get_moves (piece, Board::Squares(square)) & (Util::one << position))
-  friends.push_back (piece);
-  defence ^= (Util::one << square);
-  }
-
-  sort (enemies.begin(), enemies.end());
-  sort (friends.begin(), friends.end());
-  int i = 0;
-  while (enemies.size() != 0 && friends.size() != 0)
-  {
-  score -= piece_value[friends[i]];
-  score += piece_value[enemies[i++]];
-
-  friends.pop_back ();
-  enemies.pop_back ();
-  }
-
-  //score += enemies.size()!=0? -piece_value[enemies[i]]:
-  //   +piece_value[friends[i]];
-
-  enemies.clear ();
-  friends.clear ();
-
-  neighbors ^= (Util::one << position);
-  }
-
-  delete king_object;
-  return score;
-  }
-*/
-
-   int
-      SimpleEvaluator::development_value (const Board* board,
-                                          Piece::Player turn) const
-   {
-      /*
-        int score = 0;
-
-        // penalize king's and queen's pawns on second rank
-        if (board->get_piece (Board::e2) == Piece::PAWN)
-        score -= 15;
-        if (board->get_piece (Board::d2) == Piece::PAWN)
-        score -= 15;
-
-        // penalize knights and bishops on first rank
-        square = (turn == Piece::WHITE? 56: 0);
-        for (ushort i=0; i<Board::SIZE; ++i)
-        {
-        if (board->get_piece_color (square + i) == turn)
-
-        if (board->get_piece (square + i) == Piece::KNIGHT ||
-        board->get_piece (square + i) == Piece::BISHOP)
-        score -= 10;
-        }
-
-        // penalize too-early queen movement
-        bitboard queen = board->get_pieces (turn, Piece::QUEEN);
-        if ((queen != 0) && ((queen & (Util::one << ())) == 0) )
-        {
-        ushort counter = 0;
-        // take into account each piece on their original square
-        if (board->get_piece(square) == Piece::ROOK)
-        counter ++;
-        if (board->get_piece(square + 7) == Piece::ROOK)
-        counter ++;
-        if (board->get_piece(square + 1) == Piece::KNIGHT)
-        counter ++;
-        if (board->get_piece(square + 6) == Piece::KNIGHT)
-        counter ++;
-        if (board->get_piece(square + 2) == Piece::BISHOP)
-        counter ++;
-        if (board->get_piece(square + 5) == Piece::BIS     HOP)
-        counter ++;
-        if (board->get_piece(square + 4) == Piece::KING)
-        counter ++;
-
-        score -= (counter << 3);
-        }
-
-        return score;
-      */
-      return 0;
-   }
-
-   int
-      SimpleEvaluator::get_piece_value (Piece::Type piece_type) const
-   {
-      return piece_value[piece_type];
-   }
-
-   void
-      SimpleEvaluator::load_factor_weights (vector<int>& weights)
-   {
-      for (uint i = 0; i < weights.size (); ++i)
-      {
-         if (i >= factor_weight.size ())
-            break;
-         factor_weight[i] = weights[i];
-      }
-   }
-
+void
+SimpleEvaluator::load_factor_weights (vector<int>& weights)
+{
+  for (uint i = 0; i < weights.size (); ++i)
+    {
+      if (i >= factor_weight.size ())
+        break;
+      factor_weight[i] = weights[i];
+    }
+}

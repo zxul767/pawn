@@ -1,14 +1,8 @@
 /*=============================================================================
   Class name: Knight
 
-  Responsabilities: 
+  Responsabilities:
   -Provide the set of moves a knight can make from any square on the board.
-
-  Collaborations:
-
-  Version: 0.1
-
-  Date: September 01, 2007
   ============================================================================*/
 
 #include "Knight.h"
@@ -23,12 +17,12 @@ Knight::~Knight ()
 }
 
 /*=============================================================================
-  Get all valid moves from SQUARE in the current BOARD, assumming it is 
+  Get all valid moves from SQUARE in the current BOARD, assumming it is
   PLAYER's turn to move (moves that leave the king in check are also included)
   ============================================================================*/
 bitboard
-Knight::get_moves (uint          square, 
-                   Player         player, 
+Knight::get_moves (uint          square,
+                   Player         player,
                    const Board*   board) const
 {
    bitboard attacks = get_potential_moves (square, player);
@@ -40,7 +34,7 @@ Knight::get_moves (uint          square,
 /*=============================================================================
   Return all possible moves from SQUARE, assuming the board is empty.
   ============================================================================*/
-bitboard 
+bitboard
 Knight::get_potential_moves (uint square, Player player) const
 {
    if (Board::is_inside_board (square))
@@ -65,11 +59,11 @@ Knight::compute_moves ()
    for (uint row = 0; row < Board::SIZE; ++row)
       for (uint col = 0; col < Board::SIZE; ++col)
       {
-         /*====================================================================
+         /*--------------------------------------------------------------------
            Traverse all eight directions a knight can move to:
-           
+
            +------------------------+
-           |    | 7  |    | 0  |    |    Jumps occur in clockwise order 
+           |    | 7  |    | 0  |    |    Jumps occur in clockwise order
            --------------------------    from 0 to 7.
            | 6  |    |    |    | 1  |
            --------------------------
@@ -80,7 +74,7 @@ Knight::compute_moves ()
            |    | 4  |    | 3  |    |
            +------------------------+
 
-           ===================================================================*/
+           -------------------------------------------------------------------*/
          uint square = row * Board::SIZE + col;
          for (uint jump = 0; jump < KNIGHT_MOVES; ++jump)
          {
@@ -91,4 +85,3 @@ Knight::compute_moves ()
          }
       }
 }
-

@@ -1,19 +1,18 @@
 /*==============================================================================
- | Class name: Command                                                         |
- |                                                                             |
- | Responsabilities:                                                           |
- | -Represent a command issued by the user and provide the information         |
- |  associated with it, e.g. a command to move a piece should also provide the |
- |  start and end squares.                                                     |
- |                                                                             |
- | Date: September 1, 2007                                                     |
+   Class name: Command
+
+   Responsabilities:
+   -Represent a command issued by the user and provide the information
+    associated with it, e.g. a command to move a piece should also provide the
+    start and end squares.
+
  ==============================================================================*/
 
 #include "Command.h"
 #include "Move.h"
 
 /*==============================================================================
- | STATIC INITIALIZATION BLOCK                                                 |
+   Static initialization block
  ==============================================================================*/
 map<string, Command::Value> Command::commands;
 map<Command::Value, string> Command::commandStrings;
@@ -34,12 +33,12 @@ Command::Command (Value command_value)
 
 Command::Command (string& command)
 {
-   this->command = command;  
+   this->command = command;
 
    if (Command::commands.find (command) != Command::commands.end ())
       value = commands[command];
 
-   else if (command.find ("usermove") != string::npos && 
+   else if (command.find ("usermove") != string::npos &&
             command.find ("accepted") == string::npos)
    {
       value = USER_MOVE;

@@ -1,14 +1,8 @@
 /*=============================================================================
   Class name: Queen
 
-  Responsabilities: 
+  Responsabilities:
   -Provide the set of moves a queen can make from any square on the board.
-
-  Collaborations:
-
-  Version: 0.1
-
-  Date: September 01, 2007
   ===========================================================================*/
 
 #include "Queen.h"
@@ -34,7 +28,7 @@ Queen::get_moves (uint square, Player player, const Board* board) const
 {
    bitboard attacks = bishop->get_moves (square, player, board);
    attacks |= rook->get_moves (square, player, board);
-  
+
    return attacks;
 }
 
@@ -46,4 +40,3 @@ Queen::get_potential_moves (uint square, Player player) const
 
    return moves;
 }
-

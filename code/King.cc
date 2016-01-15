@@ -1,14 +1,8 @@
 /*=============================================================================
   Class name: King
 
-  Responsabilities: 
+  Responsabilities:
   -Provide the set of moves a king can make from any square on the board.
-
-  Collaborations:
-
-  Version: 0.1
-
-  Date: September 01, 2007
   ============================================================================*/
 
 #include "King.h"
@@ -33,7 +27,7 @@ King::~King ()
 }
 
 /*=============================================================================
-  Get all valid moves from SQUARE in the current BOARD, assumming it is 
+  Get all valid moves from SQUARE in the current BOARD, assumming it is
   PLAYER's turn to move (moves that leave the king in check are also included)
   ============================================================================*/
 bitboard
@@ -51,14 +45,14 @@ King::get_moves (uint square, Player player, const Board* board) const
    if (Board::Squares (square) == board->get_initial_king_square (player))
    {
       // Ensure there are no pieces between the rook and the king
-      if (board->can_castle (player, Board::KING_SIDE) && 
-          !(all_pieces & (Util::one << (square + 1))) && 
+      if (board->can_castle (player, Board::KING_SIDE) &&
+          !(all_pieces & (Util::one << (square + 1))) &&
           !(all_pieces & (Util::one << (square + 2))))
       {
          // Make sure there are no attacks on squares the king has to pass
          // through while castling
          if (!board->attacks_to (Board::Squares (square), false) &&
-             !board->attacks_to (Board::Squares (square + 1), false) && 
+             !board->attacks_to (Board::Squares (square + 1), false) &&
              !board->attacks_to (Board::Squares (square + 2), false))
          {
             attacks |= (Util::one << (square + 2));
@@ -66,14 +60,14 @@ King::get_moves (uint square, Player player, const Board* board) const
       }
 
       if (board->can_castle (player, Board::QUEEN_SIDE) &&
-          !(all_pieces & (Util::one << (square - 1))) && 
-          !(all_pieces & (Util::one << (square - 2))) && 
+          !(all_pieces & (Util::one << (square - 1))) &&
+          !(all_pieces & (Util::one << (square - 2))) &&
           !(all_pieces & (Util::one << (square - 3))))
       {
          // Make sure there are no attacks on squares the king has to pass
          // through while castling
          if (!board->attacks_to (Board::Squares (square), false) &&
-             !board->attacks_to (Board::Squares (square - 1), false) && 
+             !board->attacks_to (Board::Squares (square - 1), false) &&
              !board->attacks_to (Board::Squares (square - 2), false))
          {
             attacks |= (Util::one << (square - 2));
@@ -105,13 +99,13 @@ King::compute_moves ()
 
    for (uint row = 0; row < Board::SIZE; ++row)
       for (uint col = 0; col < Board::SIZE; ++col)
-      {         
-         /*==========================================================
+      {
+         /*------------------------------------------------------------
            Traverse all eight directions a king can move to:
-           
+
            +------------------------+
-           |    |    |    |    |    |    
-           --------------------------    
+           |    |    |    |    |    |
+           --------------------------
            |    |  0 |  1 |  2 |    |
            --------------------------
            |    |  7 |  K |  3 |    |
@@ -120,17 +114,17 @@ King::compute_moves ()
            --------------------------
            |    |    |    |    |    |
            +------------------------+
-           
+
            Jumps occur in clockwise order from 0 to 7.
-           ============================================================*/
-                        
+           ------------------------------------------------------------*/
+
          uint square = row * Board::SIZE + col;
-                        
+
          for (uint jump = 0; jump < KING_MOVES; jump++)
          {
             int y = row + dy[jump];
             int x = col + dx[jump];
-                                
+
             if (Board::is_inside_board (y, x))
                moves_from[square] |= (Util::one << (y * Board::SIZE + x));
          }
@@ -168,4 +162,3 @@ King::compute_neighbors ()
    }
    return true;
 }
-

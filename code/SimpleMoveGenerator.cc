@@ -9,9 +9,9 @@ using std::cerr;
 SimpleMoveGenerator::SimpleMoveGenerator () {}
 
 /*==========================================================================
- | Generate all pseudo-legal moves and place captures at the beginning of  |
- | the list, sorted by the Most-Valuable-Victim Least-Valuable-Attacker    |
- | ratio.                                                                  |
+   Generate all pseudo-legal moves and place captures at the beginning of
+   the list, sorted by the Most-Valuable-Victim Least-Valuable-Attacker
+   ratio.
  ==========================================================================*/
 bool
 SimpleMoveGenerator::generate_moves (Board*         board,
@@ -37,7 +37,7 @@ SimpleMoveGenerator::generate_moves (Board*         board,
 
          while (valid_moves)
          {
-            Board::Squares current_move = 
+            Board::Squares current_move =
                Board::Squares (Util::MSB_position (valid_moves));
             valid_moves ^= (Util::one << current_move);
 
@@ -45,15 +45,15 @@ SimpleMoveGenerator::generate_moves (Board*         board,
             move.set_moving_piece (piece);
             board->label_move (move);
             Move::Type move_type = move.get_type ();
-            
+
             if (move_type == Move::NORMAL_CAPTURE ||
                 move_type == Move::EN_PASSANT_CAPTURE)
             {
                move.set_captured_piece (board->get_piece (current_move));
                double score = evaluator.get_piece_value (move.get_moving_piece ());
-               score /= evaluator.get_piece_value (move.get_captured_piece ());         
+               score /= evaluator.get_piece_value (move.get_captured_piece ());
                move.set_score ((int)(10 * score));
-               captures.push_back (move);               
+               captures.push_back (move);
             }
             else
                moves.push_back (move);
@@ -70,11 +70,11 @@ SimpleMoveGenerator::generate_moves (Board*         board,
 }
 
 /*==========================================================================
- | Generate pseudo legal moves of the kinds contained in FLAGS, as opposed |
- | to simply generating all moves.                                         |
+   Generate pseudo legal moves of the kinds contained in FLAGS, as opposed
+   to simply generating all moves.
  ==========================================================================*/
 bool
-SimpleMoveGenerator::generate_moves (Board*         board, 
+SimpleMoveGenerator::generate_moves (Board*         board,
                                      vector<Move>&  moves,
                                      ushort        flags)
 {
@@ -104,7 +104,7 @@ SimpleMoveGenerator::generate_moves (Board*         board,
 
          while (valid_moves)
          {
-            Board::Squares current_move = 
+            Board::Squares current_move =
                Board::Squares (Util::MSB_position (valid_moves));
             valid_moves ^= (Util::one << current_move);
 
@@ -112,7 +112,7 @@ SimpleMoveGenerator::generate_moves (Board*         board,
             move.set_moving_piece (piece);
             board->label_move (move);
             Move::Type move_type = move.get_type ();
-            
+
             if (move_type == Move::NORMAL_CAPTURE ||
                 move_type == Move::EN_PASSANT_CAPTURE)
             {
@@ -121,20 +121,20 @@ SimpleMoveGenerator::generate_moves (Board*         board,
                if (flags & MoveGenerator::CAPTURES)
                {
                   double score = evaluator.get_piece_value (move.get_moving_piece ());
-                  score /= evaluator.get_piece_value (move.get_captured_piece ());         
+                  score /= evaluator.get_piece_value (move.get_captured_piece ());
                   move.set_score ((int)(10 * score));
                   captures.push_back (move);
                }
             }
-            
+
             if ((flags & MoveGenerator::CHECKS) && move_type == Move::CHECK)
                checks.push_back (move);
 
-            if ((flags & MoveGenerator::PAWN_PROMOTIONS) && 
+            if ((flags & MoveGenerator::PAWN_PROMOTIONS) &&
                 move_type == Move::PROMOTION_MOVE)
                promotions.push_back (move);
 
-            if ((flags & MoveGenerator::SIMPLE) && 
+            if ((flags & MoveGenerator::SIMPLE) &&
                 (move_type == Move::SIMPLE_MOVE ||
                  move_type == Move::CASTLE_KING_SIDE ||
                  move_type == Move::CASTLE_QUEEN_SIDE))
@@ -198,11 +198,10 @@ SimpleMoveGenerator::generate_moves (Board*         board,
 }
 
 bool
-SimpleMoveGenerator::generate_en_prise_evations (Board* board, 
+SimpleMoveGenerator::generate_en_prise_evations (Board* board,
                                                  vector<Move>& moves)
 {
    Piece::Player player = board->get_turn ();
-   //Piece::Player rival  = (player == Piece::WHITE ? Piece::BLACK : Piece::WHITE);
 
    bitboard pieces = board->get_pieces (player);
    while (pieces)
@@ -211,10 +210,12 @@ SimpleMoveGenerator::generate_en_prise_evations (Board* board,
       Piece::Type piece_type = board->get_piece (from);
       bitboard threats = board->threats_to (from, piece_type, false);
 
-      // If there are threats, there are three ways to evade them: (a) by moving
-      // your own piece, (b) by placing a lower-value piece between your piece
-      // and the attacker, and (c) by capturing the attacker (but this last one
-      // is not handled here since Quiescence Search does that already)
+      /*------------------------------------------------------------------------
+        If there are threats, there are three ways to evade them: (a) by moving
+        your own piece, (b) by placing a lower-value piece between your piece
+        and the attacker, and (c) by capturing the attacker (but this last one
+        is not handled here since Quiescence Search does that already)
+        ------------------------------------------------------------------------*/
       if (threats)
       {
          // (a) Move our own piece
@@ -227,10 +228,11 @@ SimpleMoveGenerator::generate_en_prise_evations (Board* board,
             // Watch out! removing a bit this way only works for the LSB
             evasions &= (evasions - 1);
          }
-
-         // (b) Place a lower-piece in-between (doesn't work for Knights)
-         // if (threats & board->get_pieces (rival, Piece::BISHOP))
-         // ... more code will come here!
+         /*------------------------------------------------------------------------
+           (b) Place a lower-piece in-between (doesn't work for Knights)
+           if (threats & board->get_pieces (rival, Piece::BISHOP))
+           ... more code will come here!
+           ------------------------------------------------------------------------*/
       }
       // Watch out! removing a bit this way only works for the LSB
       pieces &= (pieces - 1);
