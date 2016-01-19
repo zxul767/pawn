@@ -26,10 +26,10 @@ Rook::~Rook ()
 bitboard
 Rook::get_moves (uint square, Piece::Player player, const Board* board) const
 {
-   bitboard          attacks = 0;
-   bitboard          blocking_pieces;
-   bitboard          all_pieces;
-   Board::Squares    blocker; // First blocking piece
+   bitboard attacks = 0;
+   bitboard blocking_pieces;
+   bitboard all_pieces;
+   Board::Squares blocker; // First blocking piece
 
    all_pieces = board->get_all_pieces ();
 
@@ -117,8 +117,7 @@ Rook::compute_moves ()
   board is empty.
   ============================================================================*/
 bitboard
-Rook::get_ray (Board::Squares square,
-               RowColumn      direction) const
+Rook::get_ray (Board::Squares square, RowColumn direction) const
 {
    if (Board::is_inside_board (square))
       return moves_from[square][direction];

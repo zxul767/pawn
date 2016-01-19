@@ -10,8 +10,8 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-MinimaxSearch::MinimaxSearch (PositionEvaluator* evaluator,
-                              MoveGenerator* generator)
+MinimaxSearch::MinimaxSearch (
+    PositionEvaluator* evaluator, MoveGenerator* generator)
 {
    board = 0;
    this->generator = generator;
@@ -23,9 +23,8 @@ MinimaxSearch::~MinimaxSearch ()
 }
 
 Search::Result
-MinimaxSearch::get_best_move (uint max_depth,
-                              Board* board,
-                              Move& best_move)
+MinimaxSearch::get_best_move (
+    uint max_depth, Board* board, Move& best_move)
 {
    if (board == 0) return Search::ERROR;
 
@@ -43,10 +42,10 @@ int
 MinimaxSearch::minimax (uint depth, Result& result)
 {
    vector<Move>  moves;
-   Move          best_move;
-   int           tentative_value, node_value;
-   uint         n_moves_made;
-   Result        this_result = NORMAL_EVALUATION;
+   Move best_move;
+   int tentative_value, node_value;
+   uint n_moves_made;
+   Result this_result = NORMAL_EVALUATION;
 
    generator->generate_moves (board, moves, MoveGenerator::ALL);
 

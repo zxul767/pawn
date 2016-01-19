@@ -5,7 +5,6 @@
    -Represent a command issued by the user and provide the information
     associated with it, e.g. a command to move a piece should also provide the
     start and end squares.
-
  ==============================================================================*/
 
 #include "Command.h"

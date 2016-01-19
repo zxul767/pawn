@@ -90,9 +90,7 @@ Pawn::get_potential_moves (uint square, Player player) const
   and assuming it is PLAYER's turn to play.
   =============================================================================*/
 bitboard
-Pawn::get_capture_move (uint     square,
-                        Player    player,
-                        RowColumn direction) const
+Pawn::get_capture_move (uint square, Player player, RowColumn direction) const
 {
    if (Board::is_inside_board (square))
       if (direction == EAST || direction == WEST)
@@ -220,9 +218,8 @@ Pawn::compute_side_moves (uint square, Player player) const
   pawn on SQUARE, assuming it is PLAYER'S turn to move.
   =============================================================================*/
 bitboard
-Pawn::compute_capture_move (uint square,
-                            Player player,
-                            RowColumn direction) const
+Pawn::compute_capture_move (
+    uint square, Player player, RowColumn direction) const
 {
    if (direction != EAST && direction != WEST)
       return 0;
@@ -249,11 +246,10 @@ Pawn::compute_capture_move (uint square,
   assumming it is PLAYER's turn to move.
   =============================================================================*/
 bitboard
-Pawn::compute_simple_moves (uint square,
-                            Player player) const
+Pawn::compute_simple_moves (uint square, Player player) const
 {
    bitboard simple_moves = 0;
-   int      dy[PAWN_MOVES-1] = { +1, +2 };
+   int dy[PAWN_MOVES-1] = { +1, +2 };
 
    int column = (int) get_column (square);
    int row = (int) get_row (square);

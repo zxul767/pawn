@@ -21,9 +21,7 @@ Knight::~Knight ()
   PLAYER's turn to move (moves that leave the king in check are also included)
   ============================================================================*/
 bitboard
-Knight::get_moves (uint          square,
-                   Player         player,
-                   const Board*   board) const
+Knight::get_moves (uint square, Player player, const Board* board) const
 {
    bitboard attacks = get_potential_moves (square, player);
    attacks &= ~board->get_pieces (player);

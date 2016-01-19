@@ -22,9 +22,8 @@
 
 using namespace std;
 
-CommandExecuter::CommandExecuter (Board*  board,
-                                  Search* search_engine,
-                                  Timer*  timer)
+CommandExecuter::CommandExecuter (
+    Board* board, Search* search_engine, Timer* timer)
 {
    this->timer = timer;
    this->board = board;
@@ -159,8 +158,8 @@ void
 CommandExecuter::think ()
 {
    Search::Result result;
-   Move           best_move;
-   uint          depth = 3;
+   Move best_move;
+   uint depth = 3;
 
    cerr << "Analyzing position to depth " << depth << " ..." << endl;
    result = search_engine->get_best_move (depth, board, best_move);
@@ -241,9 +240,8 @@ CommandExecuter::think ()
 }
 
 void
-CommandExecuter::train_by_GA (uint  population_size,
-                              uint  n_generations,
-                              double mutation_probability)
+CommandExecuter::train_by_GA (
+    uint population_size, uint n_generations, double mutation_probability)
 {
   unique_ptr<FitnessEvaluator> fitness_evaluator(new FitnessEvaluator (search_engine));
 
@@ -253,8 +251,10 @@ CommandExecuter::train_by_GA (uint  population_size,
    cerr << "Mutation probability:\t" << mutation_probability << endl;
 
    unique_ptr<GeneticAlgorithm>
-     GA(new GeneticAlgorithm (population_size, n_generations,
-                              mutation_probability, fitness_evaluator.get()));
+     GA(new GeneticAlgorithm (population_size,
+                              n_generations,
+                              mutation_probability,
+                              fitness_evaluator.get()));
 
    vector<int> features_a;
    features_a.push_back (80);

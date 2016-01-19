@@ -13,7 +13,7 @@ using std::endl;
 /*=============================================================================
   CONST STATIC INITIALIZATION BLOCK
   ===========================================================================*/
-const Square 
+const Square
 MaeBoard::EMPTY_SQUARE = { Piece::NULL_PLAYER, Piece::NULL_PIECE };
 
 /*=============================================================================
@@ -28,7 +28,7 @@ MaeBoard::MaeBoard ()
 
 
 /*=============================================================================
- | Build a new board as specified in the file FILE_NAME (see initial.in for an| 
+ | Build a new board as specified in the file FILE_NAME (see initial.in for an|
  | example of the format used in load files)                                  |
  =============================================================================*/
 MaeBoard::MaeBoard (const string& file)
@@ -52,7 +52,7 @@ MaeBoard::~MaeBoard ()
 }
 
 /*=============================================================================
- | Create random 64-bit integers to help maintain the hash key for THIS board | 
+ | Create random 64-bit integers to help maintain the hash key for THIS board |
  |                                                                            |
  | Things to consider include pieces, castling privileges, turn and en_passant|
  | capture possibility. A hash lock is also used to avoid collisions in the   |
@@ -69,7 +69,7 @@ MaeBoard::load_zobrist ()
       for (uint k = 0; k < SQUARES; ++k)
          for (uint m = 0; m < N_HASH_KEYS; ++m)
             zobrist[i][j][k][m] = Util::rand64 ();
-  
+
   turn_key = Util::rand64 ();
   castle_key[Piece::WHITE][KING_SIDE]  = Util::rand64 ();
   castle_key[Piece::WHITE][QUEEN_SIDE] = Util::rand64 ();
@@ -77,7 +77,7 @@ MaeBoard::load_zobrist ()
   castle_key[Piece::BLACK][QUEEN_SIDE] = Util::rand64 ();
 
   // This is a waste of memory, since only 16 squares can be possible
-  // en-passant capture squares, but this avoids dealing with awful offsets  
+  // en-passant capture squares, but this avoids dealing with awful offsets
   for (uint i = 0; i < SQUARES; ++i)
         en_passant_key[i] = Util::rand64 ();
 
@@ -89,7 +89,7 @@ MaeBoard::load_zobrist ()
  | Remove all the pieces from the board and reset game status, en-passant    |
  | capture possibilities, current turn, castling privileges, etc.            |
  ============================================================================*/
-void 
+void
 MaeBoard::clear ()
 {
    // Clear every bitboard
@@ -101,7 +101,7 @@ MaeBoard::clear ()
          this->piece[side][type] = 0;
 
       // Clear castle privileges
-      can_do_castle[side][KING_SIDE] = true; 
+      can_do_castle[side][KING_SIDE] = true;
       can_do_castle[side][QUEEN_SIDE] = true;
       is_castled_[side][KING_SIDE] = false;
       is_castled_[side][QUEEN_SIDE] = false;
@@ -109,7 +109,7 @@ MaeBoard::clear ()
    // Clear array of squares
    for (Squares square = a8; square <= h1; ++square)
       board[square] = EMPTY_SQUARE;
-   
+
    // Clear turn information
    is_whites_turn = true;
    player = Piece::WHITE;
@@ -139,9 +139,9 @@ MaeBoard::clear ()
   Precondition: there exists a file initial.in in the current directory with
   a valid initial chess configuration.
   ===========================================================================*/
-void 
+void
 MaeBoard::reset ()
-{   
+{
    clear ();
    if (!load_game ("initial.in"))
       clear ();
@@ -153,7 +153,7 @@ MaeBoard::reset ()
   Postcondition: The board contains now a valid configuration contained in the
   specified file, which may be either a pending or a finished game.
   ===========================================================================*/
-bool 
+bool
 MaeBoard::load_game (const string& file)
 {
    FileReader game_file (file, this);
@@ -165,7 +165,7 @@ MaeBoard::load_game (const string& file)
 /*=============================================================================
   Return TRUE if the current game was successfully saved to FILE_NAME.
   ===========================================================================*/
-bool 
+bool
 MaeBoard::save_game (const string& file)
 {
    return true;
@@ -174,25 +174,22 @@ MaeBoard::save_game (const string& file)
 /*=============================================================================
   Return TRUE if the specified piece was added to the board in LOCATION
   ===========================================================================*/
-bool 
-MaeBoard::add_piece (const string& location, 
-                     Piece::Type   type,
-                     Piece::Player player)
+bool
+MaeBoard::add_piece (
+    const string& location, Piece::Type type, Piece::Player player)
 {
    Squares square;
 
    if (!Move::translate_to_square (location, square))
       return false;
-   
+
    return add_piece (square, type, player);
 }
 /*=============================================================================
   Return TRUE if the specified piece was added to the board in LOCATION
   ===========================================================================*/
-bool  
-MaeBoard::add_piece (Squares       square, 
-                     Piece::Type   type, 
-                     Piece::Player player)
+bool
+MaeBoard::add_piece (Squares square, Piece::Type type, Piece::Player player)
 {
    if (board[square] != EMPTY_SQUARE)
       return false;
@@ -205,7 +202,7 @@ MaeBoard::add_piece (Squares       square,
    board[square].player = player;
    board[square].piece = type;
 
-   hash_key  ^= zobrist[type][player][square][0];
+   hash_key ^= zobrist[type][player][square][0];
    hash_lock ^= zobrist[type][player][square][1];
 
    return true;
@@ -214,14 +211,14 @@ MaeBoard::add_piece (Squares       square,
 /*=============================================================================
   Return TRUE if a piece was removed from square LOCATION
   ===========================================================================*/
-bool 
+bool
 MaeBoard::remove_piece (const string& location)
 {
    Squares square;
 
    if (!Move::translate_to_square (location, square))
       return false;
-   
+
    return remove_piece (square);
 }
 
@@ -229,7 +226,7 @@ MaeBoard::remove_piece (const string& location)
   Return TRUE if a piece was removed from SQUARE
   Precondition: Board::is_inside_board (square) = TRUE
   ===========================================================================*/
-bool 
+bool
 MaeBoard::remove_piece (Squares square)
 {
    if (board[square] == EMPTY_SQUARE)
@@ -240,12 +237,12 @@ MaeBoard::remove_piece (Squares square)
    piece[board[square].player][board[square].piece] ^= Util::to_bitboard[square];
    all_pieces ^= Util::to_bitboard[square];
 
-   Piece::Type   piece  = board[square].piece;
+   Piece::Type piece = board[square].piece;
    Piece::Player player = board[square].player;
 
    board[square] = EMPTY_SQUARE;
 
-   hash_key  ^= zobrist[piece][player][square][0];
+   hash_key ^= zobrist[piece][player][square][0];
    hash_lock ^= zobrist[piece][player][square][1];
 
    return true;
@@ -253,17 +250,17 @@ MaeBoard::remove_piece (Squares square)
 
 /*=============================================================================
   Return NO_ERROR if MOVE was completely legal in THIS board; otherwise
-  return the appropiate error code (KING_LEFT_IN_CHECK, OPPONENTS_TURN, 
+  return the appropiate error code (KING_LEFT_IN_CHECK, OPPONENTS_TURN,
   WRONG_MOVEMENT)
 
   Precondition: MOVE.from () and MOVE.to () return values in range [0, SQUARES)
   Postcondition: The board has been updated to show the effect of MOVE.
   ===========================================================================*/
-MaeBoard::Error 
+MaeBoard::Error
 MaeBoard::make_move (Move& move, bool is_computer_move)
 {
    Error move_error;
-   
+
    // TEST IF THE MOVE IS CORRECT AND FILL IN INFORMATION IN MOVE
    if (board[move.from ()] == EMPTY_SQUARE)
       return NO_PIECE_IN_SQUARE;
@@ -287,7 +284,7 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
    // Restoring information is kept in the stack GAME_HISTORY.
    save_restore_information (move);
 
-   // MAKE THE ACTUAL MOVE   
+   // MAKE THE ACTUAL MOVE
    Square initial = board[start];
    Square final = board[end];
    remove_piece (start);
@@ -329,7 +326,7 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
    handle_promotion_move (move);
 
    change_turn ();
-   
+
    if (is_king_in_check ())
       move.set_type (Move::CHECK);
 
@@ -368,8 +365,8 @@ MaeBoard::undo_move ()
       return false;
 
    BoardStatus configuration = game_history.top ();
-   Move        move = configuration.get_move ();
-   int         size;
+   Move move = configuration.get_move ();
+   int size;
 
    Record::board_key key;
    key.hash_key  = hash_key;
@@ -377,7 +374,7 @@ MaeBoard::undo_move ()
 
    if(!position_counter.decrease_record (key))
    {
-      cerr << "Error during position_counter.decrease_record () for move " 
+      cerr << "Error during position_counter.decrease_record () for move "
            << move << endl;
       cerr << (*this) << endl;
       return false;
@@ -409,7 +406,7 @@ MaeBoard::undo_move ()
             return false;
          }
          break;
-   
+
       case Move::EN_PASSANT_CAPTURE:
          size = (is_whites_turn ? SIZE: -((int)SIZE));
          if (!add_piece (Squares (move.to () + size), Piece::PAWN, opponent))
@@ -451,9 +448,9 @@ MaeBoard::undo_move ()
          }
          is_castled_[player][QUEEN_SIDE] = false;
          break;
-      
+
       case Move::PROMOTION_MOVE:
-         size = (is_whites_turn ? -((int)SIZE): SIZE);      
+         size = (is_whites_turn ? -((int)SIZE): SIZE);
          if (move.from () + size != move.to ())
             // There was a capture while doing the promotion
             if (!add_piece (move.to (), move.get_captured_piece (), opponent))
@@ -489,7 +486,7 @@ MaeBoard::undo_move ()
   Return NO_ERROR if the given piece can actually move from MOVE.FROM () to
   MOVE.TO () according to its own movement rules and the current board status.
   Otherwise, return the appropiate error code (OPPONENTS_TURN, WRONG_MOVEMENT)
-  
+
   Note: This test is not complete, since it does not check whether the move
   leaves the king in check.
 
@@ -500,13 +497,13 @@ MaeBoard::Error
 MaeBoard::can_move (const Move& move) const
 {
    bitboard valid_moves;
-   ushort  start = move.from ();
+   ushort start = move.from ();
 
    // Is the player trying to move his opponent's pieces?
    if (player != board[start].player)
       return OPPONENTS_TURN;
 
-   valid_moves = 
+   valid_moves =
       chessmen[move.get_moving_piece ()]->get_moves (start, player, this);
 
    // Is MOVE.TO () included in the set of valid moves from MOVE.FROM () ?
@@ -526,8 +523,8 @@ MaeBoard::can_move (const Move& move) const
 void
 MaeBoard::label_move (Move& move) const
 {
-   ushort     start = move.from ();
-   ushort     end   = move.to ();
+   ushort start = move.from ();
+   ushort end = move.to ();
    Piece::Type piece = move.get_moving_piece ();
 
    if (Util::to_bitboard[end] & ~all_pieces) // Apparently simple moves
@@ -554,7 +551,7 @@ MaeBoard::label_move (Move& move) const
    else if (Util::to_bitboard[end] & pieces[opponent]) // Capture moves
       move.set_type (Move::NORMAL_CAPTURE);
    else
-   {      
+   {
       cerr << "A null move detected. Watch out! " << move << endl;
       cerr << (*this) << endl;
       move.set_type (Move::NULL_MOVE);
@@ -574,17 +571,17 @@ MaeBoard::label_move (Move& move) const
 bitboard
 MaeBoard::attacks_to (Squares location, bool include_king) const
 {
-   bitboard     attackers = 0;
-   bitboard     pawn_attacks;
-   Pawn*        pawn = (Pawn*) chessmen[Piece::PAWN];
-   Piece::Type  last_piece = (include_king ? Piece::KING : Piece::QUEEN);
+   bitboard attackers = 0;
+   bitboard pawn_attacks;
+   Pawn* pawn = (Pawn*) chessmen[Piece::PAWN];
+   Piece::Type last_piece = (include_king ? Piece::KING : Piece::QUEEN);
 
    // Put a piece of TYPE in LOCATION and compute all its pseudo-moves.
    // If there are any opponent pieces in the resulting squares, then there is
    // at least one attack to LOCATION
    for (Piece::Type type = Piece::KNIGHT; type <= last_piece; ++type)
    {
-      attackers |= 
+      attackers |=
          chessmen[type]->get_moves (location, player, this) &
          this->piece[opponent][type];
    }
@@ -597,7 +594,7 @@ MaeBoard::attacks_to (Squares location, bool include_king) const
 }
 
 /*=============================================================================
-  Get a bitboard containing all enemy pieces that atack LOCATION and whose 
+  Get a bitboard containing all enemy pieces that atack LOCATION and whose
   value is less than that of a piece of type TYPE
   ===========================================================================*/
 bitboard
@@ -609,7 +606,7 @@ MaeBoard::threats_to (Squares location, Piece::Type type, bool include_king) con
 
    for (Piece::Type attacked = type; attacked > Piece::PAWN; --attacked)
    {
-      attackers |= 
+      attackers |=
          chessmen[type]->get_moves (location, player, this) &
          this->piece[opponent][type];
    }
@@ -638,9 +635,9 @@ MaeBoard::is_king_in_check () const
 
 /*=============================================================================
   If a pawn has just moved, should we turn on the en-passant flag ?
-  
-  Two conditions are necessary for this to happen: 
-  (1) the pawn made a two-square move, and 
+
+  Two conditions are necessary for this to happen:
+  (1) the pawn made a two-square move, and
   (2) there are enemy pawns to, at least, one of its sides.
   ============================================================================*/
 void
@@ -651,24 +648,24 @@ MaeBoard::handle_en_passant_move (const Move& move)
       if (en_passant_capture_square)
       {
          int square = Util::MSB_position (en_passant_capture_square);
-         hash_key  ^= en_passant_key[square];
+         hash_key ^= en_passant_key[square];
          hash_lock ^= en_passant_key[square];
       }
       en_passant_capture_square = 0;
       return;
    }
 
-   Pawn* pawn  = (Pawn*) chessmen[Piece::PAWN];
-   int   start = (int) move.from ();
-   int   end   = (int) move.to ();
+   Pawn* pawn = (Pawn*) chessmen[Piece::PAWN];
+   int start = (int) move.from ();
+   int end = (int) move.to ();
 
    if (en_passant_capture_square)
    {
       int square = Util::MSB_position (en_passant_capture_square);
-      hash_key  ^= en_passant_key[square];
+      hash_key ^= en_passant_key[square];
       hash_lock ^= en_passant_key[square];
    }
-   en_passant_capture_square = 0;  
+   en_passant_capture_square = 0;
 
    // Turn the en-passant flag if necessary
    if ((pawn->get_side_moves (end, player) & piece[opponent][Piece::PAWN]) &&
@@ -681,7 +678,7 @@ MaeBoard::handle_en_passant_move (const Move& move)
 
       en_passant_capture_square = Util::to_bitboard[row + size];
       int square = Util::MSB_position (en_passant_capture_square);
-      hash_key  ^= en_passant_key[square];
+      hash_key ^= en_passant_key[square];
       hash_lock ^= en_passant_key[square];
    }
 }
@@ -717,8 +714,8 @@ MaeBoard::handle_castling_privileges (const Move& move)
       can_do_castle[player][QUEEN_SIDE] = false;
 
       // Update hash key and hash lock
-      hash_key  ^= castle_key[player][KING_SIDE];
-      hash_key  ^= castle_key[player][QUEEN_SIDE];
+      hash_key ^= castle_key[player][KING_SIDE];
+      hash_key ^= castle_key[player][QUEEN_SIDE];
 
       hash_lock ^= castle_key[player][KING_SIDE];
       hash_lock ^= castle_key[player][QUEEN_SIDE];
@@ -729,7 +726,7 @@ MaeBoard::handle_castling_privileges (const Move& move)
       if (can_do_castle[player][KING_SIDE])
       {
          // Update hash key and hash lock
-         hash_key  ^= castle_key[player][KING_SIDE];
+         hash_key ^= castle_key[player][KING_SIDE];
          hash_lock ^= castle_key[player][KING_SIDE];
       }
       can_do_castle[player][KING_SIDE] = false;
@@ -739,7 +736,7 @@ MaeBoard::handle_castling_privileges (const Move& move)
       if (can_do_castle[player][QUEEN_SIDE])
       {
          // Update hash key and hash lock
-         hash_key  ^= castle_key[player][QUEEN_SIDE];
+         hash_key ^= castle_key[player][QUEEN_SIDE];
          hash_lock ^= castle_key[player][QUEEN_SIDE];
       }
       can_do_castle[player][QUEEN_SIDE] = false;
@@ -749,7 +746,7 @@ MaeBoard::handle_castling_privileges (const Move& move)
       if (can_do_castle[opponent][QUEEN_SIDE])
       {
          // Update hash key and hash lock
-         hash_key  ^= castle_key[opponent][KING_SIDE];
+         hash_key ^= castle_key[opponent][KING_SIDE];
          hash_lock ^= castle_key[opponent][KING_SIDE];
       }
       can_do_castle[opponent][KING_SIDE] = false;
@@ -759,7 +756,7 @@ MaeBoard::handle_castling_privileges (const Move& move)
       if (can_do_castle[opponent][QUEEN_SIDE])
       {
          // Update hash key and hash lock
-         hash_key  ^= castle_key[opponent][QUEEN_SIDE];
+         hash_key ^= castle_key[opponent][QUEEN_SIDE];
          hash_lock ^= castle_key[opponent][QUEEN_SIDE];
       }
       can_do_castle[opponent][QUEEN_SIDE] = false;
@@ -768,7 +765,7 @@ MaeBoard::handle_castling_privileges (const Move& move)
 
 /*=============================================================================
   Exchange a pawn to any other piece (except for a king or another pawn) if it
-  has hit the eighth rank. Usually the exchange is done to a queen, but the 
+  has hit the eighth rank. Usually the exchange is done to a queen, but the
   player should be able to choose the piece.
   ===========================================================================*/
 void
@@ -807,28 +804,30 @@ MaeBoard::load_support_data ()
 
    // Bitboards representing the eigth rank for each player
    eighth_rank[Piece::WHITE] = eighth_rank[Piece::BLACK] = 0;
-   eighth_rank[Piece::WHITE] |= (Util::to_bitboard[a8] | 
-                                 Util::to_bitboard[b8] | 
-                                 Util::to_bitboard[c8] | 
-                                 Util::to_bitboard[d8] | 
-                                 Util::to_bitboard[e8] | 
-                                 Util::to_bitboard[f8] | 
-                                 Util::to_bitboard[g8] | 
-                                 Util::to_bitboard[h8] );
+   eighth_rank[Piece::WHITE] |=
+       Util::to_bitboard[a8] |
+       Util::to_bitboard[b8] |
+       Util::to_bitboard[c8] |
+       Util::to_bitboard[d8] |
+       Util::to_bitboard[e8] |
+       Util::to_bitboard[f8] |
+       Util::to_bitboard[g8] |
+       Util::to_bitboard[h8];
 
-   eighth_rank[Piece::BLACK] |= (Util::to_bitboard[a1] | 
-                                 Util::to_bitboard[b1] | 
-                                 Util::to_bitboard[c1] | 
-                                 Util::to_bitboard[d1] | 
-                                 Util::to_bitboard[e1] | 
-                                 Util::to_bitboard[f1] | 
-                                 Util::to_bitboard[g1] | 
-                                 Util::to_bitboard[h1] );
+   eighth_rank[Piece::BLACK] |=
+       Util::to_bitboard[a1] |
+       Util::to_bitboard[b1] |
+       Util::to_bitboard[c1] |
+       Util::to_bitboard[d1] |
+       Util::to_bitboard[e1] |
+       Util::to_bitboard[f1] |
+       Util::to_bitboard[g1] |
+       Util::to_bitboard[h1];
 
    // Corners for each player
-   corner[Piece::WHITE][KING_SIDE]  = h1;
+   corner[Piece::WHITE][KING_SIDE] = h1;
    corner[Piece::WHITE][QUEEN_SIDE] = a1;
-   corner[Piece::BLACK][KING_SIDE]  = h8;
+   corner[Piece::BLACK][KING_SIDE] = h8;
    corner[Piece::BLACK][QUEEN_SIDE] = a8;
 
    original_king_position[Piece::WHITE] = e1;
@@ -841,11 +840,11 @@ MaeBoard::load_support_data ()
   ============================================================================*/
 void
 MaeBoard::save_restore_information (const Move& move)
-{   
-   BoardStatus restore_information (move, en_passant_capture_square, 
-                                    can_do_castle[player][KING_SIDE], 
-                                    can_do_castle[player][QUEEN_SIDE],
-                                    hash_key, hash_lock);
+{
+   BoardStatus restore_information (
+       move, en_passant_capture_square,
+       can_do_castle[player][KING_SIDE], can_do_castle[player][QUEEN_SIDE],
+       hash_key, hash_lock);
 
    game_history.push (restore_information);
 }
@@ -861,7 +860,7 @@ MaeBoard::change_turn ()
    player = (opponent == Piece::WHITE ? Piece::BLACK : Piece::WHITE);
 
    // Update hash keys to reflect the turn
-   hash_key  ^= turn_key;
+   hash_key ^= turn_key;
    hash_lock ^= turn_key;
 }
 
@@ -871,28 +870,27 @@ MaeBoard::change_turn ()
   Return all pseudo-legal moves PIECE can make from SQUARE in the current
   board, assuming it is PLAYER's turn to move.
   ===========================================================================*/
-bitboard 
+bitboard
 MaeBoard::get_moves (Piece::Type piece, Squares square) const
 {
    // Every piece implements their own moves
    return chessmen[piece]->get_moves (square, player, this);
 }
 
-bitboard 
+bitboard
 MaeBoard::get_all_pieces () const
 {
    return all_pieces;
 }
 
-bitboard 
+bitboard
 MaeBoard::get_pieces (Piece::Player player) const
 {
    return pieces[player];
 }
 
-bitboard 
-MaeBoard::get_pieces (Piece::Player player, 
-                      Piece::Type   piece) const
+bitboard
+MaeBoard::get_pieces (Piece::Player player, Piece::Type piece) const
 {
    return this->piece[player][piece];
 }
@@ -902,26 +900,26 @@ MaeBoard::get_hash_key () const
 {
   return hash_key;
 }
-   
-ullong 
+
+ullong
 MaeBoard::get_hash_lock () const
 {
    return hash_lock;
 }
 
-bool 
+bool
 MaeBoard::is_en_passant_on () const
 {
    return (en_passant_capture_square != 0);
 }
 
-bool 
+bool
 MaeBoard::can_castle (Piece::Player player, CastleSide side) const
 {
    return can_do_castle[player][side];
 }
 
-bool 
+bool
 MaeBoard::is_castled (Piece::Player player, CastleSide side) const
 {
    return is_castled_[player][side];
@@ -945,7 +943,7 @@ MaeBoard::get_piece_color (Squares square) const
    return board[square].player;
 }
 
-Piece::Player 
+Piece::Player
 MaeBoard::get_turn () const
 {
    return player;
@@ -969,10 +967,10 @@ MaeBoard::get_move_number () const
 }
 
 /*=============================================================================
-  Return the number of times THIS board configuration has been seen during the 
+  Return the number of times THIS board configuration has been seen during the
   present game.
   ===========================================================================*/
-ushort 
+ushort
 MaeBoard::get_repetition_count () const
 {
    Record::board_key key = {hash_key, hash_lock};
@@ -980,20 +978,20 @@ MaeBoard::get_repetition_count () const
 }
 
 // MUTATORS
-void 
+void
 MaeBoard::set_game_status (GameStatus status)
 {
-   game_status = status;  
+   game_status = status;
 }
 
-void 
+void
 MaeBoard::set_en_passant (Squares en_passant_capture_square)
 {
-   this->en_passant_capture_square = 
+   this->en_passant_capture_square =
       Util::to_bitboard[en_passant_capture_square];
 }
 
-void 
+void
 MaeBoard::set_turn (Piece::Player player)
 {
    is_whites_turn = (player == Piece::WHITE ? true : false);
@@ -1008,10 +1006,9 @@ MaeBoard::set_turn (Piece::Player player)
    }
 }
 
-void 
-MaeBoard::set_castling_privilege (Piece::Player player, 
-                                  CastleSide    side, 
-                                  bool          value)
+void
+MaeBoard::set_castling_privilege (
+    Piece::Player player, CastleSide side, bool value)
 {
    can_do_castle[player][side] = value;
 

@@ -28,7 +28,7 @@ using std::cout;
 using std::endl;
 
 AlphaBetaSearch::AlphaBetaSearch (PositionEvaluator* evaluator,
-                                  MoveGenerator*     generator)
+                                  MoveGenerator* generator)
 {
    board            = 0;
    this->generator  = generator;
@@ -82,12 +82,13 @@ AlphaBetaSearch::reset_statistics ()
    STALEMATE, DRAW_BY_REPETITION.
  ==============================================================================*/
 Search::Result
-AlphaBetaSearch::get_best_move (uint  depth,
-                                Board* board,
-                                Move&  best_move)
+AlphaBetaSearch::get_best_move (uint depth, Board* board, Move& best_move)
 {
-   Result winner[Board::PLAYERS][Board::PLAYERS] = {{WHITE_MATES, BLACK_MATES},
-                                                    {BLACK_MATES, WHITE_MATES}};
+   Result winner[Board::PLAYERS][Board::PLAYERS] = {
+     { WHITE_MATES, BLACK_MATES },
+     { BLACK_MATES, WHITE_MATES }
+   };
+
    if (board == 0)
       return Search::ERROR;
 
@@ -106,7 +107,8 @@ AlphaBetaSearch::get_best_move (uint  depth,
    else
       result = NORMAL_EVALUATION;
 
-   // If we are not using transposition tables, we cannot reconstruct the principal variation
+   // If we are not using transposition tables, we cannot reconstruct the
+   // principal variation
    if (principal_variation.size () > 0)
       best_move = principal_variation[0];
    else
@@ -128,9 +130,9 @@ AlphaBetaSearch::get_best_move (uint  depth,
 int
 AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
 {
-   uint max_ply          = this->max_depth;
+   uint max_ply = this->max_depth;
    uint expanding_offset = 1 << 6;
-   int   alpha, beta;
+   int alpha, beta;
 
    // This estimation of the negamax value may be really wrong if we are in
    // the middle of a tactical sequence
@@ -188,14 +190,12 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
    root node has the advantage, and negative if not.
  ==============================================================================*/
 int
-AlphaBetaSearch::alpha_beta (uint depth,
-                             int   alpha,
-                             int   beta)
+AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
 {
-   vector<Move>  moves;
-   ushort       best_index = 0;
-   int           tentative_value;
-   int           best = MATE_VALUE; // Initially the best you can do is lose the game!
+   vector<Move> moves;
+   ushort best_index = 0;
+   int tentative_value;
+   int best = MATE_VALUE; // Initially the best you can do is lose the game!
 
    result = NORMAL_EVALUATION;
 
@@ -243,8 +243,9 @@ AlphaBetaSearch::alpha_beta (uint depth,
       return MATE_VALUE;
    }
 
-   // Improve move ordering by examining the principal_variation node at this ply found in the previous
-   // iteration or maybe in a search previously done with a narrower alpha-beta window
+   // Improve move ordering by examining the principal_variation node at this ply
+   // found in the previous iteration or maybe in a search previously done with
+   // a narrower alpha-beta window
    if (hash_hit)
    {
       vector<Move>::iterator p = find (moves.begin (), moves.end (), data.best);
@@ -340,13 +341,11 @@ AlphaBetaSearch::alpha_beta (uint depth,
    by MAX_QUIESCENCE_DEPTH.
  ============================================================================*/
 int
-AlphaBetaSearch::quiescence (uint depth,
-                             int   alpha,
-                             int   beta)
+AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
 {
    vector<Move> moves;
-   int          tentative_value, node_value;
-   int          best = MATE_VALUE;
+   int tentative_value, node_value;
+   int best = MATE_VALUE;
 
    ++n_nodes_evaluated;
    node_value = evaluator->static_evaluation (board);
@@ -474,11 +473,15 @@ AlphaBetaSearch::quiescence (uint depth,
    false otherwise -all errors detected here are serious bugs, so watch out!
  ============================================================================*/
 bool
-AlphaBetaSearch::build_principal_variation (Board* board, vector<Move>& principal_variation)
+AlphaBetaSearch::build_principal_variation (
+    Board* board, vector<Move>& principal_variation)
 {
-   Dictionary::board_key key = {board->get_hash_key (), board->get_hash_lock ()};
+   Dictionary::board_key key = {
+     board->get_hash_key (),
+     board->get_hash_lock ()
+   };
    Dictionary::hash_info data;
-   bool                  return_value = true;
+   bool return_value = true;
 
    if (debugging)
       cerr << (*board) << endl;

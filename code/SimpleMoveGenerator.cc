@@ -14,14 +14,13 @@ SimpleMoveGenerator::SimpleMoveGenerator () {}
    ratio.
  ==========================================================================*/
 bool
-SimpleMoveGenerator::generate_moves (Board*         board,
-                                     vector<Move>&  moves)
+SimpleMoveGenerator::generate_moves (Board* board, vector<Move>&  moves)
 {
-   SimpleEvaluator  evaluator;
-   vector<Move>     captures;
-   bitboard         pieces;
-   bitboard         valid_moves;
-   Piece::Player    player = board->get_turn ();
+   SimpleEvaluator evaluator;
+   vector<Move> captures;
+   bitboard pieces;
+   bitboard valid_moves;
+   Piece::Player player = board->get_turn ();
 
    // for each piece, add its pseudo-legal moves to the list
    for (Piece::Type piece = Piece::PAWN; piece <= Piece::KING; ++piece)
@@ -74,21 +73,19 @@ SimpleMoveGenerator::generate_moves (Board*         board,
    to simply generating all moves.
  ==========================================================================*/
 bool
-SimpleMoveGenerator::generate_moves (Board*         board,
-                                     vector<Move>&  moves,
-                                     ushort        flags)
+SimpleMoveGenerator::generate_moves (
+    Board* board, vector<Move>& moves, ushort flags)
 {
    SimpleEvaluator evaluator;
 
-   vector<Move>    promotions;
-   vector<Move>    captures;
-   vector<Move>    checks, check_evasions;
-   vector<Move>    other_moves;
+   vector<Move> promotions;
+   vector<Move> captures;
+   vector<Move> checks, check_evasions;
+   vector<Move> other_moves;
 
-   bitboard        pieces;
-   bitboard        valid_moves;
-   Piece::Player   player = board->get_turn ();
-
+   bitboard pieces;
+   bitboard valid_moves;
+   Piece::Player player = board->get_turn ();
 
    // for each piece, add its pseudo-legal moves to the list
    for (Piece::Type piece = Piece::PAWN; piece <= Piece::KING; ++piece)
@@ -198,8 +195,8 @@ SimpleMoveGenerator::generate_moves (Board*         board,
 }
 
 bool
-SimpleMoveGenerator::generate_en_prise_evations (Board* board,
-                                                 vector<Move>& moves)
+SimpleMoveGenerator::generate_en_prise_evations (
+    Board* board, vector<Move>& moves)
 {
    Piece::Player player = board->get_turn ();
 

@@ -98,8 +98,8 @@ Chromosome::mutate (double probability)
 
 // Combine two chromosomes to produce two offspring
 void
-Chromosome::reproduce (Chromosome&  other,
-                       pair<Chromosome, Chromosome>& children)
+Chromosome::reproduce (
+    Chromosome& other, pair<Chromosome, Chromosome>& children)
 {  
    unsigned short half = gene_string.size() / 2;
 

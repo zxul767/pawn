@@ -24,14 +24,12 @@ Bishop::~Bishop ()
    here.
  ==============================================================================*/
 bitboard
-Bishop::get_moves (uint          square,
-                   Piece::Player  player,
-                   const Board*   board) const
+Bishop::get_moves (uint square, Piece::Player player, const Board* board) const
 {
-   bitboard          attacks = 0;
-   bitboard          blocking_pieces;
-   bitboard          all_pieces;
-   Board::Squares    blocker; // First blocking piece
+   bitboard attacks = 0;
+   bitboard blocking_pieces;
+   bitboard all_pieces;
+   Board::Squares blocker; // First blocking piece
 
    all_pieces = board->get_all_pieces ();
 
@@ -61,9 +59,9 @@ Bishop::get_moves (uint          square,
 void
 Bishop::compute_moves ()
 {
-   int       dx[Piece::RAYS] = { +1, +1, -1, -1 };
-   int       dy[Piece::RAYS] = { -1, +1, +1, -1 };
-   bitboard  one = 1;
+   int dx[Piece::RAYS] = { +1, +1, -1, -1 };
+   int dy[Piece::RAYS] = { -1, +1, +1, -1 };
+   bitboard one = 1;
 
    for (Board::Squares square = Board::a8; square <= Board::h1; ++square)
    {

@@ -20,8 +20,7 @@ FileReader:: ~FileReader ()
    delete[] values;
 }
 
-FileReader::FileReader (const string& file_name,
-                        Board*        board)
+FileReader::FileReader (const string& file_name, Board* board)
 {
    values = new vector<string>[3];
    this->file_name = file_name;
@@ -96,14 +95,15 @@ FileReader::is_empty_line (const string& line) const
 
    for (uint i = 0; i < line.length (); ++i)
       if (!isspace (line[i]))
-	 return false;
+        return false;
+   
    return true;
 }
 
 bool
 FileReader::set_variables ()
 {
-   char   c;
+   char c;
    string line;
 
    if (!load_file ())
@@ -122,7 +122,7 @@ FileReader::set_variables ()
                return false;
       }
       else
-	 getline (input, line);
+        getline (input, line);
    }
    input.close ();
 
@@ -130,9 +130,8 @@ FileReader::set_variables ()
 }
 
 void
-FileReader::tokenize (const string&   input,
-                      vector<string>& tokens,
-                      const string&   delimiters) const
+FileReader::tokenize (
+    const string& input, vector<string>& tokens, const string& delimiters) const
 {
    string::size_type begin = input.find_first_not_of (delimiters, 0);
    string::size_type end = input.find_first_of (delimiters, begin);
@@ -148,28 +147,27 @@ FileReader::tokenize (const string&   input,
 bool
 FileReader::set_variable (string& input)
 {
-   uint          index_variable, index_value;
+   uint index_variable, index_value;
    vector<string> tokens;
-   string         delimiters = " :,";
+   string delimiters = " :,";
 
    tokenize (input, tokens, delimiters);
    if (tokens.size () > 1)
    {
       if (!variable_was_found (tokens[0], &index_variable))
-	 return false;
+        return false;
 
       for (uint i = 1; i < tokens.size (); ++i)
-	 if (value_was_found (index_variable, tokens[i], &index_value))
-	    set_value (index_variable, tokens[i], index_value);
-	 else
-	    return false;
+        if (value_was_found (index_variable, tokens[i], &index_value))
+          set_value (index_variable, tokens[i], index_value);
+        else
+          return false;
    }
    return true;
 }
 
 bool
-FileReader::variable_was_found (const string& input,
-                                uint*        index_variable)
+FileReader::variable_was_found (const string& input, uint* index_variable)
 {
    for (uint i = 0; i < variables.size (); i++)
       if (input == variables[i])
@@ -181,9 +179,8 @@ FileReader::variable_was_found (const string& input,
 }
 
 bool
-FileReader::value_was_found (uint         index_variable,
-                             const string& input,
-                             uint*        index_value)
+FileReader::value_was_found (
+    uint index_variable, const string& input, uint* index_value)
 {
    int index = index_variable;
 
@@ -203,9 +200,8 @@ FileReader::value_was_found (uint         index_variable,
 }
 
 bool
-FileReader::set_value (uint         index_variable,
-                       const string& token,
-                       uint         index_value)
+FileReader::set_value (
+    uint index_variable, const string& token, uint index_value)
 {
    if (index_variable == 0)
    {
@@ -228,13 +224,10 @@ FileReader::set_value (uint         index_variable,
    else if (index_variable >= 7 && index_variable <= 18)
    {
       board->add_piece (token,
-                        get_type  (index_variable),
-                        get_color (index_variable)
-                        );
+                        get_type (index_variable),
+                        get_color (index_variable));
    }
-   else return false;
-
-   return true;
+   return false;
 }
 
 Board::GameStatus

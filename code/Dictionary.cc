@@ -38,9 +38,8 @@ Dictionary:: exists (const board_key& board)
 }
 
 bool
-Dictionary:: add_entry (const board_key& board, int score, 
-                        flag accuracy, 
-								const Move &best, uint depth)
+Dictionary:: add_entry (
+    const board_key& board, int score, flag accuracy, const Move &best, uint depth)
 {
    unordered_map<board_key, hash_info, hasher, comparer>::iterator i = 
       entry.find (board);

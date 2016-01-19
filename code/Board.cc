@@ -4,7 +4,6 @@
    Responsabilities:
    -Provide an interface for a chess board using bitboards as the basic data
     structure
-
  ==============================================================================*/
 
 #include "Board.h"
@@ -41,13 +40,15 @@ operator << (ostream& out, const Board& board)
    static const uint nplayers = Board::PLAYERS;
 
    static const string
-      piece_to_string[][nplayers] = { { "  P  ", " *P* " },
-                                      { "  N  ", " *N* " },
-                                      { "  B  ", " *B* " },
-                                      { "  R  ", " *R* " },
-                                      { "  Q  ", " *Q* " },
-                                      { "  K  ", " *K* " },
-      };
+     piece_to_string[][nplayers] =
+     {
+       { "  P  ", " *P* " },
+       { "  N  ", " *N* " },
+       { "  B  ", " *B* " },
+       { "  R  ", " *R* " },
+       { "  Q  ", " *Q* " },
+       { "  K  ", " *K* " },
+     };
 
    out << "  -------------------------------------------------" << endl;
    for (uint row = 0; row < Board::SIZE; ++row)

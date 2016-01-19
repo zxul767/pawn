@@ -62,8 +62,7 @@ Move::Move (const Move& move)
   This is done this way  since the kind of move is usually known only after some
   processing which requires only the START and END squares
   ============================================================================*/
-Move::Move (Board::Squares start,
-            Board::Squares end)
+Move::Move (Board::Squares start, Board::Squares end)
 {
    score = 0;
    this->start = start;
@@ -195,8 +194,7 @@ Move::get_score () const
   f(A1) -> 56, f(H1) -> 63
   ============================================================================*/
 bool
-Move::translate_to_square (const string&   notation,
-                           Board::Squares& square)
+Move::translate_to_square (const string& notation, Board::Squares& square)
 {
    if (is_valid_notation (notation))
    {
