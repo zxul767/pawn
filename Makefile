@@ -1,5 +1,4 @@
 ## Makefile for MAE (Motor de Ajedrez Evolutivo)
-## August 27, 2007
 
 CPP = g++
 CXXFLAGS = -I./headers -g -Wall -Werror -O2 -std=c++11
@@ -194,7 +193,7 @@ $(TARBALL_NAME) : clean Makefile initial.in
 
 clean : clean-backups
 	-find . -name "*.o" -type f -print0 | xargs -0 rm -f
-	-rm -f code/$(MAIN_EXEC) code/$(TEST_EXEC)
+	-rm -f $(MAIN_EXEC) $(TEST_EXEC)
 
 clean-backups :
 	-find . -name "*~" -type f -print0 | xargs -0 rm -f
