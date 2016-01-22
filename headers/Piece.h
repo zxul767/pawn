@@ -28,7 +28,7 @@ class Piece
    // Number of moves a pawn can make in the center of the board.
    static const uint PAWN_MOVES = 3;
 
-   enum Type { 
+   enum Type {
       PAWN,
       KNIGHT,
       BISHOP,
@@ -38,8 +38,8 @@ class Piece
       NULL_PIECE
    };
 
-   enum Player { 
-      WHITE, 
+   enum Player {
+      WHITE,
       BLACK,
       NULL_PLAYER
    };
@@ -62,12 +62,10 @@ class Piece
 
    static string pieceString (Type piece_type);
 
-   virtual bitboard get_moves (uint        square, 
-                               Player       player, 
-                               const Board* board) const = 0;
+   virtual bitboard get_moves (
+       uint square, Player player, const Board* board) const = 0;
 
-   virtual bitboard get_potential_moves (uint  square, 
-                                         Player player) const = 0;
+   virtual bitboard get_potential_moves (uint  square, Player player) const = 0;
 };
 
 /*=============================================================================

@@ -14,12 +14,12 @@ class MinimaxSearch : public Search
 {
  private:
    int minimax (uint depth, Result& result);
-   
-   MoveGenerator*     generator;
-   PositionEvaluator* evaluator;
-   Board*             board;
 
-   Move   best_move;
+   MoveGenerator* generator;
+   PositionEvaluator* evaluator;
+   Board* board;
+
+   Move best_move;
    Result result;
 
  public:
@@ -27,7 +27,7 @@ class MinimaxSearch : public Search
    ~MinimaxSearch ();
 
    Result get_best_move (uint max_depth, Board* board, Move& best_move);
-   void   load_factor_weights (vector<int>& weights);
+   void load_factor_weights (vector<int>& weights);
 };
 
 #endif // MINIMAX_SEARCH

@@ -17,10 +17,10 @@ public:
 
    Record () {}
 
-   bool    add_record      (const board_key& key, ushort&);
-   bool    decrease_record (const board_key& key);
+   bool add_record (const board_key& key, ushort&);
+   bool decrease_record (const board_key& key);
    ushort get_repetitions (const board_key& key) const;
-   void    reset ();
+   void reset ();
 
    static const size_t size = 4142027;
 

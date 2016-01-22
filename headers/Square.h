@@ -6,21 +6,21 @@
 class Square
 {
  public:
-   Piece::Player  player;
-   Piece::Type    piece;
+   Piece::Player player;
+   Piece::Type piece;
 
-   bool 
+   bool
       operator == (const Square& other) const
       {
-         return (other.player == this->player && 
+         return (other.player == this->player &&
                  other.piece == this->piece);
       }
-      
+
    bool
       operator != (const Square& other) const
       {
          return (other.player != this->player ||
-		 other.piece != this->piece);
+                 other.piece != this->piece);
       }
 };
 

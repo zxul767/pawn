@@ -20,15 +20,15 @@ class MoveGenerator
       CHECKS            = 1 << 2,
       CHECK_EVASIONS    = 1 << 3,
       PAWN_PROMOTIONS   = 1 << 4,
-      ALL               = (SIMPLE | CAPTURES | CHECKS | CHECK_EVASIONS | 
+      ALL               = (SIMPLE | CAPTURES | CHECKS | CHECK_EVASIONS |
                            PAWN_PROMOTIONS)
    };
 
-   /*====================================================================== 
+   /*----------------------------------------------------------------------
      Return a vector of legal moves from the current BOARD configuration
-     =====================================================================*/
-   virtual bool generate_moves (Board*  board, vector<Move>& moves, 
-                                ushort flags) = 0;
+     ---------------------------------------------------------------------*/
+   virtual bool generate_moves (
+       Board*  board, vector<Move>& moves, ushort flags) = 0;
 
    virtual bool generate_moves (Board* board, vector<Move>& moves) = 0;
    virtual bool generate_en_prise_evations (Board* board, vector<Move>& moves) = 0;

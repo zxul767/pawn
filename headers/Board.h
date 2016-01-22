@@ -1,14 +1,12 @@
 /*============================================================================
   Class Name: Board
 
-  Responsabilities: 
-  
+  Responsabilities:
+
   -Keep game status and board
   -Make legal moves
   -Undo moves
   -Label moves
-
-  Date: August 26, 2007
   ===========================================================================*/
 
 #ifndef BOARD_H
@@ -36,7 +34,7 @@ class Board
      CONSTANTS
      ========================================================================*/
    static const uint SQUARES = 64;
-   static const uint SIZE    = 8;
+   static const uint SIZE = 8;
    static const uint PLAYERS = 2;
 
    enum Squares {
@@ -59,12 +57,12 @@ class Board
    };
 
    enum Error {
-      KING_LEFT_IN_CHECK, 
-      OPPONENTS_TURN, 
-      WRONG_MOVEMENT, 
+      KING_LEFT_IN_CHECK,
+      OPPONENTS_TURN,
+      WRONG_MOVEMENT,
       GAME_FINISHED,
-      NO_PIECE_IN_SQUARE, 
-      DRAW_BY_REPETITION, 
+      NO_PIECE_IN_SQUARE,
+      DRAW_BY_REPETITION,
       NO_ERROR
    };
 
@@ -79,14 +77,12 @@ class Board
 
    virtual bool load_game (const string& file) = 0;
    virtual bool save_game (const string& file) = 0;
-   
-   virtual bool add_piece (const string& location, 
-                           Piece::Type   piece, 
-                           Piece::Player player) = 0;
 
-   virtual bool add_piece (Squares       square, 
-                           Piece::Type   piece, 
-                           Piece::Player player) = 0;
+   virtual bool add_piece (
+       const string& location, Piece::Type piece, Piece::Player player) = 0;
+
+   virtual bool add_piece (
+       Squares square, Piece::Type piece, Piece::Player player) = 0;
 
    virtual bool remove_piece (const string& location) = 0;
    virtual bool remove_piece (Squares square) = 0;
@@ -96,39 +92,38 @@ class Board
 
    virtual void  label_move (Move& move) const = 0;
 
-   virtual bool     is_king_in_check () const = 0;
+   virtual bool is_king_in_check () const = 0;
    virtual bitboard attacks_to (Squares location, bool include_king) const = 0;
-   virtual bitboard threats_to (Squares location, Piece::Type type, 
-                                bool include_king) const = 0;
+   virtual bitboard threats_to (
+       Squares location, Piece::Type type, bool include_king) const = 0;
+
    // ACCESSORS
    virtual bitboard get_moves (Piece::Type piece, Squares square) const = 0;
    virtual bitboard get_all_pieces () const = 0;
    virtual bitboard get_pieces (Piece::Player player) const = 0;
-   virtual bitboard get_pieces (Piece::Player player, 
-                                Piece::Type   piece) const = 0;
-   
+   virtual bitboard get_pieces (Piece::Player player, Piece::Type piece) const = 0;
+
    virtual bool is_en_passant_on () const = 0;
    virtual bool can_castle (Piece::Player player, CastleSide side) const = 0;
    virtual bool is_castled (Piece::Player player, CastleSide side) const = 0;
 
-   virtual bitboard  get_en_passant_square () const = 0;
-   virtual Squares   get_initial_king_square (Piece::Player player) const = 0;
- 
+   virtual bitboard get_en_passant_square () const = 0;
+   virtual Squares get_initial_king_square (Piece::Player player) const = 0;
+
    virtual Piece::Player get_piece_color (Squares square) const = 0;
    virtual Piece::Player get_turn () const = 0;
-   virtual Piece::Type   get_piece (Squares square) const = 0;
-   virtual ullong       get_hash_key () const = 0;
-   virtual ullong       get_hash_lock () const = 0;
-   virtual uint         get_move_number () const = 0;
-   virtual ushort       get_repetition_count () const = 0;
+   virtual Piece::Type get_piece (Squares square) const = 0;
+   virtual ullong get_hash_key () const = 0;
+   virtual ullong get_hash_lock () const = 0;
+   virtual uint get_move_number () const = 0;
+   virtual ushort get_repetition_count () const = 0;
 
    // MUTATORS
    virtual void set_game_status (GameStatus status) = 0;
    virtual void set_en_passant (Squares en_passant_capture_square) = 0;
    virtual void set_turn (Piece::Player player) = 0;
-   virtual void set_castling_privilege (Piece::Player player, 
-                                        CastleSide    side, 
-                                        bool          value) = 0;
+   virtual void set_castling_privilege (
+       Piece::Player player, CastleSide side, bool value) = 0;
 
    // STATIC
    static bool is_inside_board (int row, int col);
@@ -139,7 +134,7 @@ class Board
    friend ostream& operator << (ostream& out, const Board& board);
 };
 
-inline Board::Squares& 
+inline Board::Squares&
 operator ++ (Board::Squares& square)
 {
    return (square = Board::Squares (square + 1));

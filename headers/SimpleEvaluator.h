@@ -17,19 +17,16 @@ class SimpleEvaluator : public PositionEvaluator
    int evaluate_center_control (const Board* board) const;
    int evaluate_king_safety (const Board* board) const;
 
-   int  get_piece_value (Piece::Type piece_type) const;
+   int get_piece_value (Piece::Type piece_type) const;
    void load_factor_weights (vector<int>& weights);
 
  private:
-
    int material_value (bitboard piece, Piece::Type piece_type) const;
-   int mobility_value (const Board* board, 
-                       bitboard     piece, 
-                       Piece::Type  piece_type) const;
+   int mobility_value (
+       const Board* board, bitboard piece, Piece::Type piece_type) const;
 
-   int center_control_value (const Board* board, 
-                             bitboard     piece, 
-                             Piece::Type  piece_type) const;
+   int center_control_value (
+       const Board* board, bitboard piece, Piece::Type piece_type) const;
 
    int king_safety_value (const Board* board, Piece::Player player) const;
    int development_value (const Board* board, Piece::Player turn) const;
@@ -42,8 +39,8 @@ class SimpleEvaluator : public PositionEvaluator
    };
 
    // Piece values are well-known, so we make them static here.
-   vector<int>  piece_value;
-   vector<int>  factor_weight;
+   vector<int> piece_value;
+   vector<int> factor_weight;
 };
 
 #endif // SIMPLE_EVALUATOR_H

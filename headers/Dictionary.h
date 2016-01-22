@@ -15,7 +15,7 @@ class Dictionary
 {
 public:
 
-  enum flag {EXACT, UPPER_BOUND, LOWER_BOUND, UNKNOWN};
+  enum flag { EXACT, UPPER_BOUND, LOWER_BOUND, UNKNOWN };
 
   struct board_key
   {
@@ -25,30 +25,30 @@ public:
 
   struct hash_info
   {
-    int     score;
-    flag    accuracy;
-    Move    best;
+    int score;
+    flag accuracy;
+    Move best;
 
     ushort depth;
   };
 
   Dictionary (uint hash_size = 0);
 
-  bool  add_entry (const board_key& board, int score,
-                   flag accuracy,
-                   const Move& best, uint depth);
-  bool  exists    (const board_key& board);
-  bool  get_data  (const board_key& board, hash_info& data);
-  void  show_all  ();
-  uint get_size  () const;
+  bool add_entry (
+      const board_key& board, int score, flag accuracy, const Move& best,
+      uint depth);
+  bool exists (const board_key& board);
+  bool get_data (const board_key& board, hash_info& data);
+  void show_all ();
+  uint get_size () const;
   uint get_capacity () const;
-  void  reset () ;
+  void reset ();
 
   static void set_possible_size ();
 
   static map<ushort, uint> possible_size;
-  static const ushort       MAX_MEMORY = 256;
-  static size_t              size;
+  static const ushort MAX_MEMORY = 256;
+  static size_t size;
 
 private:
   class hasher
@@ -70,7 +70,7 @@ private:
   };
 
   uint hash_size;
-  unordered_map  <board_key, hash_info, hasher, comparer> entry;
+  unordered_map<board_key, hash_info, hasher, comparer> entry;
 };
 
 #endif // HASH_DICTIONARY_H

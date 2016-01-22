@@ -9,8 +9,8 @@ using std::map;
 
 class Command
 {
- public: 
-   enum Value { 
+ public:
+   enum Value {
       XBOARD_MODE,
       FEATURES,
       NEW_GAME,
@@ -32,9 +32,9 @@ class Command
 
    bool is_move () const;
    bool is_quit () const;
-   
-   string  get_notation () const;
-   Value   get_value () const;
+
+   string get_notation () const;
+   Value get_value () const;
 
  private:
    string command;

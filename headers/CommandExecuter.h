@@ -16,18 +16,18 @@ class CommandExecuter
 {
  public:
    CommandExecuter (Board* board, Search* search_engine, Timer* timer);
-   
+
    bool execute (const Command& command);
    void show_possible_moves ();
    void make_user_move (const string& command);
    void think ();
-   void train_by_GA (uint population_size, uint n_generations, 
-                     double mutation_probability);
+   void train_by_GA (
+       uint population_size, uint n_generations, double mutation_probability);
 
  private:
-   Timer*         timer;
-   Board*         board;
-   Search*        search_engine;
+   Timer* timer;
+   Board* board;
+   Search* search_engine;
    MoveGenerator* move_generator;
 };
 

@@ -16,13 +16,13 @@ class FitnessEvaluator
    FitnessEvaluator (Search* engine);
    ~FitnessEvaluator ();
 
-   double evaluate  (Chromosome& a, Chromosome& b);
+   double evaluate (Chromosome& a, Chromosome& b);
    static const uint MAX_ALLOWED_MOVEMENTS = 70;
 
  private:
-   Search*             engine;
-   Board*              board;
-   PositionEvaluator*  evaluator;
+   Search* engine;
+   Board* board;
+   PositionEvaluator* evaluator;
 };
 
 #endif // FITNESS_FUNCTION_H

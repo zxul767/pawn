@@ -8,6 +8,7 @@
 #include <stack>
 #include <fstream>
 #include <vector>
+
 using std::vector;
 
 class MoveGenerator;
@@ -17,9 +18,9 @@ class Dictionary;
 class AlphaBetaSearch : public Search
 {
  private:
-   int  alpha_beta (uint depth, int alpha, int beta);
-   int  quiescence (uint depth, int alpha, int beta);
-   int  iterative_deepening (vector<Move>& principal_variation);
+   int alpha_beta (uint depth, int alpha, int beta);
+   int quiescence (uint depth, int alpha, int beta);
+   int iterative_deepening (vector<Move>& principal_variation);
 
    void print_statistics (vector<Move>& principal_variation);
    void reset_statistics ();
@@ -27,13 +28,13 @@ class AlphaBetaSearch : public Search
    void load_factor_weights (vector<int>& weights);
 
    PositionEvaluator* evaluator;
-   MoveGenerator*     generator;
-   Dictionary*        hash_table;
-   Board*             board;
+   MoveGenerator* generator;
+   Dictionary* hash_table;
+   Board* board;
 
    Result result;
-   uint  hash_table_hits;
-   Move   best_move;
+   uint hash_table_hits;
+   Move best_move;
 
    bool debugging;
    void turn_debugging (bool value) { debugging = value; }
