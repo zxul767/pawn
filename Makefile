@@ -18,8 +18,8 @@ MAIN_EXEC = mae
 TARBALL_NAME = MaE
 
 # WHERE TO FIND FILES BASED ON EXTENSION
-vpath %.h ./headers
-vpath %.cc ./code
+vpath %.h ./src
+vpath %.cc ./src
 
 # IMPLICIT RULES TO BUILD TARGETS
 %.o : %.cc
