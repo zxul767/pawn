@@ -1,38 +1,55 @@
-## Makefile for MAE (Motor de Ajedrez Evolutivo)
+## Makefile for MAE (Motor de Ajedrez Evolutivo, Spanish for Evolutionary Chess Engine)
 
+# COMPILER
 CPP = g++
 CXXFLAGS = -g -Wall -Werror -O2 -std=c++11
 LD = -lm
-OBJECTS = mae.o \
-	common.o \
-	FileReader.o MaeBoard.o Board.o Record.o \
-	SimpleEvaluator.o \
-	Move.o SimpleMoveGenerator.o \
-	Command.o CommandReader.o CommandExecuter.o \
-	AlphaBetaSearch.o MinimaxSearch.o Timer.o Dictionary.o \
-	Pawn.o Rook.o Knight.o Bishop.o Queen.o King.o Piece.o \
-	Chromosome.o FitnessEvaluator.o GeneticAlgorithm.o
 
-MAIN_EXEC = mae
-TARBALL_NAME = MaE
+# PROJECT NAME
+PROJECT = mae
+TARBALL_TEMP_DIR = $(PROJECT)_tarball
 
-# WHERE TO FIND FILES BASED ON EXTENSION
-vpath %.h ./src
-vpath %.cc ./src
+# DIRECTORIES
+SRCDIR = src
+OBJDIR = bin
+
+# LIBRARIES
+LIBS =
+
+# FILES AND FOLDERS
+SRCS = $(shell find $(SRCDIR) -name '*.cc')
+SRCDIRS = $(shell find $(SRCDIR) -type d | sed 's/$(SRCDIR)/./g' )
+OBJS = $(patsubst $(SRCDIR)/%.cc, $(OBJDIR)/%.o, $(SRCS))
+
+# TARGETS
+all: $(PROJECT)
+
+$(PROJECT): ensure_repo $(OBJS)
+	$(CPP) $(OBJS) $(LIBS) $(LD) -o $@
+
+ensure_repo:
+	@$(call create-repo)
+
+# CREATE OBJ DIRECTORY STRUCTURE
+define create-repo
+	mkdir -p $(OBJDIR)
+	for dir in $(SRCDIRS); \
+	do \
+		mkdir -p $(OBJDIR)/$$dir; \
+	done
+endef
 
 # IMPLICIT RULES TO BUILD TARGETS
-%.o : %.cc
-	$(CPP) $(CXXFLAGS) -c $<
+$(OBJDIR)/%.o: $(SRCDIR)/%.cc
+	$(CPP) $(CXXFLAGS) -c $< -o $@
 
-% : %.o
-	$(CPP) $(CXXFLAGS) $^ -o $@ $(LD)
+# PHONY TARGETS
+.PHONY: clean clean-backups directories tarball
 
-all: $(MAIN_EXEC)
+# DEPENDENCIES
+# TODO: create these rules automatically from the source files
 
-# MAIN EXECUTABLE
-$(MAIN_EXEC) : $(OBJECTS)
-
-# TEST FILES
+# MAIN
 mae.o : mae.cc \
 	common.h \
 	MaeBoard.h Board.h Square.h BoardStatus.h \
@@ -43,7 +60,6 @@ mae.o : mae.cc \
 
 # USEFUL TO VARIOUS MODULES
 common.o : common.cc common.h
-
 
 # USER & XBOARD COMMUNICATION
 Command.o : Command.cc Command.h \
@@ -166,7 +182,7 @@ Queen.o : Queen.cc Queen.h \
 
 Piece.o : Piece.cc Piece.h
 
-# GENETIC ALGORITHMS MODULE
+# GENETIC ALGORITHM MODULE
 Chromosome.o : Chromosome.h Chromosome.cc \
 	common.h \
 	Board.h Piece.h \
@@ -182,17 +198,14 @@ GeneticAlgorithm.o : GeneticAlgorithm.h GeneticAlgorithm.cc \
 
 # TARBALL DISTRIBUTION
 tarball : clean Makefile initial.in
-	mkdir mae
-	cp -r Makefile initial.in README.md src/ mae/
-	tar -czvf $(TARBALL_NAME)_`date +%F`.tar.gz mae/
-	rm -rf mae/
+	mkdir -p $(TARBALL_TEMP_DIR)
+	cp -rf Makefile initial.in README.md src/ $(TARBALL_TEMP_DIR)
+	tar -czvf $(PROJECT)_`date +%F-%H-%M-%S`.tar.gz $(TARBALL_TEMP_DIR)
+	rm -rf $(TARBALL_TEMP_DIR)
 
-# PHONY TARGETS
-.PHONY: clean
-
+# CLEANING
 clean : clean-backups
-	-find . -name "*.o" -type f -print0 | xargs -0 rm -f
-	-rm -f $(MAIN_EXEC)
+	rm -Rf $(PROJECT) $(OBJDIR)
 
 clean-backups :
-	-find . -name "*~" -type f -print0 | xargs -0 rm -f
+	find . -name "*~" -type f -print0 | xargs -0 rm -f
