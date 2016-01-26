@@ -1,7 +1,7 @@
 ## Makefile for MAE (Motor de Ajedrez Evolutivo)
 
 CPP = g++
-CXXFLAGS = -I./headers -g -Wall -Werror -O2 -std=c++11
+CXXFLAGS = -g -Wall -Werror -O2 -std=c++11
 LD = -lm
 OBJECTS = mae.o \
 	common.o \
@@ -13,7 +13,6 @@ OBJECTS = mae.o \
 	Pawn.o Rook.o Knight.o Bishop.o Queen.o King.o Piece.o \
 	Chromosome.o FitnessEvaluator.o GeneticAlgorithm.o
 
-TEST_EXEC =
 MAIN_EXEC = mae
 TARBALL_NAME = MaE
 
@@ -182,9 +181,9 @@ GeneticAlgorithm.o : GeneticAlgorithm.h GeneticAlgorithm.cc \
 	FitnessEvaluator.h
 
 # TARBALL DISTRIBUTION
-$(TARBALL_NAME) : clean Makefile initial.in
+tarball : clean Makefile initial.in
 	mkdir mae
-	cp -r Makefile initial.in t1 t2 t3 t4 games/ code/ headers/ mae/
+	cp -r Makefile initial.in README.md src/ mae/
 	tar -czvf $(TARBALL_NAME)_`date +%F`.tar.gz mae/
 	rm -rf mae/
 
@@ -193,7 +192,7 @@ $(TARBALL_NAME) : clean Makefile initial.in
 
 clean : clean-backups
 	-find . -name "*.o" -type f -print0 | xargs -0 rm -f
-	-rm -f $(MAIN_EXEC) $(TEST_EXEC)
+	-rm -f $(MAIN_EXEC)
 
 clean-backups :
 	-find . -name "*~" -type f -print0 | xargs -0 rm -f
