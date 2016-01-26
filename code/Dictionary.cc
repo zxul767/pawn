@@ -34,15 +34,15 @@ Dictionary:: set_possible_size ()
 bool
 Dictionary:: exists (const board_key& board)
 {
-	return (entry.find (board) != entry.end ());
+   return (entry.find (board) != entry.end ());
 }
 
 bool
 Dictionary:: add_entry (
-    const board_key& board, int score, flag accuracy, const Move &best, uint depth)
+    const board_key& board, int score, flag accuracy, const Move& best_move, uint depth)
 {
-   unordered_map<board_key, hash_info, hasher, comparer>::iterator i = 
-      entry.find (board);
+   unordered_map<board_key, hash_info, hasher, comparer>::iterator i =
+         entry.find (board);
 
    // This board is already in the table, so just try to update it
    if (i != entry.end ())
@@ -51,7 +51,7 @@ Dictionary:: add_entry (
       {
          (*i).second.score = score;
          (*i).second.accuracy = accuracy;
-         (*i).second.best = best;
+         (*i).second.best_move = best_move;
          (*i).second.depth = depth;
          return true;
       }
@@ -59,49 +59,49 @@ Dictionary:: add_entry (
    }
 
    Dictionary::hash_info data;
-	data.score    = score;
-	data.accuracy = accuracy;
-	data.best     = best;
-	data.depth    = depth;
+   data.score = score;
+   data.accuracy = accuracy;
+   data.best_move = best_move;
+   data.depth = depth;
 
-	entry.insert (pair<board_key, hash_info>(board, data));
+   entry.insert (pair<board_key, hash_info>(board, data));
 
-	return true;
+   return true;
 }
 
 bool
 Dictionary:: get_data (const board_key& board, Dictionary::hash_info& data)
 {
-	if (exists (board))
-	{
-		unordered_map<board_key, hash_info, hasher, comparer>::iterator iter = 
-         entry.find (board);
+   if (exists (board))
+   {
+      unordered_map<board_key, hash_info, hasher, comparer>::iterator iter =
+            entry.find (board);
 
-		data = (*iter).second;
-		return true;
-	}
-	
-	return false;
+      data = (*iter).second;
+      return true;
+   }
+
+   return false;
 }
 
 void
 Dictionary:: show_all ()
 {
-	unordered_map<board_key, hash_info, hasher, comparer>::iterator dictionary_iter;
+   unordered_map<board_key, hash_info, hasher, comparer>::iterator dictionary_iter;
 
-	cerr << "\nThe original elements [Key : Value] are : ";
+   cerr << "\nThe original elements [Key : Value] are : ";
 
-	for (dictionary_iter = entry.begin(); 
-        dictionary_iter != entry.end(); 
+   for (dictionary_iter = entry.begin();
+        dictionary_iter != entry.end();
         dictionary_iter++)
-	{
-		cerr << endl << "    score : " << (dictionary_iter->second).score;
-		cerr << endl << " accuracy : " << (dictionary_iter->second).accuracy;
-		cerr << endl << "best move : " << (dictionary_iter->second).best;
-		cerr << endl << "    depth : " << (dictionary_iter->second).depth;
-	}
+   {
+      cerr << endl << "    score : " << (dictionary_iter->second).score;
+      cerr << endl << " accuracy : " << (dictionary_iter->second).accuracy;
+      cerr << endl << "best move : " << (dictionary_iter->second).best_move;
+      cerr << endl << "    depth : " << (dictionary_iter->second).depth;
+   }
 
-	cerr << endl;
+   cerr << endl;
 }
 
 
@@ -122,4 +122,3 @@ Dictionary::reset ()
 {
    entry.clear ();
 }
-
