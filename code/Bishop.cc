@@ -1,9 +1,3 @@
-/*==============================================================================
-   Class name: Bishop
-
-   Responsabilities:
-   - Provide the set of moves a bishop can make from any square on the board.
-  =============================================================================*/
 #include "Bishop.h"
 #include <iostream>
 
@@ -17,12 +11,12 @@ Bishop::~Bishop ()
 }
 
 /*==============================================================================
-   Get all moves from SQUARE in the current BOARD assumming it is PLAYER'S turn
-   to move (moves that may leave the king in check are also included)
+  Get all moves from SQUARE in the current BOARD assumming it is PLAYER'S turn
+  to move (moves that may leave the king in check are also included)
 
-   See ATTACKS_algorithm.txt for a graphic explanation of the algorithm used
-   here.
- ==============================================================================*/
+  See ATTACKS_algorithm.txt for a graphic explanation of the algorithm used
+  here.
+  ==============================================================================*/
 bitboard
 Bishop::get_moves (uint square, Piece::Player player, const Board* board) const
 {
@@ -44,8 +38,8 @@ Bishop::get_moves (uint square, Piece::Player player, const Board* board) const
          blocker = Board::Squares (Util::LSB_position (blocking_pieces));
 
       attacks |=
-         get_ray (Board::Squares (square), ray) ^
-         (blocking_pieces ? get_ray (blocker, ray) : 0);
+            get_ray (Board::Squares (square), ray) ^
+            (blocking_pieces ? get_ray (blocker, ray) : 0);
    }
    attacks &= ~board->get_pieces (player);
 
@@ -53,9 +47,9 @@ Bishop::get_moves (uint square, Piece::Player player, const Board* board) const
 }
 
 /*==============================================================================
-   Compute all moves a bishop can make from every square on the board assuming
-   the board is empty.
- ==============================================================================*/
+  Compute all moves a bishop can make from every square on the board assuming
+  the board is empty.
+  ==============================================================================*/
 void
 Bishop::compute_moves ()
 {
@@ -102,8 +96,8 @@ Bishop::compute_moves ()
 }
 
 /*==============================================================================
-   Return all possible moves from SQUARE, assuming the board is empty.
- ==============================================================================*/
+  Return all possible moves from SQUARE, assuming the board is empty.
+  ==============================================================================*/
 bitboard
 Bishop::get_potential_moves (uint square, Player player) const
 {
@@ -114,9 +108,9 @@ Bishop::get_potential_moves (uint square, Player player) const
 }
 
 /*==============================================================================
-   Return all possible moves from SQUARE following DIRECTION, and assuming the
-   board is empty.
- ==============================================================================*/
+  Return all possible moves from SQUARE following DIRECTION, and assuming the
+  board is empty.
+  ==============================================================================*/
 bitboard
 Bishop::get_ray (Board::Squares square, Diagonal direction) const
 {

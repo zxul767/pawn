@@ -1,10 +1,3 @@
-/*=============================================================================
-  Class name: Bishop
-
-  Responsabilities:
-  -Provide the set of moves a bishop can make from any square on the board.
-  ===========================================================================*/
-
 #ifndef BISHOP_H
 #define BISHOP_H
 
@@ -13,17 +6,14 @@
 
 class Bishop : public Piece
 {
- public:
+public:
    Bishop ();
    ~Bishop ();
 
-   bitboard get_moves (
-       uint square, Player player, const Board* board) const;
-
+   bitboard get_moves (uint square, Player player, const Board* board) const;
    bitboard get_potential_moves (uint square, Player player) const;
 
- private:
-
+private:
    bitboard get_ray (Board::Squares square, Diagonal direction) const;
    void compute_moves ();
 

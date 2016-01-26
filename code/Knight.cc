@@ -1,10 +1,3 @@
-/*=============================================================================
-  Class name: Knight
-
-  Responsabilities:
-  -Provide the set of moves a knight can make from any square on the board.
-  ============================================================================*/
-
 #include "Knight.h"
 
 Knight::Knight ()
@@ -12,9 +5,7 @@ Knight::Knight ()
    compute_moves ();
 }
 
-Knight::~Knight ()
-{
-}
+Knight::~Knight () { }
 
 /*=============================================================================
   Get all valid moves from SQUARE in the current BOARD, assumming it is

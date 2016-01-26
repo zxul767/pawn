@@ -1,10 +1,3 @@
-/*=============================================================================
-  Class name: Pawn
-
-  Responsabilities:
-  -Provide the set of moves a pawn can make from any square on the board.
-  =============================================================================*/
-
 #include "Pawn.h"
 
 Pawn:: Pawn ()
@@ -12,9 +5,7 @@ Pawn:: Pawn ()
    compute_moves ();
 }
 
-Pawn::~Pawn ()
-{
-}
+Pawn::~Pawn () { }
 
 /*============================================================================
   Return all valid moves from SQUARE in the current BOARD, assuming it is
@@ -155,7 +146,7 @@ Pawn::get_side_moves (uint square, Player player) const
   the board is empty. Moves are computed for both WHITE and BLACK pawns.
   =============================================================================*/
 void
-Pawn:: compute_moves ()
+Pawn::compute_moves ()
 {
    for (uint row = 0; row < Board::SIZE; ++row)
       for (uint col = 0; col < Board::SIZE; ++col)
@@ -199,7 +190,7 @@ bitboard
 Pawn::compute_side_moves (uint square, Player player) const
 {
    bitboard side_moves = 0;
-   int      dx[PAWN_MOVES-1] = { -1, +1 };
+   int dx[PAWN_MOVES-1] = { -1, +1 };
 
    int column = (int) get_column (square);
    int row = (int) get_row (square);
@@ -225,8 +216,8 @@ Pawn::compute_capture_move (
       return 0;
 
    bitboard capture_move = 0;
-   int      dx[PAWN_MOVES-1] = { -1, +1 };
-   int      dy[PAWN_MOVES-1] = { +1, +1 };
+   int dx[PAWN_MOVES-1] = { -1, +1 };
+   int dy[PAWN_MOVES-1] = { +1, +1 };
 
    int column = (int) get_column (square);
    int row = (int) get_row (square);
@@ -272,7 +263,7 @@ Pawn::compute_simple_moves (uint square, Player player) const
   otherwise.
   =============================================================================*/
 bool
-Pawn:: is_second_row (uint row, Player player) const
+Pawn::is_second_row (uint row, Player player) const
 {
    if (player == WHITE)
       return row == Board::SIZE-2;
@@ -285,7 +276,7 @@ Pawn:: is_second_row (uint row, Player player) const
   Precondition: SQUARE is in [0, Board::SQUARES)
   =============================================================================*/
 uint
-Pawn:: get_row (uint square) const
+Pawn::get_row (uint square) const
 {
    return (square / Board::SIZE);
 }
@@ -295,7 +286,7 @@ Pawn:: get_row (uint square) const
   Precondition: SQUARE is in [0, Board::SQUARES)
   =============================================================================*/
 uint
-Pawn:: get_column (uint square) const
+Pawn::get_column (uint square) const
 {
    return square % Board::SIZE;
 }
@@ -304,7 +295,7 @@ Pawn:: get_column (uint square) const
   Return TRUE if a pawn of side COLOR can be on ROW; return FALSE otherwise.
   =============================================================================*/
 bool
-Pawn:: is_valid_row (uint row, Player color) const
+Pawn::is_valid_row (uint row, Player color) const
 {
    if (color == WHITE)
       return row != Board::SIZE-1;

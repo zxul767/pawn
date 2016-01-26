@@ -3,14 +3,13 @@
 
 #include "common.h"
 #include <string>
-using std::string;
 
 // Cannot include Board.h because that creates a cyclic dependency
 class Board;
 
 class Piece
 {
- public:
+public:
    Piece () { }
    virtual ~Piece () { }
 
@@ -60,7 +59,7 @@ class Piece
       NULL_LINE
    };
 
-   static string pieceString (Type piece_type);
+   static std::string pieceString (Type piece_type);
 
    virtual bitboard get_moves (
        uint square, Player player, const Board* board) const = 0;
@@ -68,9 +67,6 @@ class Piece
    virtual bitboard get_potential_moves (uint  square, Player player) const = 0;
 };
 
-/*=============================================================================
-  Overload the prefix ++ operator.
-  ============================================================================*/
 inline Piece::Diagonal&
 operator ++ (Piece::Diagonal& direction)
 {

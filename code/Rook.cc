@@ -1,9 +1,3 @@
-/*=============================================================================
-  Class name: Rook
-
-  Responsabilities:
-  -Provide the set of moves a rook can make from any square on the board.
-  =============================================================================*/
 #include "Rook.h"
 
 Rook::Rook ()
@@ -11,10 +5,7 @@ Rook::Rook ()
    compute_moves ();
 }
 
-Rook::~Rook ()
-{
-
-}
+Rook::~Rook () { }
 
 /*=============================================================================
   Get all moves from SQUARE in the current BOARD assumming it is PLAYER'S turn
@@ -44,8 +35,8 @@ Rook::get_moves (uint square, Piece::Player player, const Board* board) const
          blocker = Board::Squares (Util::LSB_position (blocking_pieces));
 
       attacks |=
-         get_ray (Board::Squares (square), ray) ^
-         (blocking_pieces ? get_ray (blocker, ray) : 0);
+            get_ray (Board::Squares (square), ray) ^
+            (blocking_pieces ? get_ray (blocker, ray) : 0);
    }
    attacks &= ~board->get_pieces (player);
    return attacks;

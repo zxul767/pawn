@@ -1,15 +1,6 @@
-/*=============================================================================
-  Class name: King
-
-  Responsabilities:
-  -Provide the set of moves a king can make from any square on the board.
-  ============================================================================*/
-
 #include "King.h"
 #include <iostream>
 #include <memory>
-
-using namespace std;
 
 const bool
 King::neighbors_computed = King::compute_neighbors ();
@@ -22,9 +13,7 @@ King:: King ()
    compute_moves ();
 }
 
-King::~King ()
-{
-}
+King::~King () { }
 
 /*=============================================================================
   Get all valid moves from SQUARE in the current BOARD, assumming it is
@@ -142,7 +131,7 @@ King::get_neighbors (uint position)
 bool
 King::compute_neighbors ()
 {
-  unique_ptr<Piece> king(new King());
+   std::unique_ptr<Piece> king(new King());
 
    for (uint position = 0; position < Board::SQUARES; ++position)
    {

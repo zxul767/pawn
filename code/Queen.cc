@@ -1,10 +1,3 @@
-/*=============================================================================
-  Class name: Queen
-
-  Responsabilities:
-  -Provide the set of moves a queen can make from any square on the board.
-  ===========================================================================*/
-
 #include "Queen.h"
 
 Queen::Queen ()

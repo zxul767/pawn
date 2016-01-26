@@ -1,10 +1,3 @@
-/*=============================================================================
-  Class name: Knight
-
-  Responsabilities:
-  -Provide the set of moves a knight can make from any square on the board.
-  =============================================================================*/
-
 #ifndef KNIGHT_H
 #define KNIGHT_H
 
@@ -13,14 +6,14 @@
 
 class Knight : public Piece
 {
- public:
+public:
    Knight ();
    ~Knight ();
 
    bitboard get_moves (uint square, Player player, const Board* board) const;
    bitboard get_potential_moves (uint square, Player player) const;
 
- private:
+private:
    void compute_moves ();
 
    bitboard moves_from[Board::SQUARES];

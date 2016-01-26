@@ -1,10 +1,3 @@
-/*=============================================================================
-  Class name: King
-
-  Responsabilities:
-  -Provide the set of moves a king can make from any square on the board.
-  ===========================================================================*/
-
 #ifndef KING_H
 #define KING_H
 
@@ -13,7 +6,7 @@
 
 class King : public Piece
 {
- public:
+public:
    King ();
    ~King ();
 
@@ -22,7 +15,7 @@ class King : public Piece
 
    static bitboard get_neighbors (uint position);
 
- private:
+private:
    void compute_moves ();
 
    bitboard moves_from[Board::SQUARES];
@@ -30,6 +23,5 @@ class King : public Piece
    static bool compute_neighbors ();
    const static bool neighbors_computed;
 };
-
 
 #endif
