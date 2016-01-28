@@ -70,6 +70,9 @@ King::get_moves (uint square, Player player, const Board* board) const
 bitboard
 King:: get_potential_moves (uint square, Player player) const
 {
+   /* Only for pawns is the player to move relevant in computing the potential moves */
+   (void)player;
+
    if (Board::is_inside_board (square))
       return moves_from[square];
 

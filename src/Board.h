@@ -94,8 +94,7 @@ class Board
 
    virtual bool is_king_in_check () const = 0;
    virtual bitboard attacks_to (Squares location, bool include_king) const = 0;
-   virtual bitboard threats_to (
-       Squares location, Piece::Type type, bool include_king) const = 0;
+   virtual bitboard threats_to (Squares location, Piece::Type type) const = 0;
 
    // ACCESSORS
    virtual bitboard get_moves (Piece::Type piece, Squares square) const = 0;

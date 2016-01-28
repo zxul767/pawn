@@ -205,7 +205,7 @@ SimpleMoveGenerator::generate_en_prise_evations (
    {
       Board::Squares from = Board::Squares (Util::LSB_position (pieces));
       Piece::Type piece_type = board->get_piece (from);
-      bitboard threats = board->threats_to (from, piece_type, false);
+      bitboard threats = board->threats_to (from, piece_type);
 
       /*------------------------------------------------------------------------
         If there are threats, there are three ways to evade them: (a) by moving

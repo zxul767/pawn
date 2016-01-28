@@ -18,6 +18,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cassert>
+#include <cmath>
 
 AlphaBetaSearch::AlphaBetaSearch (
     PositionEvaluator* evaluator, MoveGenerator* generator)

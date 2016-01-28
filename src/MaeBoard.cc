@@ -168,7 +168,7 @@ MaeBoard::load_game (const string& file)
 bool
 MaeBoard::save_game (const string& file)
 {
-   return true;
+   return file.size() > 0;
 }
 
 /*=============================================================================
@@ -301,7 +301,7 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
 
    // Check whether making the move leaves the king exposed to check
    int king_position = Util::MSB_position (piece[player][Piece::KING]);
-   if (attacks_to (Squares (king_position), true))
+   if (attacks_to (Squares (king_position), true /* include_king */))
    {
       remove_piece (end);
       add_piece (start, initial.piece, initial.player);
@@ -598,7 +598,7 @@ MaeBoard::attacks_to (Squares location, bool include_king) const
   value is less than that of a piece of type TYPE
   ===========================================================================*/
 bitboard
-MaeBoard::threats_to (Squares location, Piece::Type type, bool include_king) const
+MaeBoard::threats_to (Squares location, Piece::Type type) const
 {
    bitboard attackers = 0;
    bitboard pawn_attackers;

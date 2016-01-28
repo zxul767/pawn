@@ -36,7 +36,7 @@ class MaeBoard : public Board
 
    bool is_king_in_check () const;
    bitboard attacks_to (Squares location, bool include_king) const;
-   bitboard threats_to (Squares location, Piece::Type type, bool include_king) const;
+   bitboard threats_to (Squares location, Piece::Type type) const;
 
    // ACCESSORS
    bitboard get_moves (Piece::Type piece, Squares square) const;

@@ -48,6 +48,9 @@ Rook::get_moves (uint square, Piece::Player player, const Board* board) const
 bitboard
 Rook::get_potential_moves (uint square, Player player) const
 {
+   /* Only for pawns is the player to move relevant in computing the potential moves */
+   (void)player;
+
    if (Board::is_inside_board (square))
       return all_moves_from[square];
 

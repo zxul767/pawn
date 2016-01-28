@@ -76,7 +76,7 @@ MinimaxSearch::minimax (uint depth, Result& result)
       }
    }
 
-   /* There was no legal move, so the king must be either in check mate 
+   /* There was no legal move, so the king must be either in check mate
       or in stalemate
    */
    if (n_moves_made == 0)
@@ -100,5 +100,5 @@ MinimaxSearch::minimax (uint depth, Result& result)
 void
 MinimaxSearch::load_factor_weights (vector<int>& weights)
 {
-   cout << "Loading factor weights for minimax" << endl;
+   this->evaluator->load_factor_weights (weights);
 }

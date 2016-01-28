@@ -3,7 +3,7 @@
 # COMPILER SETTINGS
 CXX = g++
 
-CXXFLAGS = -g -Wall -Werror -O2 -std=c++11 # compiler flags
+CXXFLAGS = -g -Wall -Wextra -Werror -O2 -std=c++11 # compiler flags
 CPPFLAGS = # preprocessor flags
 
 # These flags help generate dependency information files as a side-effect of
