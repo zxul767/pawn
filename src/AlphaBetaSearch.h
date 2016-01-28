@@ -1,7 +1,7 @@
 #ifndef ALPHA_BETA_SEARCH_H
 #define ALPHA_BETA_SEARCH_H
 
-#include "common.h"
+#include "Util.h"
 #include "Search.h"
 #include "Move.h"
 

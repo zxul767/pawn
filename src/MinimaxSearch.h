@@ -1,7 +1,7 @@
 #ifndef MINIMAX_SEARCH_H
 #define MINIMAX_SEARCH_H
 
-#include "common.h"
+#include "Util.h"
 #include "Search.h"
 #include "Move.h"
 

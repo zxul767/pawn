@@ -1,5 +1,5 @@
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef UTIL_H
+#define UTIL_H
 
 typedef unsigned int uint;
 typedef unsigned long long bitboard;
@@ -18,7 +18,7 @@ class Util
    static const bitboard one = 1;
    static const int INFINITUM = (INT_MAX >> 1);
 
-   static vector<bitboard> to_bitboard;
+   static std::vector<bitboard> to_bitboard;
    static bool load_to_bitboard ();
    static bool loaded;
 
@@ -33,4 +33,4 @@ class Util
    static ushort bit (ushort n) { return 1 << n; }
 };
 
-#endif // COMMON_H
+#endif // UTIL_H

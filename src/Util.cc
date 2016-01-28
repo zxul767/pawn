@@ -1,20 +1,8 @@
-/*==============================================================================
-   Class name: Util
-
-   Responsabilities:
-   -Provide several useful routines to manipulate bitboards and do operations
-    with them.
- ==============================================================================*/
-
-#include "common.h"
+#include "Util.h"
 #include <iostream>
 #include <cstdlib>
 
-using std::cout;
-using std::endl;
-
-vector<bitboard>
-Util::to_bitboard;
+std::vector<bitboard> Util::to_bitboard;
 
 bool
 Util::loaded = Util::load_to_bitboard ();
@@ -23,7 +11,7 @@ bool
 Util::load_to_bitboard ()
 {
    const static uint SQUARES = 64;
-   bitboard           one = 1;
+   bitboard one = 1;
 
    for (uint i = 0; i < SQUARES; ++i)
       to_bitboard.push_back (one << i);
@@ -237,7 +225,7 @@ Util::to_binary (ullong value)
    if (value > 0)
    {
       to_binary (value >> 1);
-      cout << (value & 1 ? '1' : '0');
+      std::cout << (value & 1 ? '1' : '0');
    }
 }
 

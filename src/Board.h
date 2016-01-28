@@ -15,7 +15,7 @@
 #include <string>
 #include <iostream>
 
-#include "common.h"
+#include "Util.h"
 #include "Piece.h"
 
 class Move;

@@ -2,7 +2,7 @@
 #define FITNESS_EVALUATOR_H
 
 #include <string>
-#include "common.h"
+#include "Util.h"
 
 class Search;
 class Board;

@@ -1,7 +1,7 @@
 #include "SimpleMoveGenerator.h"
 #include "SimpleEvaluator.h"
 #include "Board.h"
-#include "common.h"
+#include "Util.h"
 
 #include <algorithm>
 using std::cerr;

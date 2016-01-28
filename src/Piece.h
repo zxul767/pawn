@@ -1,7 +1,7 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-#include "common.h"
+#include "Util.h"
 #include <string>
 
 // Cannot include Board.h because that creates a cyclic dependency

@@ -3,7 +3,7 @@
 
 #include <ctime>
 #include <cmath>
-#include "common.h"
+#include "Util.h"
 
 class Timer
 {

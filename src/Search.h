@@ -1,7 +1,7 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 
-#include "common.h"
+#include "Util.h"
 
 class Board;
 class Move;

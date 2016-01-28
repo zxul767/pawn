@@ -1,7 +1,7 @@
 #include "Board.h"
 #include "SimpleEvaluator.h"
 #include "King.h"
-#include "common.h"
+#include "Util.h"
 #include <iostream>
 
 SimpleEvaluator::SimpleEvaluator ()

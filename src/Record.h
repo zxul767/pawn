@@ -2,9 +2,8 @@
 #define RECORD_H
 
 #include <unordered_map>
-#include "common.h"
-
 using namespace std;
+#include "Util.h"
 
 class Record
 {

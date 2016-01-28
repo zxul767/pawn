@@ -3,7 +3,7 @@
 
 class FitnessEvaluator;
 
-#include "common.h"
+#include "Util.h"
 #include "Chromosome.h"
 
 class GeneticAlgorithm
