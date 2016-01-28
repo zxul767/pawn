@@ -9,7 +9,7 @@ CPPFLAGS = # preprocessor flags
 # These flags help generate dependency information files as a side-effect of
 # compilation. See the man pages of g++ for more information (also be sure to check out
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/)
-DEP_FLAGS = -MT $@ -MMD -MP -MF $(DEP_DIR)/$*.Td
+DEP_FLAGS = -MT $@ -MMD -MF $(DEP_DIR)/$*.Td
 
 # LIBRARIES
 LIBS = -lm # math
