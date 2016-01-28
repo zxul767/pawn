@@ -31,7 +31,7 @@ BIN_DIR = bin
 SOURCES = $(shell find $(SRC_DIR) -name '*.$(SRC_EXT)')
 SRC_DIRS = $(shell find $(SRC_DIR) -type d | sed 's/$(SRC_DIR)/./g' )
 OBJS = $(patsubst $(SRC_DIR)/%.$(SRC_EXT), $(OBJ_DIR)/%.o, $(SOURCES))
-DEPENDENCIES = $(patsubst $(SRC_DIR)/%.$(SRC_EXT), $(OBJ_DIR)/%.$(DEP_EXT), $(SOURCES))
+DEPENDENCIES = $(patsubst $(SRC_DIR)/%.$(SRC_EXT), $(DEP_DIR)/%.$(DEP_EXT), $(SOURCES))
 
 # TARGETS
 all: ensure_repo $(BIN_DIR)/$(PROJECT)
