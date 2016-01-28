@@ -1,200 +1,71 @@
-## Makefile for MAE (Motor de Ajedrez Evolutivo, Spanish for Evolutionary Chess Engine)
+## MAE (Motor de Ajedrez Evolutivo, Spanish for Evolutionary Chess Engine)
 
-# COMPILER
-CPP = g++
-CXXFLAGS = -g -Wall -Werror -O2 -std=c++11
-LD = -lm
+# COMPILER SETTINGS
+CXX = g++
 
-# PROJECT NAME
+CXXFLAGS = -g -Wall -Werror -O2 -std=c++11 # compiler flags
+CPPFLAGS = # preprocessor flags
+
+# These flags help generate dependency information files as a side-effect of
+# compilation. See the man pages of g++ for more information (also be sure to check out
+# http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/)
+DEP_FLAGS = -MT $@ -MMD -MP -MF $(DEP_DIR)/$*.Td
+
+# LIBRARIES
+LIBS = -lm # math
+
+# PROJECT SETTINGS
+SRC_EXT = cc
+DEP_EXT = d
+
 PROJECT = mae
 TARBALL_TEMP_DIR = $(PROJECT)_tarball
 
 # DIRECTORIES
-SRCDIR = src
-OBJDIR = bin
+DEP_DIR = .$(DEP_EXT)
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
 
-# LIBRARIES
-LIBS =
-
-# FILES AND FOLDERS
-SRCS = $(shell find $(SRCDIR) -name '*.cc')
-SRCDIRS = $(shell find $(SRCDIR) -type d | sed 's/$(SRCDIR)/./g' )
-OBJS = $(patsubst $(SRCDIR)/%.cc, $(OBJDIR)/%.o, $(SRCS))
+# FILES
+SOURCES = $(shell find $(SRC_DIR) -name '*.$(SRC_EXT)')
+SRC_DIRS = $(shell find $(SRC_DIR) -type d | sed 's/$(SRC_DIR)/./g' )
+OBJS = $(patsubst $(SRC_DIR)/%.$(SRC_EXT), $(OBJ_DIR)/%.o, $(SOURCES))
+DEPENDENCIES = $(patsubst $(SRC_DIR)/%.$(SRC_EXT), $(OBJ_DIR)/%.$(DEP_EXT), $(SOURCES))
 
 # TARGETS
-all: $(PROJECT)
-
-$(PROJECT): ensure_repo $(OBJS)
-	$(CPP) $(OBJS) $(LIBS) $(LD) -o $@
+all: ensure_repo $(BIN_DIR)/$(PROJECT)
 
 ensure_repo:
 	@$(call create-repo)
 
-# CREATE OBJ DIRECTORY STRUCTURE
-define create-repo
-	mkdir -p $(OBJDIR)
-	for dir in $(SRCDIRS); \
-	do \
-		mkdir -p $(OBJDIR)/$$dir; \
-	done
-endef
+# Mark the dependency files precious to make, so they won’t be automatically deleted
+# as intermediate files.
+.PRECIOUS: $(DEP_DIR)/%.$(DEP_EXT)
 
-# IMPLICIT RULES TO BUILD TARGETS
-$(OBJDIR)/%.o: $(SRCDIR)/%.cc
-	$(CPP) $(CXXFLAGS) -c $< -o $@
+# PATTERN RULES
+
+# Create a pattern rule with an empty recipe, so that Make won’t fail if the
+# dependency file doesn’t exist
+$(DEP_DIR)/%.$(DEP_EXT): ;
+
+# Compilation
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.$(SRC_EXT) $(DEP_DIR)/%.$(DEP_EXT)
+	@echo "Compiling $<..."
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(DEP_FLAGS) -c $< -o $@
+	$(POSTCOMPILE)
+
+# We do this to ensure that dependency files don't get corrupted if compilation ever
+# fails
+POSTCOMPILE = mv -f $(DEP_DIR)/$*.T$(DEP_EXT) $(DEP_DIR)/$*.$(DEP_EXT)
+
+# Linking
+$(BIN_DIR)/$(PROJECT): $(OBJS)
+	@echo "Linking $@..."
+	$(CXX) $(OBJS) $(LIBS) -o $@
 
 # PHONY TARGETS
-.PHONY: clean clean-backups directories tarball
-
-# DEPENDENCIES
-# TODO: create these rules automatically from the source files
-
-# MAIN
-mae.o : mae.cc \
-	common.h \
-	MaeBoard.h Board.h Square.h BoardStatus.h \
-	Piece.h \
-	Move.h MoveGenerator.h \
-	Command.h CommandReader.h CommandExecuter.h \
-	Search.h AlphaBetaSearch.h MinimaxSearch.h Timer.h Dictionary.h
-
-# USEFUL TO VARIOUS MODULES
-common.o : common.cc common.h
-
-# USER & XBOARD COMMUNICATION
-Command.o : Command.cc Command.h \
-	common.h \
-	Board.h \
-	Move.h \
-	Piece.h
-
-CommandReader.o : CommandReader.cc CommandReader.h \
-	common.h \
-	Command.h \
-	Board.h \
-	Piece.h \
-	Move.h
-
-CommandExecuter.o : CommandExecuter.cc CommandExecuter.h \
-	common.h \
-	Command.h \
-	Board.h \
-	Piece.h \
-	Timer.h \
-	MoveGenerator.h SimpleMoveGenerator.h \
-	Search.h \
-	GeneticAlgorithm.h FitnessEvaluator.h Chromosome.h
-
-# SEARCH MODULE
-Timer.o : Timer.cc Timer.h \
-	common.h
-
-AlphaBetaSearch.o : AlphaBetaSearch.cc AlphaBetaSearch.h \
-	common.h \
-	Search.h \
-	Board.h \
-	Move.h \
-	Piece.h \
-	MoveGenerator.h \
-	PositionEvaluator.h \
-	Dictionary.h
-
-MinimaxSearch.o : MinimaxSearch.cc MinimaxSearch.h \
-	common.h \
-	Search.h \
-	Board.h \
-	Move.h \
-	Piece.h \
-	MoveGenerator.h \
-	PositionEvaluator.h
-
-SimpleEvaluator.o : SimpleEvaluator.cc SimpleEvaluator.h \
-	common.h \
-	PositionEvaluator.h \
-	Board.h \
-	Piece.h
-
-Dictionary.o : Dictionary.cc Dictionary.h \
-	common.h \
-	Board.h
-
-# BOARD REPRESENTATION MODULE
-Record.o : Record.cc Record.h \
-	common.h
-
-Board.o : Board.cc Board.h \
-	common.h \
-	Piece.h
-
-MaeBoard.o : MaeBoard.cc MaeBoard.h Board.h \
-	common.h \
-	Square.h BoardStatus.h Record.h \
-	Piece.h Pawn.h Knight.h Bishop.h Rook.h King.h Queen.h \
-	Move.h \
-	FileReader.h
-
-FileReader.o : FileReader.cc FileReader.h \
-	common.h \
-	Board.h	\
-	Piece.h
-
-# MOVE GENERATION
-Move.o : Move.cc Move.h \
-	common.h \
-	Piece.h \
-	Board.h
-
-SimpleMoveGenerator.o : SimpleMoveGenerator.cc SimpleMoveGenerator.h \
-	common.h \
-	Move.h MoveGenerator.h \
-	Piece.h \
-	Board.h
-
-Pawn.o : Pawn.cc Pawn.h \
-	common.h \
-	Piece.h \
-	Board.h
-
-Rook.o : Rook.cc Rook.h \
-	common.h \
-	Piece.h \
-	Board.h
-
-Bishop.o : Bishop.cc Bishop.h \
-	common.h \
-	Piece.h \
-	Board.h
-
-Knight.o : Knight.cc Knight.h \
-	common.h \
-	Piece.h \
-	Board.h
-
-King.o : King.cc King.h \
-	common.h \
-	Piece.h \
-	Board.h
-
-Queen.o : Queen.cc Queen.h \
-	common.h \
-	Piece.h Rook.h Bishop.h \
-	Board.h
-
-Piece.o : Piece.cc Piece.h
-
-# GENETIC ALGORITHM MODULE
-Chromosome.o : Chromosome.h Chromosome.cc \
-	common.h \
-	Board.h Piece.h \
-
-FitnessEvaluator.o : FitnessEvaluator.h FitnessEvaluator.cc \
-	Chromosome.h \
-	Search.h \
-
-GeneticAlgorithm.o : GeneticAlgorithm.h GeneticAlgorithm.cc \
-	common.h \
-	Chromosome.h \
-	FitnessEvaluator.h
+.PHONY: distclean clean clean-backups tarball
 
 # TARBALL DISTRIBUTION
 tarball : clean Makefile initial.in
@@ -205,7 +76,27 @@ tarball : clean Makefile initial.in
 
 # CLEANING
 clean : clean-backups
-	rm -Rf $(PROJECT) $(OBJDIR)
+	rm -rf $(OBJ_DIR)
+
+distclean: clean
+	rm -rf $(BIN_DIR)
 
 clean-backups :
 	find . -name "*~" -type f -print0 | xargs -0 rm -f
+
+# FUNCTIONS
+define create-repo
+	mkdir -p $(BIN_DIR)
+	mkdir -p $(DEP_DIR)
+
+	mkdir -p $(OBJ_DIR)
+	for dir in $(SRC_DIRS); \
+	do \
+		mkdir -p $(OBJ_DIR)/$$dir; \
+	done
+endef
+
+# DEPENDENCIES
+# Dependencies for each source file are automatically generated by the compiler
+# (see DEP_FLAGS above)
+-include ${DEPENDENCIES}
