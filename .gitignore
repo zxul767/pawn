@@ -1,6 +1,14 @@
+# backup files
 *~
+
+# object files
 *.o
+
+# dependency files
 *.d
+
+# compressed files
 *.tgz
 *.tar.gz
-mae
+
+bin/

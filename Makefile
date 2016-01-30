@@ -6,6 +6,8 @@ CXX = g++
 CXXFLAGS = -g -Wall -Wextra -Werror -O2 -std=c++11 # compiler flags
 CPPFLAGS = # preprocessor flags
 
+UNIT_TEST_INCLUDE_DIR = -I./src
+
 # These flags help generate dependency information files as a side-effect of
 # compilation. See the man pages of g++ for more information (also be sure to check out
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/)
@@ -13,6 +15,7 @@ DEP_FLAGS = -MT $@ -MMD -MF $(DEP_DIR)/$*.Td
 
 # LIBRARIES
 LIBS = -lm # math
+UNIT_TEST_LIBS =
 
 # PROJECT SETTINGS
 SRC_EXT = cc
@@ -21,20 +24,36 @@ DEP_EXT = d
 PROJECT = mae
 TARBALL_TEMP_DIR = $(PROJECT)_tarball
 
+UNIT_TEST_PROJECT = mae_unittest
+
 # DIRECTORIES
 DEP_DIR = .$(DEP_EXT)
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
 
+UNIT_TEST_DIR = unittest
+UNIT_TEST_SRC_DIR = $(UNIT_TEST_DIR)/src
+UNIT_TEST_OBJ_DIR = $(UNIT_TEST_DIR)/obj
+UNIT_TEST_BIN_DIR = $(UNIT_TEST_DIR)/bin
+
 # FILES
+NON_MAIN_SOURCES = $(shell find $(SRC_DIR) -name '*.$(SRC_EXT)' | grep -v $(PROJECT).$(SRC_EXT))
 SOURCES = $(shell find $(SRC_DIR) -name '*.$(SRC_EXT)')
 SRC_DIRS = $(shell find $(SRC_DIR) -type d | sed 's/$(SRC_DIR)/./g' )
 OBJS = $(patsubst $(SRC_DIR)/%.$(SRC_EXT), $(OBJ_DIR)/%.o, $(SOURCES))
+NON_MAIN_OBJS = $(patsubst $(SRC_DIR)/%.$(SRC_EXT), $(OBJ_DIR)/%.o, $(NON_MAIN_SOURCES))
 DEPENDENCIES = $(patsubst $(SRC_DIR)/%.$(SRC_EXT), $(DEP_DIR)/%.$(DEP_EXT), $(SOURCES))
+
+UNIT_TEST_SOURCES = $(shell find $(UNIT_TEST_SRC_DIR) -name '*.$(SRC_EXT)')
+UNIT_TEST_OBJS = $(patsubst $(UNIT_TEST_SRC_DIR)/%.$(SRC_EXT), $(UNIT_TEST_OBJ_DIR)/%.o, $(UNIT_TEST_SOURCES))
 
 # TARGETS
 all: ensure_repo $(BIN_DIR)/$(PROJECT)
+
+unittest: ensure_repo $(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT)
+	@echo "Running unit tests ..."
+	./$(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT)
 
 ensure_repo:
 	@$(call create-repo)
@@ -55,14 +74,23 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.$(SRC_EXT) $(DEP_DIR)/%.$(DEP_EXT)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(DEP_FLAGS) -c $< -o $@
 	$(POSTCOMPILE)
 
+$(UNIT_TEST_OBJ_DIR)/%.o: $(UNIT_TEST_SRC_DIR)/%.$(SRC_EXT) $(DEP_DIR)/%.$(DEP_EXT)
+	@echo "Compiling unit test $<..."
+	$(CXX) $(UNIT_TEST_INCLUDE_DIR) $(CPPFLAGS) $(CXXFLAGS) $(DEP_FLAGS) -c $< -o $@
+	$(POSTCOMPILE)
+
 # We do this to ensure that dependency files don't get corrupted if compilation ever
 # fails
 POSTCOMPILE = mv -f $(DEP_DIR)/$*.T$(DEP_EXT) $(DEP_DIR)/$*.$(DEP_EXT)
 
 # Linking
 $(BIN_DIR)/$(PROJECT): $(OBJS)
-	@echo "Linking $@..."
+	@echo "Linking main executable $@..."
 	$(CXX) $(OBJS) $(LIBS) -o $@
+
+$(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT): $(UNIT_TEST_OBJS) $(NON_MAIN_OBJS)
+	@echo "Linking main unit test runner $@..."
+	$(CXX) $(UNIT_TEST_OBJS) $(NON_MAIN_OBJS) $(UNIT_TEST_LIBS) -o $@
 
 # PHONY TARGETS
 .PHONY: distclean clean clean-backups tarball
@@ -76,10 +104,10 @@ tarball : clean Makefile initial.in
 
 # CLEANING
 clean : clean-backups
-	rm -rf $(OBJ_DIR)
+	rm -rf $(OBJ_DIR) $(UNIT_TEST_OBJ_DIR)
 
 distclean: clean
-	rm -rf $(BIN_DIR)
+	rm -rf $(BIN_DIR) $(UNIT_TEST_BIN_DIR)
 
 clean-backups :
 	find . -name "*~" -type f -print0 | xargs -0 rm -f
@@ -88,6 +116,8 @@ clean-backups :
 define create-repo
 	mkdir -p $(BIN_DIR)
 	mkdir -p $(DEP_DIR)
+	mkdir -p $(UNIT_TEST_OBJ_DIR)
+	mkdir -p $(UNIT_TEST_BIN_DIR)
 
 	mkdir -p $(OBJ_DIR)
 	for dir in $(SRC_DIRS); \
