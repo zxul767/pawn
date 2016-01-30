@@ -1,4 +1,5 @@
 #include "Rook.h"
+#include "Macros.h"
 
 Rook::Rook ()
 {
@@ -49,7 +50,7 @@ bitboard
 Rook::get_potential_moves (uint square, Player player) const
 {
    /* Only for pawns is the player to move relevant in computing the potential moves */
-   (void)player;
+   SILENCE_UNUSED_VAR_WARNING(player);
 
    if (Board::is_inside_board (square))
       return all_moves_from[square];
