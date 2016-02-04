@@ -36,9 +36,6 @@ class AlphaBetaSearch : public Search
    uint hash_table_hits;
    Move best_move;
 
-   bool debugging;
-   void turn_debugging (bool value) { debugging = value; }
-
  public:
    AlphaBetaSearch (PositionEvaluator* evaluator, MoveGenerator* generator);
    ~AlphaBetaSearch ();

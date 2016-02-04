@@ -27,7 +27,6 @@ AlphaBetaSearch::AlphaBetaSearch (
    this->generator = generator;
    this->evaluator = evaluator;
    this->hash_table = new Dictionary (64);
-   this->debugging = false;
 }
 
 AlphaBetaSearch::~AlphaBetaSearch ()
@@ -129,7 +128,6 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
    // This estimation of the negamax value may be really wrong if we are in
    // the middle of a tactical sequence
    this->root_value = this->evaluator->static_evaluation (board);
-   this->turn_debugging (false);
 
    for (uint depth = 1; depth <= this->max_depth; ++depth)
    {
@@ -335,14 +333,6 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
    // In zugzwang positions, this is not true.
    if (node_value >= beta)
    {
-      if (this->debugging)
-      {
-         std::cerr << (board->get_turn () == Piece::WHITE ? "WHITE":"BLACK")
-                   << std::endl;
-         std::cerr << "Static value of node exceeds BETA: "
-                   << node_value << " >= " << beta << std::endl;
-         std::cerr << (*board) << std::endl;
-      }
       this->n_leaf_nodes++;
 
       return node_value;
@@ -355,13 +345,6 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
    // Failing to pay attention to an ongoing check has fatal consequences
    if (depth >= MAX_QUIESCENCE_DEPTH && !board->is_king_in_check ())
    {
-      if (this->debugging)
-      {
-         std::cerr << (board->get_turn () == Piece::WHITE ? "WHITE":"BLACK") << std::endl;
-         std::cerr << "MAX_QUIESCENCE_DEPTH exceeded but not in check: "
-                   << node_value << std::endl;
-         std::cerr << (*board) << std::endl;
-      }
       this->n_leaf_nodes++;
 
       return node_value;
@@ -376,13 +359,6 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
    // A checkmate
    if (board->is_king_in_check () && moves.size () == 0)
    {
-      if (this->debugging)
-      {
-         std::cerr << (board->get_turn () == Piece::WHITE ? "WHITE":"BLACK")
-                   << std::endl;
-         std::cerr << "A checkmate" << std::endl;
-         std::cerr << (*board) << std::endl;
-      }
       this->n_leaf_nodes++;
 
       return MATE_VALUE;
@@ -397,13 +373,6 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
 
       if (moves.size () == 0)
       {
-         if (this->debugging)
-         {
-            std::cerr << (board->get_turn () == Piece::WHITE ? "WHITE":"BLACK")
-                      << std::endl;
-            std::cerr << "Quiescent position: " << node_value << std::endl;
-            std::cerr << (*board) << std::endl;
-         }
          this->n_leaf_nodes++;
 
          return node_value;
@@ -463,9 +432,6 @@ AlphaBetaSearch::build_principal_variation (
    };
    Dictionary::hash_info data;
    bool return_value = true;
-
-   if (this->debugging)
-      std::cerr << (*board) << std::endl;
 
    if (this->hash_table->get_data (key, data))
    {

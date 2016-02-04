@@ -70,8 +70,6 @@ class Board
      METHODS
      ========================================================================*/
 
-   virtual void turn_debugging (bool) = 0;
-
    virtual void clear () = 0;
    virtual void reset () = 0;
 

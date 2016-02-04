@@ -386,15 +386,11 @@ MaeBoard::undo_move ()
 
    if(!remove_piece (move.to ()))
    {
-      if (this->debugging)
-         cerr << "There is not a piece in square " << move.to () << endl;
       return false;
    }
 
    if (!add_piece (move.from (), move.get_moving_piece (), player))
    {
-      if (this->debugging)
-         cerr << "Cannot place a piece in " << move.from () << endl;
       return false;
    }
 
@@ -403,8 +399,6 @@ MaeBoard::undo_move ()
       case Move::NORMAL_CAPTURE:
          if (!add_piece (move.to (), move.get_captured_piece (), opponent))
          {
-            if (this->debugging)
-               cerr << "Normal Capture" << endl;
             return false;
          }
          break;
@@ -413,8 +407,6 @@ MaeBoard::undo_move ()
          size = (this->is_whites_turn ? SIZE: -((int)SIZE));
          if (!add_piece (Squares (move.to () + size), Piece::PAWN, opponent))
          {
-            if (this->debugging)
-               cerr << "En Passant Capture" << endl;
             return false;
          }
          break;
@@ -422,14 +414,10 @@ MaeBoard::undo_move ()
       case Move::CASTLE_KING_SIDE:
          if (!remove_piece (Squares (move.from () + 1)))
          {
-            if (this->debugging)
-               cerr << "Castle King Side" << endl;
             return false;
          }
          if (!add_piece (this->corner[player][KING_SIDE], Piece::ROOK, player))
          {
-            if (this->debugging)
-               cerr << "Castle King Side" << endl;
             return false;
          }
          this->is_castled_[player][KING_SIDE] = false;
@@ -438,14 +426,10 @@ MaeBoard::undo_move ()
       case Move::CASTLE_QUEEN_SIDE:
          if (!remove_piece (Squares (move.from () - 1)))
          {
-            if (this->debugging)
-               cerr << "Castle Queen Side" << endl;
             return false;
          }
          if (!add_piece (this->corner[player][QUEEN_SIDE], Piece::ROOK, player))
          {
-            if (this->debugging)
-               cerr << "Castle Queen Side" << endl;
             return false;
          }
          this->is_castled_[player][QUEEN_SIDE] = false;
@@ -457,8 +441,6 @@ MaeBoard::undo_move ()
             // There was a capture while doing the promotion
             if (!add_piece (move.to (), move.get_captured_piece (), opponent))
             {
-               if (this->debugging)
-                  cerr << "Promotion pawn" << endl;
                return false;
             }
          break;

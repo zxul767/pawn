@@ -65,8 +65,6 @@ class MaeBoard : public Board
    void set_turn (Piece::Player player);
    void set_castling_privilege (Piece::Player player, CastleSide side, bool value);
 
-   void turn_debugging (bool is_on) { debugging = is_on; }
-
  private:
    // Do not allow users of this class to make copies
    MaeBoard (const MaeBoard& other);
@@ -125,9 +123,6 @@ class MaeBoard : public Board
    bitboard eighth_rank[PLAYERS];
    Squares corner[PLAYERS][CASTLE_SIDES];
    Squares original_king_position[PLAYERS];
-
-   // show debugging information if the flag is on
-   bool debugging;
 
    /*==========================================================================
      PRIVATE METHODS
