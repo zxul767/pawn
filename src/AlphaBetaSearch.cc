@@ -393,7 +393,7 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
    {
       // Make sure none of the pieces of the player in turn is being
       // attacked by a lower value piece
-      generator->generate_en_prise_evations (board, moves);
+      this->generator->generate_en_prise_evations (board, moves);
 
       if (moves.size () == 0)
       {

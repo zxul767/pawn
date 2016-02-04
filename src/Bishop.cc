@@ -61,8 +61,9 @@ Bishop::compute_moves ()
    for (Board::Squares square = Board::a8; square <= Board::h1; ++square)
    {
       for (uint ray = 0; ray < Piece::RAYS; ++ray)
-         moves_from[square][ray] = 0;
-      all_moves_from[square] = 0;
+         this->moves_from[square][ray] = 0;
+
+      this->all_moves_from[square] = 0;
    }
 
    for (uint row = 0; row < Board::SIZE; ++row)
@@ -89,9 +90,9 @@ Bishop::compute_moves ()
             {
                y += dy[ray];
                x += dx[ray];
-               moves_from[square][ray] |= (one << (y * Board::SIZE + x));
+               this->moves_from[square][ray] |= (one << (y * Board::SIZE + x));
             }
-            all_moves_from[square] |= moves_from[square][ray];
+            this->all_moves_from[square] |= this->moves_from[square][ray];
          }
       }
 }
@@ -106,7 +107,7 @@ Bishop::get_potential_moves (uint square, Player player) const
    SILENCE_UNUSED_VAR_WARNING(player);
 
    if (Board::is_inside_board (square))
-      return all_moves_from[square];
+      return this->all_moves_from[square];
 
    return 0;
 }
@@ -119,7 +120,7 @@ bitboard
 Bishop::get_ray (Board::Squares square, Diagonal direction) const
 {
    if (Board::is_inside_board (square))
-      return moves_from[square][direction];
+      return this->moves_from[square][direction];
 
    return 0;
 }

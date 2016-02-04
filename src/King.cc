@@ -65,6 +65,7 @@ King::get_moves (uint square, Player player, const Board* board) const
       }
    }
    attacks &= ~board->get_pieces (player);
+
    return attacks;
 }
 
@@ -75,7 +76,7 @@ King:: get_potential_moves (uint square, Player player) const
    SILENCE_UNUSED_VAR_WARNING(player);
 
    if (Board::is_inside_board (square))
-      return moves_from[square];
+      return this->moves_from[square];
 
    return 0;
 }
@@ -88,7 +89,7 @@ King::compute_moves ()
    int dy[KING_MOVES] = {+1, +1, +1,  0, -1, -1, -1,  0};
 
    for (uint square = 0; square < Board::SQUARES; square++)
-      moves_from[square] = 0;
+      this->moves_from[square] = 0;
 
    for (uint row = 0; row < Board::SIZE; ++row)
       for (uint col = 0; col < Board::SIZE; ++col)
@@ -119,7 +120,7 @@ King::compute_moves ()
             int x = col + dx[jump];
 
             if (Board::is_inside_board (y, x))
-               moves_from[square] |= (Util::one << (y * Board::SIZE + x));
+               this->moves_from[square] |= (Util::one << (y * Board::SIZE + x));
          }
       }
 }
@@ -139,7 +140,7 @@ King::compute_neighbors ()
 
    for (uint position = 0; position < Board::SQUARES; ++position)
    {
-      bitboard neighborhood     = king->get_potential_moves (position, Piece::WHITE);
+      bitboard neighborhood = king->get_potential_moves (position, Piece::WHITE);
       bitboard actual_neighbors = neighborhood;
 
       int square = Util::MSB_position (neighborhood);

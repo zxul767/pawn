@@ -37,16 +37,16 @@ CommandExecuter::execute (const Command& command)
    switch (command.get_value ())
    {
    case Command::NEW_GAME:
-      board->reset ();
+      this->board->reset ();
       break;
 
    case Command::UNDO_MOVE:
-      board->undo_move ();
+      this->board->undo_move ();
       break;
 
    case Command::REMOVE:
-      board->undo_move ();
-      board->undo_move ();
+      this->board->undo_move ();
+      this->board->undo_move ();
       break;
 
    case Command::SEE_MOVES:
@@ -91,21 +91,21 @@ CommandExecuter::show_possible_moves ()
 {
    vector<Move> possible_moves;
 
-   move_generator->generate_moves (board, possible_moves);
+   this->move_generator->generate_moves (board, possible_moves);
    cerr << possible_moves.size () << " moves" << endl;
 
    for (uint i = 0; i < possible_moves.size (); ++i)
-      if (board->make_move (possible_moves[i], true) == Board::NO_ERROR)
+      if (this->board->make_move (possible_moves[i], true) == Board::NO_ERROR)
       {
          cerr << possible_moves[i] << " -> " << possible_moves[i].get_score ()
               << endl;
 
          cerr << (*board) << endl;
 
-         timer->set_clock (2.0);
-         timer->sleep ();
+         this->timer->set_clock (2.0);
+         this->timer->sleep ();
 
-         board->undo_move ();
+         this->board->undo_move ();
       }
 }
 
@@ -121,8 +121,8 @@ CommandExecuter::make_user_move (const string& command)
    {
       // Strip off the string 'usermove ' sent by Xboard before the actual move
       string notation = command.substr (i + 1);
-      Move   move (notation);
-      Board::Error error = board->make_move (move, false);
+      Move move (notation);
+      Board::Error error = this->board->make_move (move, false);
 
       switch (error)
       {
@@ -162,13 +162,13 @@ CommandExecuter::think ()
    uint depth = 3;
 
    cerr << "Analyzing position to depth " << depth << " ..." << endl;
-   result = search_engine->get_best_move (depth, board, best_move);
+   result = this->search_engine->get_best_move (depth, board, best_move);
 
    if (result == Search::NORMAL_EVALUATION ||
        result == Search::BLACK_MATES ||
        result == Search::WHITE_MATES)
    {
-      Board::Error error = board->make_move (best_move, true);
+      Board::Error error = this->board->make_move (best_move, true);
       if (error == Board::NO_ERROR)
       {
          string first, second;
@@ -243,7 +243,7 @@ void
 CommandExecuter::train_by_GA (
     uint population_size, uint n_generations, double mutation_probability)
 {
-  unique_ptr<FitnessEvaluator> fitness_evaluator(new FitnessEvaluator (search_engine));
+   unique_ptr<FitnessEvaluator> fitness_evaluator(new FitnessEvaluator (this->search_engine));
 
    cerr << "About to start the Genetic Algorithm" << endl;
    cerr << "Population size:\t" << population_size << endl;
@@ -268,5 +268,6 @@ CommandExecuter::train_by_GA (
 
    vector<int> best_features;
    GA->get_fittest_member ().decode (best_features);
-   search_engine->load_factor_weights (best_features);
+
+   this->search_engine->load_factor_weights (best_features);
 }

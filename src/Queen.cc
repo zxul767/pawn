@@ -2,14 +2,14 @@
 
 Queen::Queen ()
 {
-   rook = new Rook ();
-   bishop = new Bishop ();
+   this->rook = new Rook ();
+   this->bishop = new Bishop ();
 }
 
 Queen::~Queen ()
 {
-   delete rook;
-   delete bishop;
+   delete this->rook;
+   delete this->bishop;
 }
 
 /*=============================================================================
@@ -19,8 +19,8 @@ Queen::~Queen ()
 bitboard
 Queen::get_moves (uint square, Player player, const Board* board) const
 {
-   bitboard attacks = bishop->get_moves (square, player, board);
-   attacks |= rook->get_moves (square, player, board);
+   bitboard attacks = this->bishop->get_moves (square, player, board);
+   attacks |= this->rook->get_moves (square, player, board);
 
    return attacks;
 }
@@ -28,8 +28,8 @@ Queen::get_moves (uint square, Player player, const Board* board) const
 bitboard
 Queen::get_potential_moves (uint square, Player player) const
 {
-   bitboard moves = bishop->get_potential_moves (square, player);
-   moves |= rook->get_potential_moves (square, player);
+   bitboard moves = this->bishop->get_potential_moves (square, player);
+   moves |= this->rook->get_potential_moves (square, player);
 
    return moves;
 }

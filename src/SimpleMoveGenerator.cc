@@ -54,8 +54,9 @@ SimpleMoveGenerator::generate_moves (Board* board, vector<Move>&  moves)
                move.set_score ((int)(10 * score));
                captures.push_back (move);
             }
-            else
+            else {
                moves.push_back (move);
+            }
          }
       }
    }
@@ -101,8 +102,7 @@ SimpleMoveGenerator::generate_moves (
 
          while (valid_moves)
          {
-            Board::Squares current_move =
-               Board::Squares (Util::MSB_position (valid_moves));
+            Board::Squares current_move = Board::Squares (Util::MSB_position (valid_moves));
             valid_moves ^= (Util::one << current_move);
 
             Move move (square, current_move);

@@ -12,17 +12,17 @@
 
 FileReader:: FileReader ()
 {
-   values = new vector<string>[3];
+   this->values = new vector<string>[3];
 }
 
 FileReader:: ~FileReader ()
 {
-   delete[] values;
+   delete[] this->values;
 }
 
 FileReader::FileReader (const string& file_name, Board* board)
 {
-   values = new vector<string>[3];
+   this->values = new vector<string>[3];
    this->file_name = file_name;
    this->board = board;
 
@@ -33,30 +33,30 @@ FileReader::FileReader (const string& file_name, Board* board)
 bool
 FileReader::load_variables ()
 {
-   variables.push_back ("GAME_STATUS");
+   this->variables.push_back ("GAME_STATUS");
 
-   variables.push_back ("TURN");
+   this->variables.push_back ("TURN");
 
-   variables.push_back ("CASTLE_WHITE_KING");
-   variables.push_back ("CASTLE_WHITE_QUEEN");
-   variables.push_back ("CASTLE_BLACK_KING");
-   variables.push_back ("CASTLE_BLACK_QUEEN");
+   this->variables.push_back ("CASTLE_WHITE_KING");
+   this->variables.push_back ("CASTLE_WHITE_QUEEN");
+   this->variables.push_back ("CASTLE_BLACK_KING");
+   this->variables.push_back ("CASTLE_BLACK_QUEEN");
 
-   variables.push_back ("EN_PASSANT");
+   this->variables.push_back ("EN_PASSANT");
 
-   variables.push_back ("WHITE_PAWN");
-   variables.push_back ("WHITE_KNIGHT");
-   variables.push_back ("WHITE_BISHOP");
-   variables.push_back ("WHITE_ROOK");
-   variables.push_back ("WHITE_QUEEN");
-   variables.push_back ("WHITE_KING");
+   this->variables.push_back ("WHITE_PAWN");
+   this->variables.push_back ("WHITE_KNIGHT");
+   this->variables.push_back ("WHITE_BISHOP");
+   this->variables.push_back ("WHITE_ROOK");
+   this->variables.push_back ("WHITE_QUEEN");
+   this->variables.push_back ("WHITE_KING");
 
-   variables.push_back ("BLACK_PAWN");
-   variables.push_back ("BLACK_KNIGHT");
-   variables.push_back ("BLACK_BISHOP");
-   variables.push_back ("BLACK_ROOK");
-   variables.push_back ("BLACK_QUEEN");
-   variables.push_back ("BLACK_KING");
+   this->variables.push_back ("BLACK_PAWN");
+   this->variables.push_back ("BLACK_KNIGHT");
+   this->variables.push_back ("BLACK_BISHOP");
+   this->variables.push_back ("BLACK_ROOK");
+   this->variables.push_back ("BLACK_QUEEN");
+   this->variables.push_back ("BLACK_KING");
 
    return true;
 }
@@ -64,14 +64,14 @@ FileReader::load_variables ()
 bool
 FileReader::load_values ()
 {
-   values[0].push_back ("OVER");
-   values[0].push_back ("PENDING");
+   this->values[0].push_back ("OVER");
+   this->values[0].push_back ("PENDING");
 
-   values[1].push_back ("WHITE");
-   values[1].push_back ("BLACK");
+   this->values[1].push_back ("WHITE");
+   this->values[1].push_back ("BLACK");
 
-   values[2].push_back ("TRUE");
-   values[2].push_back ("FALSE");
+   this->values[2].push_back ("TRUE");
+   this->values[2].push_back ("FALSE");
 
    return true;
 }
@@ -79,7 +79,7 @@ FileReader::load_values ()
 bool
 FileReader::load_file ()
 {
-   input.open (file_name.c_str ());
+   input.open (this->file_name.c_str ());
 
    if (!input.good ())
       return false;
@@ -96,7 +96,7 @@ FileReader::is_empty_line (const string& line) const
    for (uint i = 0; i < line.length (); ++i)
       if (!isspace (line[i]))
         return false;
-   
+
    return true;
 }
 
@@ -169,8 +169,8 @@ FileReader::set_variable (string& input)
 bool
 FileReader::variable_was_found (const string& input, uint* index_variable)
 {
-   for (uint i = 0; i < variables.size (); i++)
-      if (input == variables[i])
+   for (uint i = 0; i < this->variables.size (); i++)
+      if (input == this->variables[i])
       {
          *index_variable = i;
          return true;
@@ -191,7 +191,7 @@ FileReader::value_was_found (
       index = 2;
 
    for (uint i = 0; i < 2; i++)
-      if (input == values[index][i])
+      if (input == this->values[index][i])
       {
          *index_value = i;
          return true;
@@ -205,27 +205,30 @@ FileReader::set_value (
 {
    if (index_variable == 0)
    {
-      board->set_game_status (get_status (index_value));
+      this->board->set_game_status (get_status (index_value));
    }
    else if (index_variable == 1)
    {
-      board->set_turn (get_turn (index_value));
+      this->board->set_turn (get_turn (index_value));
    }
    else if (index_variable >= 2 && index_variable <= 5)
    {
-      board->set_castling_privilege (get_color(index_variable),
-                                     get_side (index_variable),
-                                     get_boolean (index_value));
+      this->board->set_castling_privilege (
+          get_color(index_variable),
+          get_side (index_variable),
+          get_boolean (index_value));
    }
    else if (index_variable == 6)
    {
-      //board->set_en_passant (get_boolean (index_value));
+      // TODO: implement feature
+      //this->board->set_en_passant (get_boolean (index_value));
    }
    else if (index_variable >= 7 && index_variable <= 18)
    {
-      board->add_piece (token,
-                        get_type (index_variable),
-                        get_color (index_variable));
+      this->board->add_piece (
+          token,
+          get_type (index_variable),
+          get_color (index_variable));
    }
    return false;
 }

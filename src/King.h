@@ -17,8 +17,8 @@ public:
 
 private:
    void compute_moves ();
-
    bitboard moves_from[Board::SQUARES];
+
    static bitboard neighbors[Board::SQUARES];
    static bool compute_neighbors ();
    const static bool neighbors_computed;

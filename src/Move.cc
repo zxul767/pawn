@@ -22,11 +22,11 @@ Move::Move (const string& move_notation)
        !translate_to_square (move_notation.substr (2, 2), end))
    {
       // Create a null move if NOTATION was incorrect
-      score = 0;
-      start = end = Board::a8;
-      type  = NULL_MOVE;
-      moving_piece = Piece::NULL_PIECE;
-      captured_piece = Piece::NULL_PIECE;
+      this->score = 0;
+      this->start = this->end = Board::a8;
+      this->type = NULL_MOVE;
+      this->moving_piece = Piece::NULL_PIECE;
+      this->captured_piece = Piece::NULL_PIECE;
    }
 }
 
@@ -38,22 +38,22 @@ Move::Move (const string& move_notation)
   =============================================================================*/
 Move::Move ()
 {
-   score = 0;
-   start = Board::a1;
-   end   = Board::a1;
-   type  = NULL_MOVE;
-   moving_piece = Piece::NULL_PIECE;
-   captured_piece = Piece::NULL_PIECE;
+   this->score = 0;
+   this->start = Board::a1;
+   this->end = Board::a1;
+   this->type = NULL_MOVE;
+   this->moving_piece = Piece::NULL_PIECE;
+   this->captured_piece = Piece::NULL_PIECE;
 }
 
 Move::Move (const Move& move)
 {
-   score = move.score;
-   start = move.start;
-   end = move.end;
-   type = move.type;
-   moving_piece = move.moving_piece;
-   captured_piece = move.captured_piece;
+   this->score = move.score;
+   this->start = move.start;
+   this->end = move.end;
+   this->type = move.type;
+   this->moving_piece = move.moving_piece;
+   this->captured_piece = move.captured_piece;
 }
 
 /*=============================================================================
@@ -64,12 +64,12 @@ Move::Move (const Move& move)
   ============================================================================*/
 Move::Move (Board::Squares start, Board::Squares end)
 {
-   score = 0;
+   this->score = 0;
    this->start = start;
    this->end = end;
-   type = NULL_MOVE;
-   moving_piece = Piece::NULL_PIECE;
-   captured_piece = Piece::NULL_PIECE;
+   this->type = NULL_MOVE;
+   this->moving_piece = Piece::NULL_PIECE;
+   this->captured_piece = Piece::NULL_PIECE;
 }
 
 
@@ -79,7 +79,7 @@ Move::Move (Board::Squares start, Board::Squares end)
 bool
 Move::is_null () const
 {
-   return (type == NULL_MOVE);
+   return this->type == NULL_MOVE;
 }
 
 /*=============================================================================
@@ -106,8 +106,7 @@ operator << (ostream& out, const Move& move)
 bool
 operator == (const Move& m1, const Move& m2)
 {
-   return (m1.start == m2.start &&
-           m1.end == m2.end);
+   return (m1.start == m2.start && m1.end == m2.end);
 }
 
 bool
@@ -119,19 +118,19 @@ operator < (const Move& m1, const Move& m2)
 Board::Squares
 Move::from () const
 {
-   return start;
+   return this->start;
 }
 
 Board::Squares
 Move::to () const
 {
-   return end;
+   return this->end;
 }
 
 Move::Type
 Move::get_type () const
 {
-   return type;
+   return this->type;
 }
 
 void
@@ -143,13 +142,13 @@ Move::set_type (Move::Type type)
 Piece::Type
 Move::get_moving_piece () const
 {
-   return moving_piece;
+   return this->moving_piece;
 }
 
 Piece::Type
 Move::get_captured_piece () const
 {
-   return captured_piece;
+   return this->captured_piece;
 }
 
 void
@@ -173,7 +172,7 @@ Move::set_score (int score)
 int
 Move::get_score () const
 {
-   return score;
+   return this->score;
 }
 
 /*============================================================================
@@ -199,7 +198,7 @@ Move::translate_to_square (const string& notation, Board::Squares& square)
    if (is_valid_notation (notation))
    {
       ushort column = toupper (notation[0]) - 'A';
-      ushort row    = (Board::SIZE - 1) - (notation[1] - '1');
+      ushort row = (Board::SIZE - 1) - (notation[1] - '1');
 
       square = (Board::Squares) (row * Board::SIZE + column);
       return true;

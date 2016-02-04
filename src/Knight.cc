@@ -31,7 +31,7 @@ Knight::get_potential_moves (uint square, Player player) const
    SILENCE_UNUSED_VAR_WARNING(player);
 
    if (Board::is_inside_board (square))
-      return moves_from[square];
+      return this->moves_from[square];
 
    return 0;
 }
@@ -47,7 +47,7 @@ Knight::compute_moves ()
    int dy[KNIGHT_MOVES] = {-2, -1, +1, +2, +2, +1, -1, -2};
 
    for (uint square = 0; square < Board::SQUARES; ++square)
-      moves_from[square] = 0;
+      this->moves_from[square] = 0;
 
    for (uint row = 0; row < Board::SIZE; ++row)
       for (uint col = 0; col < Board::SIZE; ++col)
@@ -74,7 +74,7 @@ Knight::compute_moves ()
             int y = row + dy[jump];
             int x = col + dx[jump];
             if (Board::is_inside_board (y, x))
-               moves_from[square] |= (Util::one << (y * Board::SIZE + x));
+               this->moves_from[square] |= (Util::one << (y * Board::SIZE + x));
          }
       }
 }

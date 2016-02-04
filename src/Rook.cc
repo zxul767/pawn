@@ -40,6 +40,7 @@ Rook::get_moves (uint square, Piece::Player player, const Board* board) const
             (blocking_pieces ? get_ray (blocker, ray) : 0);
    }
    attacks &= ~board->get_pieces (player);
+
    return attacks;
 }
 
@@ -53,7 +54,7 @@ Rook::get_potential_moves (uint square, Player player) const
    SILENCE_UNUSED_VAR_WARNING(player);
 
    if (Board::is_inside_board (square))
-      return all_moves_from[square];
+      return this->all_moves_from[square];
 
    return 0;
 }
@@ -65,14 +66,15 @@ Rook::get_potential_moves (uint square, Player player) const
 void
 Rook::compute_moves ()
 {
-   int       dx[Piece::RAYS] = {  0, +1,  0, -1 };
-   int       dy[Piece::RAYS] = { -1,  0, +1,  0 };
+   int dx[Piece::RAYS] = {  0, +1,  0, -1 };
+   int dy[Piece::RAYS] = { -1,  0, +1,  0 };
 
    for (Board::Squares square = Board::a8; square <= Board::h1; ++square)
    {
       for (uint ray = 0; ray < Piece::RAYS; ++ray)
-         moves_from[square][ray] = 0;
-      all_moves_from[square] = 0;
+         this->moves_from[square][ray] = 0;
+
+      this->all_moves_from[square] = 0;
    }
 
    for (uint row = 0; row < Board::SIZE; ++row)
@@ -99,9 +101,9 @@ Rook::compute_moves ()
             {
                y += dy[ray];
                x += dx[ray];
-               moves_from[square][ray] |= (Util::one << (y * Board::SIZE + x));
+               this->moves_from[square][ray] |= (Util::one << (y * Board::SIZE + x));
             }
-            all_moves_from[square] |= moves_from[square][ray];
+            this->all_moves_from[square] |= this->moves_from[square][ray];
          }
       }
 }
@@ -115,7 +117,7 @@ bitboard
 Rook::get_ray (Board::Squares square, RowColumn direction) const
 {
    if (Board::is_inside_board (square))
-      return moves_from[square][direction];
+      return this->moves_from[square][direction];
 
    return 0;
 }

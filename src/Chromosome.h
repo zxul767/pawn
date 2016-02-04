@@ -22,7 +22,6 @@ class Chromosome
 
    // Create an individual with random features
    Chromosome (uint n_features);
-
    Chromosome (const Chromosome& copy);
    Chromosome (const vector<int>& features);
    Chromosome (const vector<bool>& genes);

@@ -31,10 +31,7 @@ Pawn::get_moves (uint square, Player player, const Board* board) const
    bitboard captures = east_capture | west_capture;
 
    bitboard simple_moves = simple_moves_from [square][player];
-   bitboard moves =
-      (captures & opponent_pieces) |
-      (simple_moves & ~all_pieces);
-
+   bitboard moves = (captures & opponent_pieces) | (simple_moves & ~all_pieces);
    bitboard double_move = get_double_move (square, player);
 
    // Is there a two-square move included already ? [*]
@@ -48,11 +45,9 @@ Pawn::get_moves (uint square, Player player, const Board* board) const
    }
 
    // Add possible en-passant captures
-   if (board->is_en_passant_on () &&
-       (get_side_moves (square, player) & opponent_pawns))
+   if (board->is_en_passant_on () && (get_side_moves (square, player) & opponent_pawns))
    {
-      bitboard
-      en_passant_capture_square = board->get_en_passant_square ();
+      bitboard en_passant_capture_square = board->get_en_passant_square ();
 
       if (west_capture & en_passant_capture_square)
          moves |= en_passant_capture_square;
@@ -71,7 +66,8 @@ bitboard
 Pawn::get_potential_moves (uint square, Player player) const
 {
    if (Board::is_inside_board (square))
-      return moves_from[square][player];
+      return this->moves_from[square][player];
+
    return 0;
 }
 
@@ -87,7 +83,7 @@ Pawn::get_capture_move (uint square, Player player, RowColumn direction) const
       if (direction == EAST || direction == WEST)
       {
          uint side = (direction == EAST ? 0 : 1);
-         return capture_moves_from[square][player][side];
+         return this->capture_moves_from[square][player][side];
       }
    return 0;
 }
@@ -100,7 +96,8 @@ bitboard
 Pawn::get_simple_moves (uint square, Player player) const
 {
    if (Board::is_inside_board (square))
-      return simple_moves_from[square][player];
+      return this->simple_moves_from[square][player];
+
    return 0;
 }
 
@@ -137,7 +134,8 @@ bitboard
 Pawn::get_side_moves (uint square, Player player) const
 {
    if (Board:: is_inside_board (square))
-      return side_moves_from[square][player];
+      return this->side_moves_from[square][player];
+
    return 0;
 }
 
@@ -155,26 +153,26 @@ Pawn::compute_moves ()
 
          for (Player player = WHITE; player <= BLACK; ++player)
          {
-            side_moves_from[square][player] = compute_side_moves (square, player);
-            moves_from[square][player] = 0;
+            this->side_moves_from[square][player] = compute_side_moves (square, player);
+            this->moves_from[square][player] = 0;
 
-            simple_moves_from[square][player] =
-               compute_simple_moves (square, player);
+            this->simple_moves_from[square][player] =
+                  compute_simple_moves (square, player);
 
-            capture_moves_from[square][player][0] =
-               compute_capture_move (square, player, EAST);
+            this->capture_moves_from[square][player][0] =
+                  compute_capture_move (square, player, EAST);
 
-            capture_moves_from[square][player][1] =
-               compute_capture_move (square, player, WEST);
+            this->capture_moves_from[square][player][1] =
+                  compute_capture_move (square, player, WEST);
 
             // OR simple and capture moves into general moves
-            moves_from[square][player] |= simple_moves_from[square][player];
+            this->moves_from[square][player] |= this->simple_moves_from[square][player];
 
-            moves_from[square][player] |=
-               capture_moves_from[square][player][0];
+            this->moves_from[square][player] |=
+                  this->capture_moves_from[square][player][0];
 
-            moves_from[square][player] |=
-               capture_moves_from[square][player][1];
+            this->moves_from[square][player] |=
+                  this->capture_moves_from[square][player][1];
 
             // If potential moves include side moves then:
             // moves_from[square][player] |= side_moves_from[square];
@@ -209,8 +207,7 @@ Pawn::compute_side_moves (uint square, Player player) const
   pawn on SQUARE, assuming it is PLAYER'S turn to move.
   =============================================================================*/
 bitboard
-Pawn::compute_capture_move (
-    uint square, Player player, RowColumn direction) const
+Pawn::compute_capture_move (uint square, Player player, RowColumn direction) const
 {
    if (direction != EAST && direction != WEST)
       return 0;
