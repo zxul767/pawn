@@ -7,7 +7,6 @@
 #include "CommandReader.h"
 #include "CommandExecuter.h"
 #include "AlphaBetaSearch.h"
-#include "MinimaxSearch.h"
 #include "SimpleMoveGenerator.h"
 #include "SimpleEvaluator.h"
 

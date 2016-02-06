@@ -104,7 +104,7 @@ tarball : clean Makefile initial.in
 
 # CLEANING
 clean : clean-backups
-	rm -rf $(OBJ_DIR) $(UNIT_TEST_OBJ_DIR)
+	rm -rf $(OBJ_DIR) $(UNIT_TEST_OBJ_DIR) $(DEP_DIR)
 
 distclean: clean
 	rm -rf $(BIN_DIR) $(UNIT_TEST_BIN_DIR)
