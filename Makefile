@@ -51,6 +51,8 @@ UNIT_TEST_OBJS = $(patsubst $(UNIT_TEST_SRC_DIR)/%.$(SRC_EXT), $(UNIT_TEST_OBJ_D
 # TARGETS
 all: ensure_repo $(BIN_DIR)/$(PROJECT)
 
+rebuild: clean all
+
 unittest: ensure_repo $(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT)
 	@echo "Running unit tests ..."
 	./$(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT)
