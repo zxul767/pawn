@@ -7,26 +7,24 @@
 #include "Record.h"
 #include <stack>
 
-using std::stack;
-
 class MaeBoard : public Board
 {
  public:
 
    MaeBoard ();
-   MaeBoard (const string& file);
+   MaeBoard (const std::string& file);
    ~MaeBoard ();
 
    void clear ();
    void reset ();
 
-   bool load_game (const string& file);
-   bool save_game (const string& file);
+   bool load_game (const std::string& file);
+   bool save_game (const std::string& file);
 
-   bool add_piece (const string& location, Piece::Type type, Piece::Player player);
+   bool add_piece (const std::string& location, Piece::Type type, Piece::Player player);
    bool add_piece (Squares square, Piece::Type type, Piece::Player player);
 
-   bool remove_piece (const string& location);
+   bool remove_piece (const std::string& location);
    bool remove_piece (Squares square);
 
    Error make_move (Move& move, bool is_computer_move);
@@ -114,7 +112,7 @@ class MaeBoard : public Board
    uint fifty_move_counter;
 
    // Game history needed to undo moves
-   stack<BoardStatus> game_history;
+   std::stack<BoardStatus> game_history;
 
    // Objects implementing the Piece interface to aid in move generation
    Piece* chessmen[PIECE_TYPES];

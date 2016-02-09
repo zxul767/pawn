@@ -20,7 +20,10 @@
 #include <cstdlib>
 #include <memory>
 
-using namespace std;
+using std::string;
+using std::vector;
+using std::cout;
+using std::cerr;
 
 CommandExecuter::CommandExecuter (
     Board* board, Search* search_engine, Timer* timer)
@@ -60,11 +63,11 @@ CommandExecuter::execute (const Command& command)
    case Command::FEATURES:
       cout << "feature setboard=1 usermove=1 time=0 draw=0 sigint=0 "
            << "sigterm=0 variants=\"normal\" analyze=0 colors=0 "
-           << "myname=\"MaE\" done=1" << endl;
+           << "myname=\"MaE\" done=1" << std::endl;
       break;
 
    case Command::XBOARD_MODE:
-      cout << endl;
+      cout << std::endl;
       break;
 
    case Command::THINK:
@@ -76,7 +79,6 @@ CommandExecuter::execute (const Command& command)
       break;
 
    default:
-      cerr << "Undefined command" << endl;
       break;
    }
    return true;
@@ -92,15 +94,15 @@ CommandExecuter::show_possible_moves ()
    vector<Move> possible_moves;
 
    this->move_generator->generate_moves (board, possible_moves);
-   cerr << possible_moves.size () << " moves" << endl;
+   cerr << possible_moves.size () << " moves" << std::endl;
 
    for (uint i = 0; i < possible_moves.size (); ++i)
       if (this->board->make_move (possible_moves[i], true) == Board::NO_ERROR)
       {
          cerr << possible_moves[i] << " -> " << possible_moves[i].get_score ()
-              << endl;
+                   << std::endl;
 
-         cerr << (*board) << endl;
+         cerr << (*board) << std::endl;
 
          this->timer->set_clock (2.0);
          this->timer->sleep ();
@@ -131,7 +133,7 @@ CommandExecuter::make_user_move (const string& command)
          break;
 
       case Board::DRAW_BY_REPETITION:
-         cout << "1/2-1/2 {Draw by repetition}" << endl;
+         cout << "1/2-1/2 {Draw by repetition}" << std::endl;
          break;
 
       case Board::WRONG_MOVEMENT:
@@ -143,8 +145,6 @@ CommandExecuter::make_user_move (const string& command)
          break;
 
       default:
-         cerr << "Xboard is not supposed to send this error: "
-              << error << endl;
          break;
       }
    }
@@ -161,7 +161,6 @@ CommandExecuter::think ()
    Move best_move;
    uint depth = 3;
 
-   cerr << "Analyzing position to depth " << depth << " ..." << endl;
    result = this->search_engine->get_best_move (depth, board, best_move);
 
    if (result == Search::NORMAL_EVALUATION ||
@@ -176,7 +175,7 @@ CommandExecuter::think ()
          Move::translate_to_notation (best_move.to (), second);
 
          // Communicate the move to Xboard
-         cout << "move " << first + second << endl;
+         cout << "move " << first + second << std::endl;
       }
       else
       {
@@ -184,33 +183,25 @@ CommandExecuter::think ()
          switch (error)
          {
          case Board::KING_LEFT_IN_CHECK:
-            cerr << "King left in check" << endl;
             break;
 
          case Board::OPPONENTS_TURN:
-            cerr << "Opponent's turn" << endl;
             break;
 
          case Board::WRONG_MOVEMENT:
-            cerr << "Wrong move" << endl;
             break;
 
          case Board::GAME_FINISHED:
-            cerr << "Game is over, cannot make more moves" << endl;
             break;
 
          case Board::NO_PIECE_IN_SQUARE:
-            cerr << "There is no piece in square "
-                 << best_move.from () << " moving to " << best_move.to ()
-                 << endl;
             break;
 
          case Board::DRAW_BY_REPETITION:
-            cout << "1/2-1/2 {Draw by repetition}" << endl;
+            cout << "1/2-1/2 {Draw by repetition}" << std::endl;
             break;
 
          default:
-            cerr << "Unknown error: " << error << endl;
             abort ();
             break;
          }
@@ -218,24 +209,20 @@ CommandExecuter::think ()
 
       if (result == Search::WHITE_MATES)
       {
-         cerr << "Result: WHITE_MATES" << endl;
-         cout << "1-0 {White mates}" << endl;
+         cout << "1-0 {White mates}" << std::endl;
       }
       else if (result == Search::BLACK_MATES)
       {
-         cerr << "Result: BLACK_MATES" << endl;
-         cout << "0-1 {Black mates}" << endl;
+         cout << "0-1 {Black mates}" << std::endl;
       }
    }
    else if (result == Search::STALEMATE)
    {
-      cerr << "Result: STALEMATE" << endl;
-      cout << "1/2-1/2 {Stalemate}" << endl;
+      cout << "1/2-1/2 {Stalemate}" << std::endl;
    }
    else if (result == Search::DRAW_BY_REPETITION)
    {
-      cerr << "Result: DRAW BY REPETITION" << endl;
-      cout << "1/2-1/2 {Draw by repetition}" << endl;
+      cout << "1/2-1/2 {Draw by repetition}" << std::endl;
    }
 }
 
@@ -243,18 +230,12 @@ void
 CommandExecuter::train_by_GA (
     uint population_size, uint n_generations, double mutation_probability)
 {
-   unique_ptr<FitnessEvaluator> fitness_evaluator(new FitnessEvaluator (this->search_engine));
+   std::unique_ptr<FitnessEvaluator> fitness_evaluator(
+       new FitnessEvaluator (this->search_engine));
 
-   cerr << "About to start the Genetic Algorithm" << endl;
-   cerr << "Population size:\t" << population_size << endl;
-   cerr << "Generations to run:\t" << n_generations << endl;
-   cerr << "Mutation probability:\t" << mutation_probability << endl;
-
-   unique_ptr<GeneticAlgorithm>
-     GA(new GeneticAlgorithm (population_size,
-                              n_generations,
-                              mutation_probability,
-                              fitness_evaluator.get()));
+   std::unique_ptr<GeneticAlgorithm> GA(
+       new GeneticAlgorithm (
+           population_size, n_generations, mutation_probability, fitness_evaluator.get()));
 
    vector<int> features_a;
    features_a.push_back (80);

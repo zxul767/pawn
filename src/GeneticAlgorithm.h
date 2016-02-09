@@ -23,24 +23,24 @@ class GeneticAlgorithm
    void initialize_population ();
    void evaluate_population ();
    void select_breeding_individuals (
-       vector<Chromosome>& population, uint breeding_population_size,
-       vector<Chromosome>& selection);
+       std::vector<Chromosome>& population, uint breeding_population_size,
+       std::vector<Chromosome>& selection);
 
    void reduce_population (uint size);
-   void add_on_population (const vector<Chromosome>& elements);
+   void add_on_population (const std::vector<Chromosome>& elements);
    bool converge ();
 
    void set_actual_fitness ();
-   void set_material_fitness (vector<Chromosome>& sub_population);
+   void set_material_fitness (std::vector<Chromosome>& sub_population);
    void set_duration_fitness (
-       vector<Chromosome>& sub_population, Chromosome::Outcome population_type);
+       std::vector<Chromosome>& sub_population, Chromosome::Outcome population_type);
 
    uint population_size;
    uint n_iterations;
    double mutation_probability;
    FitnessEvaluator* fitness_evaluator;
 
-   vector<Chromosome> population;
+   std::vector<Chromosome> population;
    Chromosome fittest_member;
 };
 

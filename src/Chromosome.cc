@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <ctime>
 
+using std::vector;
+
 Chromosome::Chromosome ()
 {
    initialize_data ();
@@ -64,7 +66,6 @@ Chromosome::decode (vector<int>& features)
 {
    int feature_value = 0;
 
-   std::cerr << "Decoding chromosome" << std::endl;
    features.clear ();
    for (uint i = 0, j = 0; i < this->gene_string.size (); ++i, ++j)
    {
@@ -99,7 +100,7 @@ Chromosome::mutate (double probability)
 // Combine two chromosomes to produce two offspring
 void
 Chromosome::reproduce (
-    Chromosome& other, pair<Chromosome, Chromosome>& children)
+    Chromosome& other, std::pair<Chromosome, Chromosome>& children)
 {
    unsigned short half = this->gene_string.size() / 2;
 
@@ -151,7 +152,6 @@ void
 Chromosome::encode (const vector<int>& features)
 {
    uint locus = 0;
-   std::cerr << "encoding features into chromosome" << std::endl;
 
    for (uint i = 0; i < features.size (); ++i)
    {
@@ -185,15 +185,14 @@ Chromosome::get_gene (uint position) const
       return this->gene_string[position];
    else
    {
-      std::cerr << "Trying to acces an invalid index in the string!" << endl;
       return false;
    }
 }
 
-string
+std::string
 Chromosome::get_genes () const
 {
-   string genes = "";
+   std::string genes = "";
    for (uint i = 0; i < this->gene_string.size (); ++i)
          genes += (this->gene_string[i] ? "1" : "0");
    return genes;
@@ -305,8 +304,8 @@ Chromosome::operator = (const Chromosome& other)
    return *this;
 }
 
-ostream&
-operator << (ostream& out, const Chromosome& other)
+std::ostream&
+operator << (std::ostream& out, const Chromosome& other)
 {
    out << "Fitness:\t" << other.fitness << '\n';
    //out << "Won game:\t" << (other.is_winner ? "YES" : "NO") << '\n';

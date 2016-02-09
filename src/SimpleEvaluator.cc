@@ -228,7 +228,7 @@ SimpleEvaluator::get_piece_value (Piece::Type piece_type) const
 }
 
 void
-SimpleEvaluator::load_factor_weights (vector<int>& weights)
+SimpleEvaluator::load_factor_weights (std::vector<int>& weights)
 {
   for (uint i = 0; i < weights.size (); ++i)
     {

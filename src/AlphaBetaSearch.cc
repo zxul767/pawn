@@ -20,6 +20,8 @@
 #include <cassert>
 #include <cmath>
 
+using std::vector;
+
 AlphaBetaSearch::AlphaBetaSearch (
     PositionEvaluator* evaluator, MoveGenerator* generator)
 {

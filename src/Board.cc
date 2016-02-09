@@ -34,12 +34,12 @@ Board::is_inside_board (uint square)
    return (square < SQUARES);
 }
 
-ostream&
-operator << (ostream& out, const Board& board)
+std::ostream&
+operator << (std::ostream& out, const Board& board)
 {
    static const uint nplayers = Board::PLAYERS;
 
-   static const string
+   static const std::string
      piece_to_string[][nplayers] =
      {
        { "  P  ", " *P* " },
@@ -50,10 +50,10 @@ operator << (ostream& out, const Board& board)
        { "  K  ", " *K* " },
      };
 
-   out << "  -------------------------------------------------" << endl;
+   out << "  -------------------------------------------------" << std::endl;
    for (uint row = 0; row < Board::SIZE; ++row)
    {
-      out << "  |     |     |     |     |     |     |     |     |" << endl;
+      out << "  |     |     |     |     |     |     |     |     |" << std::endl;
       out << (Board::SIZE - row) << ' ';
 
       for (uint col = 0; col < Board::SIZE; ++col)
@@ -73,12 +73,12 @@ operator << (ostream& out, const Board& board)
             out << "     ";
 
       }
-      out << '|' << endl;
-      out << "  -------------------------------------------------" << endl;
+      out << '|' << std::endl;
+      out << "  -------------------------------------------------" << std::endl;
    }
 
    // Display algebraic coordinates
-   out << "     a     b     c     d     e     f     g     h   " << endl;
+   out << "     a     b     c     d     e     f     g     h   " << std::endl;
 
    return out;
 }

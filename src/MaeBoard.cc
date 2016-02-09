@@ -7,8 +7,7 @@
 #include "King.h"
 #include "Pawn.h"
 
-using std::cerr;
-using std::endl;
+using std::string;
 
 /*=============================================================================
   CONST STATIC INITIALIZATION BLOCK
@@ -25,7 +24,6 @@ MaeBoard::MaeBoard ()
    load_support_data ();
    reset ();
 }
-
 
 /*=============================================================================
  | Build a new board as specified in the file FILE_NAME (see initial.in for an|
@@ -376,9 +374,6 @@ MaeBoard::undo_move ()
 
    if(!this->position_counter.decrease_record (key))
    {
-      cerr << "Error during position_counter.decrease_record () for move "
-           << move << endl;
-      cerr << (*this) << endl;
       return false;
    }
 
@@ -449,8 +444,6 @@ MaeBoard::undo_move ()
          break;
 
       default:
-         cerr << "A type of move that was not expected has occurred. Watch out!"
-              << endl;
          break;
    }
 
@@ -537,8 +530,6 @@ MaeBoard::label_move (Move& move) const
    }
    else
    {
-      cerr << "A null move detected. Watch out! " << move << endl;
-      cerr << (*this) << endl;
       move.set_type (Move::NULL_MOVE);
    }
 

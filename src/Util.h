@@ -9,8 +9,6 @@ typedef unsigned short int ushort;
 #include <climits>
 #include <vector>
 
-using std::vector;
-
 class Util
 {
  public:

@@ -2,7 +2,6 @@
 #define RECORD_H
 
 #include <unordered_map>
-using namespace std;
 #include "Util.h"
 
 class Record
@@ -40,7 +39,7 @@ private:
             return board.hash_lock == other.hash_lock;
          }
    };
-   unordered_map <board_key, ushort, hasher, comparer> record;
+   std::unordered_map <board_key, ushort, hasher, comparer> record;
 };
 
 #endif // RECORD_H

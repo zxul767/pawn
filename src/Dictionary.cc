@@ -3,10 +3,9 @@
 
 #include <iostream>
 
-using std::cerr;
-using std::endl;
+using std::unordered_map;
 
-map<ushort, uint> Dictionary::possible_size;
+std::map<ushort, uint> Dictionary::possible_size;
 size_t Dictionary::size;
 
 Dictionary::Dictionary (uint size)
@@ -64,7 +63,7 @@ Dictionary::add_entry (
    data.best_move = best_move;
    data.depth = depth;
 
-   this->entry.insert (pair<board_key, hash_info>(board, data));
+   this->entry.insert (std::pair<board_key, hash_info>(board, data));
 
    return true;
 }
@@ -89,19 +88,19 @@ Dictionary::show_all ()
 {
    unordered_map<board_key, hash_info, hasher, comparer>::iterator dictionary_iter;
 
-   cerr << "\nThe original elements [Key : Value] are : ";
+   std::cerr << "\nThe original elements [Key : Value] are : ";
 
    for (dictionary_iter = this->entry.begin();
         dictionary_iter != this->entry.end();
         dictionary_iter++)
    {
-      cerr << endl << "    score : " << (dictionary_iter->second).score;
-      cerr << endl << " accuracy : " << (dictionary_iter->second).accuracy;
-      cerr << endl << "best move : " << (dictionary_iter->second).best_move;
-      cerr << endl << "    depth : " << (dictionary_iter->second).depth;
+      std::cerr << std::endl << "    score : " << (dictionary_iter->second).score;
+      std::cerr << std::endl << " accuracy : " << (dictionary_iter->second).accuracy;
+      std::cerr << std::endl << "best move : " << (dictionary_iter->second).best_move;
+      std::cerr << std::endl << "    depth : " << (dictionary_iter->second).depth;
    }
 
-   cerr << endl;
+   std::cerr << std::endl;
 }
 
 

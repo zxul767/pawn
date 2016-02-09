@@ -16,7 +16,7 @@
   For instance, the notation e2e4 denotes the movement of the king's pawn from
   its initial square to the center of the board.
   ============================================================================*/
-Move::Move (const string& move_notation)
+Move::Move (const std::string& move_notation)
 {
    if (!translate_to_square (move_notation.substr (0, 2), start) ||
        !translate_to_square (move_notation.substr (2, 2), end))
@@ -85,12 +85,12 @@ Move::is_null () const
 /*=============================================================================
   Output information regarding MOVE to the stream OUT
   ============================================================================*/
-ostream&
-operator << (ostream& out, const Move& move)
+std::ostream&
+operator << (std::ostream& out, const Move& move)
 {
    if (move.get_type () != Move::NULL_MOVE)
    {
-      string initial, final;
+      std::string initial, final;
       Move::translate_to_notation (move.from (), initial);
       Move::translate_to_notation (move.to (), final);
 
@@ -193,7 +193,7 @@ Move::get_score () const
   f(A1) -> 56, f(H1) -> 63
   ============================================================================*/
 bool
-Move::translate_to_square (const string& notation, Board::Squares& square)
+Move::translate_to_square (const std::string& notation, Board::Squares& square)
 {
    if (is_valid_notation (notation))
    {
@@ -210,7 +210,7 @@ Move::translate_to_square (const string& notation, Board::Squares& square)
   Inverse function of translate_to_square
   ============================================================================*/
 bool
-Move::translate_to_notation (Board::Squares square, string& notation)
+Move::translate_to_notation (Board::Squares square, std::string& notation)
 {
    if (!Board::is_inside_board (square))
       return false;
@@ -229,7 +229,7 @@ Move::translate_to_notation (Board::Squares square, string& notation)
   For instance, A8 is a valid notation, whereas B10 is not.
   ============================================================================*/
 bool
-Move::is_valid_notation (const string &notation)
+Move::is_valid_notation (const std::string &notation)
 {
    if (notation.length () != 2)
       return false;

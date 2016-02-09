@@ -12,14 +12,11 @@
 #include "Piece.h"
 #include "Board.h"
 
-using std::string;
-using std::ostream;
-
 class Move
 {
  public:
    Move ();
-   Move (const string& notation);
+   Move (const std::string& notation);
    Move (Board::Squares start, Board::Squares end);
    Move (const Move& move);
 
@@ -60,7 +57,7 @@ class Move
    /*--------------------------------------------------------------------------
      OVERLOADED OPERATORS
      ------------------------------------------------------------------------*/
-   friend ostream& operator << (ostream& out, const Move& move);
+   friend std::ostream& operator << (std::ostream& out, const Move& move);
 
    friend bool operator == (const Move& m1, const Move& m2);
    friend bool operator < (const Move& m1, const Move& m2);
@@ -68,9 +65,9 @@ class Move
    /*--------------------------------------------------------------------------
      PUBLIC STATIC METHODS
      ------------------------------------------------------------------------*/
-   static bool translate_to_square (const string& notation, Board::Squares& square);
-   static bool translate_to_notation (Board::Squares square, string& notation);
-   static bool is_valid_notation (const string &notation);
+   static bool translate_to_square (const std::string& notation, Board::Squares& square);
+   static bool translate_to_notation (Board::Squares square, std::string& notation);
+   static bool is_valid_notation (const std::string &notation);
 
  private:
    Board::Squares start;

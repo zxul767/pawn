@@ -10,14 +10,16 @@
 #include "SimpleMoveGenerator.h"
 #include "SimpleEvaluator.h"
 
-using namespace std;
+using std::unique_ptr;
+using std::cerr;
+using std::endl;
 
 int
 main ()
 {
   bool auto_play = false;
   bool xboard_mode = false;
-  
+
   unique_ptr<Board> board(new MaeBoard);
   unique_ptr<PositionEvaluator> evaluator(new SimpleEvaluator);
   unique_ptr<MoveGenerator> generator(new SimpleMoveGenerator);
@@ -29,11 +31,11 @@ main ()
   unique_ptr<CommandReader> command_reader(new CommandReader);
   unique_ptr<CommandExecuter> command_executer(
       new CommandExecuter(board.get(), search_engine.get(), timer.get()));
-  
+
   cerr << (*board) << endl;
   cerr << (board->get_turn () == Piece::WHITE ?
            "[White's turn]: " : "[Black's turn]: ");
-  
+
   command = command_reader->get_command ();
   while (!command.is_quit ())
   {
@@ -65,7 +67,7 @@ main ()
             cerr << "Another error" << endl;
             break;
         }
-        cerr << "[Your move is illegal, please try again.]" 
+        cerr << "[Your move is illegal, please try again.]"
              << endl;
       }
       else if (auto_play)

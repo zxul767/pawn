@@ -5,7 +5,6 @@
 #include "Piece.h"
 
 #include <vector>
-using std::vector;
 
 class SimpleEvaluator : public PositionEvaluator
 {
@@ -18,7 +17,7 @@ class SimpleEvaluator : public PositionEvaluator
    int evaluate_king_safety (const Board* board) const;
 
    int get_piece_value (Piece::Type piece_type) const;
-   void load_factor_weights (vector<int>& weights);
+   void load_factor_weights (std::vector<int>& weights);
 
  private:
    int material_value (bitboard piece, Piece::Type piece_type) const;
@@ -39,8 +38,8 @@ class SimpleEvaluator : public PositionEvaluator
    };
 
    // Piece values are well-known, so we make them static here.
-   vector<int> piece_value;
-   vector<int> factor_weight;
+   std::vector<int> piece_value;
+   std::vector<int> factor_weight;
 };
 
 #endif // SIMPLE_EVALUATOR_H

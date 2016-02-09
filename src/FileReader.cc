@@ -10,6 +10,9 @@
 #include "FileReader.h"
 #include <cctype>
 
+using std::string;
+using std::vector;
+
 FileReader:: FileReader ()
 {
    this->values = new vector<string>[3];

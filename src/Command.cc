@@ -10,11 +10,13 @@
 #include "Command.h"
 #include "Move.h"
 
+using std::string;
+
 /*==============================================================================
    Static initialization block
  ==============================================================================*/
-map<string, Command::Value> Command::commands;
-map<Command::Value, string> Command::commandStrings;
+std::map<string, Command::Value> Command::commands;
+std::map<Command::Value, string> Command::commandStrings;
 
 const bool Command::commands_loaded = Command::load_commands ();
 

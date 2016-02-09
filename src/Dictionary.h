@@ -6,9 +6,6 @@
 
 #include "Util.h"
 #include "Move.h"
-
-using std::map;
-
 #include "MaeBoard.h"
 
 class Dictionary
@@ -46,7 +43,7 @@ public:
 
    static void set_possible_size ();
 
-   static map<ushort, uint> possible_size;
+   static std::map<ushort, uint> possible_size;
    static const ushort MAX_MEMORY = 256;
    static size_t size;
 
@@ -70,7 +67,7 @@ private:
    };
 
    uint hash_size;
-   unordered_map<board_key, hash_info, hasher, comparer> entry;
+   std::unordered_map<board_key, hash_info, hasher, comparer> entry;
 };
 
 #endif // HASH_DICTIONARY_H

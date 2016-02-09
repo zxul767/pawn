@@ -4,8 +4,6 @@
 #include <string>
 #include "Util.h"
 
-using std::string;
-
 class Command;
 class Board;
 class Timer;
@@ -19,7 +17,7 @@ class CommandExecuter
 
    bool execute (const Command& command);
    void show_possible_moves ();
-   void make_user_move (const string& command);
+   void make_user_move (const std::string& command);
    void think ();
    void train_by_GA (
        uint population_size, uint n_generations, double mutation_probability);

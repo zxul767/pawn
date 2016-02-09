@@ -26,7 +26,7 @@ class Search
    Search () {}
    virtual ~Search () {}
 
-   virtual void load_factor_weights (vector<int>& weights) = 0;
+   virtual void load_factor_weights (std::vector<int>& weights) = 0;
 
    virtual Result get_best_move (
        uint depth, Board* board, Move& best_move) = 0;

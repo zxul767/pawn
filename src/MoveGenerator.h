@@ -3,9 +3,8 @@
 
 #include <vector>
 #include "Move.h"
-class Board;
 
-using std::vector;
+class Board;
 
 class MoveGenerator
 {
@@ -28,10 +27,10 @@ class MoveGenerator
      Return a vector of legal moves from the current BOARD configuration
      ---------------------------------------------------------------------*/
    virtual bool generate_moves (
-       Board*  board, vector<Move>& moves, ushort flags) = 0;
+       Board*  board, std::vector<Move>& moves, ushort flags) = 0;
 
-   virtual bool generate_moves (Board* board, vector<Move>& moves) = 0;
-   virtual bool generate_en_prise_evations (Board* board, vector<Move>& moves) = 0;
+   virtual bool generate_moves (Board* board, std::vector<Move>& moves) = 0;
+   virtual bool generate_en_prise_evations (Board* board, std::vector<Move>& moves) = 0;
 };
 
 #endif // MOVE_GENERATOR_H

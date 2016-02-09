@@ -4,7 +4,9 @@
 #include "Util.h"
 
 #include <algorithm>
-using std::cerr;
+#include <cassert>
+
+using std::vector;
 
 SimpleMoveGenerator::SimpleMoveGenerator () {}
 
@@ -144,25 +146,15 @@ SimpleMoveGenerator::generate_moves (
                if (error == Board::NO_ERROR)
                {
                   check_evasions.push_back (move);
-                  if (!board->undo_move ())
-                  {
-                     cerr << "Cannot undo while in QS move generation" << endl;
-                     abort ();
-                  }
+                  assert(board->undo_move());
                }
                else if (error == Board::DRAW_BY_REPETITION)
                {
-                  if (!board->undo_move ())
-                  {
-                     cerr << "Cannot undo while in QS move generation" << endl;
-                     cerr << "Error: draw by repetition" << endl;
-                     abort ();
-                  }
+                  assert(board->undo_move());
                }
                else if (error != Board::KING_LEFT_IN_CHECK)
                {
-                  cerr << "An error of type " << error
-                       << " detected in quiescence move generation" << endl;
+                  // TODO: implement proper logging
                }
             }
          }

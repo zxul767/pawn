@@ -4,9 +4,6 @@
 #include <string>
 #include <map>
 
-using std::string;
-using std::map;
-
 class Command
 {
  public:
@@ -28,20 +25,20 @@ class Command
 
    Command ();
    Command (Value command_value);
-   Command (string& command);
+   Command (std::string& command);
 
    bool is_move () const;
    bool is_quit () const;
 
-   string get_notation () const;
+   std::string get_notation () const;
    Value get_value () const;
 
  private:
-   string command;
-   Value  value;
+   std::string command;
+   Value value;
 
-   static map<string, Value> commands;
-   static map<Value, string> commandStrings;
+   static std::map<std::string, Value> commands;
+   static std::map<Value, std::string> commandStrings;
 
    static bool load_commands ();
    static const bool commands_loaded;

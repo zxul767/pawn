@@ -20,10 +20,6 @@
 
 class Move;
 
-using std::string;
-using std::ostream;
-using std::endl;
-
 class Board
 {
  public:
@@ -73,16 +69,16 @@ class Board
    virtual void clear () = 0;
    virtual void reset () = 0;
 
-   virtual bool load_game (const string& file) = 0;
-   virtual bool save_game (const string& file) = 0;
+   virtual bool load_game (const std::string& file) = 0;
+   virtual bool save_game (const std::string& file) = 0;
 
    virtual bool add_piece (
-       const string& location, Piece::Type piece, Piece::Player player) = 0;
+       const std::string& location, Piece::Type piece, Piece::Player player) = 0;
 
    virtual bool add_piece (
        Squares square, Piece::Type piece, Piece::Player player) = 0;
 
-   virtual bool remove_piece (const string& location) = 0;
+   virtual bool remove_piece (const std::string& location) = 0;
    virtual bool remove_piece (Squares square) = 0;
 
    virtual Error make_move (Move& move, bool is_computer_move) = 0;
@@ -128,7 +124,7 @@ class Board
    static bool is_inside_board (uint square);
 
    // OVERLOADED OPERATORS
-   friend ostream& operator << (ostream& out, const Board& board);
+   friend std::ostream& operator << (std::ostream& out, const Board& board);
 };
 
 inline Board::Squares&

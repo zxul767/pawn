@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <algorithm>
 
+using std::vector;
+
 GeneticAlgorithm::GeneticAlgorithm (
     uint population_size, uint n_iterations, double mutation_probability,
     FitnessEvaluator* fitness_evaluator)
@@ -45,7 +47,7 @@ GeneticAlgorithm::run ()
       uint size = parents.size ();
       while (size >= 2)
       {
-         pair<Chromosome, Chromosome> children;
+         std::pair<Chromosome, Chromosome> children;
 
          uint selected = rand() % size;
          Chromosome individualA = parents[selected];
