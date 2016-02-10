@@ -7,13 +7,13 @@
 class Command;
 class Board;
 class Timer;
-class Search;
+class IChessEngine;
 class MoveGenerator;
 
 class CommandExecuter
 {
  public:
-   CommandExecuter (Board* board, Search* search_engine, Timer* timer);
+   CommandExecuter (Board* board, IChessEngine* chess_engine, Timer* timer);
 
    bool execute (const Command& command);
    void show_possible_moves ();
@@ -25,7 +25,7 @@ class CommandExecuter
  private:
    Timer* timer;
    Board* board;
-   Search* search_engine;
+   IChessEngine* chess_engine;
    MoveGenerator* move_generator;
 };
 

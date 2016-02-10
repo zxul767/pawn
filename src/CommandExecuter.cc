@@ -1,6 +1,6 @@
 #include "CommandExecuter.h"
 #include "Command.h"
-#include "AlphaBetaSearch.h"
+#include "IChessEngine.h"
 #include "Board.h"
 #include "SimpleMoveGenerator.h"
 #include "Timer.h"
@@ -18,11 +18,11 @@ using std::cout;
 using std::cerr;
 
 CommandExecuter::CommandExecuter (
-    Board* board, Search* search_engine, Timer* timer)
+    Board* board, IChessEngine* chess_engine, Timer* timer)
 {
    this->timer = timer;
    this->board = board;
-   this->search_engine = search_engine;
+   this->chess_engine = chess_engine;
    this->move_generator = new SimpleMoveGenerator ();
 }
 
@@ -149,15 +149,15 @@ CommandExecuter::make_user_move (const string& command)
 void
 CommandExecuter::think ()
 {
-   Search::Result result;
+   IChessEngine::Result result;
    Move best_move;
    uint depth = 3;
 
-   result = this->search_engine->get_best_move (depth, board, best_move);
+   result = this->chess_engine->get_best_move (depth, board, best_move);
 
-   if (result == Search::NORMAL_EVALUATION ||
-       result == Search::BLACK_MATES ||
-       result == Search::WHITE_MATES)
+   if (result == IChessEngine::NORMAL_EVALUATION ||
+       result == IChessEngine::BLACK_MATES ||
+       result == IChessEngine::WHITE_MATES)
    {
       Board::Error error = this->board->make_move (best_move, true);
       if (error == Board::NO_ERROR)
@@ -199,20 +199,20 @@ CommandExecuter::think ()
          }
       }
 
-      if (result == Search::WHITE_MATES)
+      if (result == IChessEngine::WHITE_MATES)
       {
          cout << "1-0 {White mates}" << std::endl;
       }
-      else if (result == Search::BLACK_MATES)
+      else if (result == IChessEngine::BLACK_MATES)
       {
          cout << "0-1 {Black mates}" << std::endl;
       }
    }
-   else if (result == Search::STALEMATE)
+   else if (result == IChessEngine::STALEMATE)
    {
       cout << "1/2-1/2 {Stalemate}" << std::endl;
    }
-   else if (result == Search::DRAW_BY_REPETITION)
+   else if (result == IChessEngine::DRAW_BY_REPETITION)
    {
       cout << "1/2-1/2 {Draw by repetition}" << std::endl;
    }
@@ -223,7 +223,7 @@ CommandExecuter::train_by_GA (
     uint population_size, uint n_generations, double mutation_probability)
 {
    std::unique_ptr<FitnessEvaluator> fitness_evaluator(
-       new FitnessEvaluator (this->search_engine));
+       new FitnessEvaluator (this->chess_engine));
 
    std::unique_ptr<GeneticAlgorithm> GA(
        new GeneticAlgorithm (
@@ -242,5 +242,5 @@ CommandExecuter::train_by_GA (
    vector<int> best_features;
    GA->get_fittest_member ().decode (best_features);
 
-   this->search_engine->load_factor_weights (best_features);
+   this->chess_engine->load_factor_weights (best_features);
 }

@@ -23,7 +23,7 @@ main ()
   unique_ptr<Board> board(new MaeBoard);
   unique_ptr<PositionEvaluator> evaluator(new SimpleEvaluator);
   unique_ptr<MoveGenerator> generator(new SimpleMoveGenerator);
-  unique_ptr<Search> search_engine(
+  unique_ptr<IChessEngine> search_engine(
       new AlphaBetaSearch (evaluator.get(), generator.get()));
   unique_ptr<Timer> timer(new Timer);
 

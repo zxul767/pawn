@@ -2,12 +2,12 @@
 #define ALPHA_BETA_SEARCH_H
 
 /*==============================================================================
-  Implements the AI engine of the game (whose interface can be found in Search.h)
-  using the alpha-beta search algorithm.
+  Implements the AI engine of the game (whose interface can be found in
+  IChessEngine.h) using the alpha-beta search algorithm.
  ==============================================================================*/
 
 #include "Util.h"
-#include "Search.h"
+#include "IChessEngine.h"
 #include "Move.h"
 
 #include <stack>
@@ -18,7 +18,7 @@ class MoveGenerator;
 class PositionEvaluator;
 class Dictionary;
 
-class AlphaBetaSearch : public Search
+class AlphaBetaSearch : public IChessEngine
 {
  private:
    int alpha_beta (uint depth, int alpha, int beta);

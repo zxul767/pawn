@@ -72,7 +72,7 @@ AlphaBetaSearch::reset_statistics ()
   Possible results are: NORMAL_EVALUATION, WHITE_MATES, BLACK_MATES,
   STALEMATE, DRAW_BY_REPETITION.
   ==============================================================================*/
-Search::Result
+IChessEngine::Result
 AlphaBetaSearch::get_best_move (uint depth, Board* board, Move& best_move)
 {
    Result winner[Board::PLAYERS][Board::PLAYERS] = {
@@ -81,7 +81,7 @@ AlphaBetaSearch::get_best_move (uint depth, Board* board, Move& best_move)
    };
 
    if (board == 0)
-      return Search::ERROR;
+      return IChessEngine::ERROR;
 
    this->board = board;
    this->max_depth = depth;
@@ -398,7 +398,7 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
       if (tentative_value > best_value)
       {
          if (error == Board::DRAW_BY_REPETITION)
-            result = Search::DRAW_BY_REPETITION;
+            result = IChessEngine::DRAW_BY_REPETITION;
          else
             result = NORMAL_EVALUATION;
 

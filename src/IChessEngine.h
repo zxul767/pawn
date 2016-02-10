@@ -1,12 +1,12 @@
-#ifndef SEARCH_H
-#define SEARCH_H
+#ifndef ICHESS_ENGINE_H
+#define ICHESS_ENGINE_H
 
 #include "Util.h"
 
 class Board;
 class Move;
 
-class Search
+class IChessEngine
 {
    public:
 
@@ -23,8 +23,8 @@ class Search
    static const int MATE_VALUE = -Util::INFINITUM;
    static const uint MAX_QUIESCENCE_DEPTH = 4;
 
-   Search () {}
-   virtual ~Search () {}
+   IChessEngine () {}
+   virtual ~IChessEngine () {}
 
    virtual void load_factor_weights (std::vector<int>& weights) = 0;
    virtual Result get_best_move (uint depth, Board* board, Move& best_move) = 0;
@@ -38,4 +38,4 @@ class Search
    int root_value;
 };
 
-#endif // SEARCH_H
+#endif // ICHESS_ENGINE_H

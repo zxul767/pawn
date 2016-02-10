@@ -9,7 +9,7 @@
 #include <string>
 #include "Util.h"
 
-class Search;
+class IChessEngine;
 class Board;
 class Chromosome;
 class PositionEvaluator;
@@ -17,14 +17,14 @@ class PositionEvaluator;
 class FitnessEvaluator
 {
  public:
-   FitnessEvaluator (Search* engine);
+   FitnessEvaluator (IChessEngine* chess_engine);
    ~FitnessEvaluator ();
 
    double evaluate (Chromosome& a, Chromosome& b);
    static const uint MAX_ALLOWED_MOVEMENTS = 70;
 
  private:
-   Search* engine;
+   IChessEngine* chess_engine;
    Board* board;
    PositionEvaluator* evaluator;
 };
