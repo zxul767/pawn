@@ -1,6 +1,11 @@
 #ifndef DICTIONARY_H
 #define DICTIONARY_H
 
+/*==============================================================================
+  Implements a transposition table, used to improve performance of search
+  algorithms such as iterative deepening search
+ ==============================================================================*/
+
 #include <unordered_map>
 #include <map>
 

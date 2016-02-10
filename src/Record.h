@@ -1,6 +1,10 @@
 #ifndef RECORD_H
 #define RECORD_H
 
+/*==============================================================================
+  Holds a chess board configuration key to be used transposition table lookups
+ ==============================================================================*/
+
 #include <unordered_map>
 #include "Util.h"
 

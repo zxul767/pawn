@@ -1,16 +1,12 @@
-/*============================================================================
-  Class Name: Board
-
-  Responsabilities:
-
-  -Keep game status and board
-  -Make legal moves
-  -Undo moves
-  -Label moves
-  ===========================================================================*/
-
 #ifndef BOARD_H
 #define BOARD_H
+
+/*==============================================================================
+  Represents a non-static chess board configuration (i.e. where the pieces are,
+  whether there is an en-passant capture possibility, what castling privileges
+  remain, etc.) that also allows making and taking back moves, according to the
+  usual rules of chess.
+ ==============================================================================*/
 
 #include <string>
 #include <iostream>
@@ -26,9 +22,6 @@ class Board
    Board ();
    virtual ~Board ();
 
-   /*==========================================================================
-     CONSTANTS
-     ========================================================================*/
    static const uint SQUARES = 64;
    static const uint SIZE = 8;
    static const uint PLAYERS = 2;
@@ -62,10 +55,6 @@ class Board
       NO_ERROR
    };
 
-   /*==========================================================================
-     METHODS
-     ========================================================================*/
-
    virtual void clear () = 0;
    virtual void reset () = 0;
 
@@ -90,7 +79,7 @@ class Board
    virtual bitboard attacks_to (Squares location, bool include_king) const = 0;
    virtual bitboard threats_to (Squares location, Piece::Type type) const = 0;
 
-   // ACCESSORS
+
    virtual bitboard get_moves (Piece::Type piece, Squares square) const = 0;
    virtual bitboard get_all_pieces () const = 0;
    virtual bitboard get_pieces (Piece::Player player) const = 0;
@@ -111,19 +100,19 @@ class Board
    virtual uint get_move_number () const = 0;
    virtual ushort get_repetition_count () const = 0;
 
-   // MUTATORS
+
    virtual void set_game_status (GameStatus status) = 0;
    virtual void set_en_passant (Squares en_passant_capture_square) = 0;
    virtual void set_turn (Piece::Player player) = 0;
    virtual void set_castling_privilege (
        Piece::Player player, CastleSide side, bool value) = 0;
 
-   // STATIC
+
    static bool is_inside_board (int row, int col);
    static bool is_inside_board (uint row, uint col);
    static bool is_inside_board (uint square);
 
-   // OVERLOADED OPERATORS
+
    friend std::ostream& operator << (std::ostream& out, const Board& board);
 };
 

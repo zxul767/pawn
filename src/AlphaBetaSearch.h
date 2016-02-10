@@ -1,6 +1,11 @@
 #ifndef ALPHA_BETA_SEARCH_H
 #define ALPHA_BETA_SEARCH_H
 
+/*==============================================================================
+  Implements the AI engine of the game (whose interface can be found in Search.h)
+  using the alpha-beta search algorithm.
+ ==============================================================================*/
+
 #include "Util.h"
 #include "Search.h"
 #include "Move.h"

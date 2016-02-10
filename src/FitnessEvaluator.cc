@@ -21,8 +21,7 @@ FitnessEvaluator::~FitnessEvaluator ()
    delete this->evaluator;
 }
 
-// Chromosome A is assumed to be stronger than B, though this may prove to be
-// wrong after the game is played...
+// Chromosome A is assumed to be stronger than B, though this may not be true
 double
 FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
 {
@@ -104,7 +103,6 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
 
    timer->stop ();
 
-   // EVALUATE WHO WON AND BY HOW MUCH...
    if (result == Search::STALEMATE || result == Search::DRAW_BY_REPETITION)
    {
       evaluation = 1.0 / 2.0;

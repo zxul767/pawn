@@ -1,6 +1,15 @@
 #ifndef GENETIC_ALGORITHM
 #define GENETIC_ALGORITHM
 
+/*==============================================================================
+  Represents a basic genetic algorithm to find good chess evaluation functions
+  automatically.
+
+  The idea is to think of evaluation functions as members of a population whose
+  fitness is measured by having matches between pairs of them (keeping all other
+  parts of the chess engine constant, e.g. the search algorithm)
+ ==============================================================================*/
+
 class FitnessEvaluator;
 
 #include "Util.h"

@@ -1,6 +1,11 @@
 #ifndef BOARD_STATUS_H
 #define BOARD_STATUS_H
 
+/*==============================================================================
+  Represents the set of traits of a chess board configuration that allows to
+  correctly take back (i.e. unmake) moves at any point during the game.
+ ==============================================================================*/
+
 #include "Move.h"
 
 class BoardStatus

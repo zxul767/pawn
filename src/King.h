@@ -1,6 +1,11 @@
 #ifndef KING_H
 #define KING_H
 
+/*==============================================================================
+  Encodes the move rules for a king, both in its general form (i.e. assumming
+  an empty board), and in specific situations (i.e. in a board with pieces)
+ ==============================================================================*/
+
 #include "Piece.h"
 #include "Board.h"
 

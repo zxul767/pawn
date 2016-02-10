@@ -1,11 +1,3 @@
-/*==============================================================================
-   Class name: CommandReader
-
-   Responsabilities:
-   - Read commands from the terminal (either from the user or from a GUI that
-   communicates using standard I/O).
- ==============================================================================*/
-
 #include "CommandReader.h"
 #include "Command.h"
 

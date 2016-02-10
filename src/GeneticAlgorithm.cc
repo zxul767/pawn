@@ -41,7 +41,6 @@ GeneticAlgorithm::run ()
 
       std::cerr << "\nStarting reproduction ... ";
 
-      // reproduce individuals to create offspring
       vector<Chromosome> offspring;
       offspring.clear ();
       uint size = parents.size ();
@@ -66,13 +65,9 @@ GeneticAlgorithm::run ()
          size--;
       }
 
-      // eliminate the K worst individuals of the current population
       reduce_population (k);
-
-      // add offspring to the current population in order to make up a new one
       add_on_population (offspring);
 
-      // randomly mutate some individuals with low probability
       uint individuals = rand() % population_size;
       while (individuals)
       {
@@ -80,7 +75,6 @@ GeneticAlgorithm::run ()
          --individuals;
       }
 
-      // If convergence criteria is reached, halt the algorithm
       if (converge ())
          break;
    }
@@ -149,7 +143,6 @@ GeneticAlgorithm::initialize_population ()
 
    for (uint i = 0; i < this->population_size; ++i)
    {
-      // Random chromosome consisting of four features
       Chromosome individual (n_features);
       this->population.push_back (individual);
 
@@ -160,7 +153,6 @@ GeneticAlgorithm::initialize_population ()
    }
 }
 
-// Evaluate each individual chromosome against the best member so far
 void
 GeneticAlgorithm::evaluate_population ()
 {

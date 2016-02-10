@@ -1,6 +1,11 @@
 #ifndef KNIGHT_H
 #define KNIGHT_H
 
+/*==============================================================================
+  Encodes the move rules for a knight, both in its general form (i.e. assumming
+  an empty board), and in specific situations (i.e. in a board with pieces)
+ ==============================================================================*/
+
 #include "Piece.h"
 #include "Board.h"
 

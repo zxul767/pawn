@@ -1,6 +1,11 @@
 #ifndef FITNESS_EVALUATOR_H
 #define FITNESS_EVALUATOR_H
 
+/*==============================================================================
+  Compares chess evaluation functions (encoded as chromosomes) in order to find
+  the best ones when running a genetic algorithm
+ ==============================================================================*/
+
 #include <string>
 #include "Util.h"
 
@@ -9,7 +14,6 @@ class Board;
 class Chromosome;
 class PositionEvaluator;
 
-// Evaluate the fitness of an individual
 class FitnessEvaluator
 {
  public:

@@ -14,8 +14,8 @@ Bishop::~Bishop ()
   Get all moves from SQUARE in the current BOARD assumming it is PLAYER'S turn
   to move (moves that may leave the king in check are also included)
 
-  See ATTACKS_algorithm.txt for a graphic explanation of the algorithm used
-  here.
+  TODO: write a high-level description of the algorithm used to find bishop valid
+  moves
   ==============================================================================*/
 bitboard
 Bishop::get_moves (uint square, Piece::Player player, const Board* board) const

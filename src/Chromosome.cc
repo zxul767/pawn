@@ -292,7 +292,6 @@ Chromosome::operator = (const Chromosome& other)
    this->fitness = other.fitness;
    this->selection_probability = other.selection_probability;
    this->cumulative_probability = other.cumulative_probability;
-   //this->is_winner = other.is_winner;
    this->result = other.result;
    this->game_duration = other.game_duration;
    this->material_balance = other.material_balance;
@@ -308,7 +307,6 @@ std::ostream&
 operator << (std::ostream& out, const Chromosome& other)
 {
    out << "Fitness:\t" << other.fitness << '\n';
-   //out << "Won game:\t" << (other.is_winner ? "YES" : "NO") << '\n';
    out << "Game result:\t" << other.result << '\n';
    out << "Game duration:\t" << other.game_duration << '\n';
    for (uint i = 0; i < other.gene_string.size (); ++i)

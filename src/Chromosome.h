@@ -1,6 +1,14 @@
 #ifndef CHROMOSOME_H
 #define CHROMOSOME_H
 
+/*==============================================================================
+  Encodes an evaluation function of the chess engine (its weights actually, since
+  the values of the features depend on the board) for use in a genetic algorithm.
+
+  The weights in the evaluation function characterize the playing nature of the
+  engine, including strength but also style (e.g. aggresive vs cautious)
+ ==============================================================================*/
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -9,7 +17,6 @@
 
 class Board;
 
-// Encodes a candidate solution as a fixed-length binary string
 class Chromosome
 {
  public:
@@ -28,7 +35,7 @@ class Chromosome
    void reproduce (
        Chromosome& other, std::pair<Chromosome, Chromosome>& children);
 
-   // ACCESSORS
+
    double get_fitness () const;
    bool get_gene (uint position) const;
    std::string get_genes () const;
@@ -38,12 +45,11 @@ class Chromosome
    double get_cumulative_probability () const;
    double get_selection_probability () const;
    int get_material_balance () const;
-
    void flip (uint position);
    void set (uint position);
    void unset (uint position);
 
-   // MUTATORS
+
    void set_fitness (double fitness);
    void set_selection_probability (double probability);
    void set_cumulative_probability (double probability);
@@ -51,7 +57,7 @@ class Chromosome
    void set_material_balance (int material);
    void set_result (Outcome result);
 
-   // OVERLOADED OPERATORS
+
    bool operator == (const Chromosome& other) const;
    bool operator < (const Chromosome& other) const;
    Chromosome& operator = (const Chromosome& other);
@@ -59,10 +65,9 @@ class Chromosome
    friend std::ostream& operator << (std::ostream& out, const Chromosome& other);
 
  private:
-   // CONSTANTS
    static const uint BITS_PER_FEATURE = 9;
 
-   // ATTRIBUTES
+
    std::vector<int> features;
    std::vector<bool> gene_string;
 
@@ -74,7 +79,7 @@ class Chromosome
    uint game_duration; // in number of moves
    int material_balance;
 
-   // METHODS
+
    void encode (const std::vector<int>& features);
    void initialize_data ();
 };

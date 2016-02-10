@@ -1,12 +1,10 @@
-/*=============================================================================
-  Class name: Pawn
-
-  Responsabilities:
-  -Provide the set of moves a pawn can make from any square on the board.
-  =============================================================================*/
-
 #ifndef PAWN_H
 #define PAWN_H
+
+/*==============================================================================
+  Encodes the move rules for a pawn, both in its general form (i.e. assumming
+  an empty board), and in specific situations (i.e. in a board with pieces)
+ ==============================================================================*/
 
 #include "Piece.h"
 #include "Board.h"

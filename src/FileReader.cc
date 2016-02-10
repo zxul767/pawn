@@ -1,12 +1,3 @@
-/*==============================================================================
-   Class name: FileReader
-
-   Responsabilities:
-   -Load and save games to disk using an ad hoc protocol.
-
-   Future improvements: Use the PGN protocol to write and read games.
- ==============================================================================*/
-
 #include "FileReader.h"
 #include <cctype>
 

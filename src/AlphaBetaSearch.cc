@@ -1,12 +1,9 @@
-/*============================================================================
-  Techniques used to improve performance of the basic Negamax algorithm:
+/*==============================================================================
+  To improve the performance of the basic alpha-beta search algorithm, some
+  other algorithms and techniques are used on top of it (e.g. transposition
+  tables, iterative deepening search, null-window search, etc.)
+ ==============================================================================*/
 
-  => Fail-soft alpha-beta pruning
-  => Iterative deepening search (IDS)
-  => Quiescence Search
-  => Aspiration search integrated within the IDS
-  => Transposition tables
-  ============================================================================*/
 #include "Board.h"
 #include "AlphaBetaSearch.h"
 #include "MoveGenerator.h"
@@ -302,6 +299,7 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
       // lower/upper bound found. Also store the depth to which it was explored.
       uint real_depth = max_depth - depth;
       Dictionary::flag accuracy;
+
       if (best_value >= beta)       accuracy = Dictionary::UPPER_BOUND;
       else if (best_value > alpha)  accuracy = Dictionary::EXACT;
       else                          accuracy = Dictionary::LOWER_BOUND;
@@ -422,7 +420,7 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
   Build the principal variation rooted at BOARD and until a leaf is reached
 
   Return true if there was no problem building the principal variation, and
-  false otherwise -all errors detected here are serious bugs, so watch out!
+  false otherwise --all errors detected here are serious bugs, so watch out!
   ============================================================================*/
 bool
 AlphaBetaSearch::build_principal_variation (
@@ -465,10 +463,6 @@ AlphaBetaSearch::build_principal_variation (
    return return_value;
 }
 
-/*============================================================================
-  Load a set of weights for the position evaluator to use. This may result
-  in a change of performance, according as to how accurate the weights are
-  ============================================================================*/
 void
 AlphaBetaSearch::load_factor_weights (vector<int>& weights)
 {

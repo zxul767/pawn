@@ -1,6 +1,11 @@
 #ifndef PIECE_H
 #define PIECE_H
 
+/*==============================================================================
+  Base class for different pieces of the game, each one responsible for their
+  own move rules
+ ==============================================================================*/
+
 #include "Util.h"
 #include <string>
 

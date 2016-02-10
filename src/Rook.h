@@ -1,6 +1,11 @@
 #ifndef ROOK_H
 #define ROOK_H
 
+/*==============================================================================
+  Encodes the move rules for a rook, both in its general form (i.e. assumming
+  an empty board), and in specific situations (i.e. in a board with pieces)
+ ==============================================================================*/
+
 #include "Piece.h"
 #include "Board.h"
 

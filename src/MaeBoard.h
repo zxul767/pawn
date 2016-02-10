@@ -36,7 +36,6 @@ class MaeBoard : public Board
    bitboard attacks_to (Squares location, bool include_king) const;
    bitboard threats_to (Squares location, Piece::Type type) const;
 
-   // ACCESSORS
    bitboard get_moves (Piece::Type piece, Squares square) const;
    bitboard get_all_pieces () const;
    bitboard get_pieces (Piece::Player player) const;
@@ -57,7 +56,7 @@ class MaeBoard : public Board
    uint get_move_number () const;
    ushort get_repetition_count () const;
 
-   // MUTATORS
+
    void set_game_status (GameStatus status);
    void set_en_passant (Squares en_passant_capture_square);
    void set_turn (Piece::Player player);
@@ -67,18 +66,12 @@ class MaeBoard : public Board
    // Do not allow users of this class to make copies
    MaeBoard (const MaeBoard& other);
 
-   /*==========================================================================
-     PRIVATE CONSTANTS
-     ========================================================================*/
    static const uint PIECE_TYPES  =  6;
    static const uint CASTLE_SIDES =  2;
    static const uint RANDOM_SEED  =  8;
    static const uint N_HASH_KEYS  =  2;
    static const Square EMPTY_SQUARE;
 
-   /*==========================================================================
-     PRIVATE DATA TO REPRESENT THE BOARD
-     ========================================================================*/
    // Basic board representation
    bitboard piece[PLAYERS][PIECE_TYPES];
    bitboard pieces[PLAYERS];
@@ -111,20 +104,13 @@ class MaeBoard : public Board
    // Counter used to detect draws by the 50-move rule
    uint fifty_move_counter;
 
-   // Game history needed to undo moves
    std::stack<BoardStatus> game_history;
-
-   // Objects implementing the Piece interface to aid in move generation
    Piece* chessmen[PIECE_TYPES];
 
-   // Support Data that makes the code more readable
    bitboard eighth_rank[PLAYERS];
    Squares corner[PLAYERS][CASTLE_SIDES];
    Squares original_king_position[PLAYERS];
 
-   /*==========================================================================
-     PRIVATE METHODS
-     ========================================================================*/
    void handle_en_passant_move (const Move& move);
    void handle_castling_privileges (const Move& move);
    void handle_promotion_move (const Move& move);

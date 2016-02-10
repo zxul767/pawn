@@ -1,6 +1,12 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
+/*==============================================================================
+  Represents a command issued by the user, providing the information
+  associated with it (e.g. a command to move a piece should also provide the
+  start and end squares)
+ ==============================================================================*/
+
 #include <string>
 #include <map>
 

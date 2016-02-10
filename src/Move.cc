@@ -1,10 +1,3 @@
-/*=============================================================================
-  Class name: Move
-
-  Responsabilities:
-  -Specify the initial and final coordinates of a moving piece
-  -Specify the nature of the move (CAPTURE, PAWN PROMOTION, etc.)
-  ============================================================================*/
 #include "Move.h"
 #include "Board.h"
 #include <cctype>
@@ -174,11 +167,6 @@ Move::get_score () const
 {
    return this->score;
 }
-
-/*============================================================================
- *                                CLASS METHODS                              *
- *===========================================================================*/
-
 
 /*=============================================================================
   Return TRUE if NOTATION was correctly translated into a number in the range

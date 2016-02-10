@@ -1,11 +1,3 @@
-/*==============================================================================
-    Class name: CommandExecuter
-
-    Responsabilities:
-    => Carry out the commands provided by the user (a list of available commands
-    can be found in Command.h)
-  ==============================================================================*/
-
 #include "CommandExecuter.h"
 #include "Command.h"
 #include "AlphaBetaSearch.h"

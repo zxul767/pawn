@@ -1,6 +1,10 @@
 #ifndef FILE_READER_H
 #define FILE_READER_H
 
+/*==============================================================================
+  Reads and writes chess games in an ad-hoc notation (see initial.in)
+ ==============================================================================*/
+
 #include <fstream>
 #include <string>
 #include <vector>

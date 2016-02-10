@@ -1,3 +1,8 @@
+/*==============================================================================
+  Encodes the move rules for a knight, both in its general form (i.e. assumming
+  an empty board), and in specific situations (i.e. in a board with pieces)
+ ==============================================================================*/
+
 #include "Knight.h"
 
 Knight::Knight ()
@@ -24,7 +29,7 @@ Knight::get_moves (uint square, Player player, const Board* board) const
   Return all possible moves from SQUARE, assuming the board is empty.
   ============================================================================*/
 bitboard
-/* Only for pawns is the player to move relevant in computing the potential moves */
+// Only for pawns is the player to move relevant in computing the potential moves
 Knight::get_potential_moves (uint square, Player /* player */) const
 {
    if (Board::is_inside_board (square))

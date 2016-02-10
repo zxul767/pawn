@@ -9,9 +9,6 @@
 
 using std::string;
 
-/*=============================================================================
-  CONST STATIC INITIALIZATION BLOCK
-  ===========================================================================*/
 const Square
 MaeBoard::EMPTY_SQUARE = { Piece::NULL_PLAYER, Piece::NULL_PIECE };
 
@@ -26,8 +23,8 @@ MaeBoard::MaeBoard ()
 }
 
 /*=============================================================================
- | Build a new board as specified in the file FILE_NAME (see initial.in for an|
- | example of the format used in load files)                                  |
+   Build a new board as specified in the file FILE_NAME (see initial.in for an
+   example of the format used in load files)
  =============================================================================*/
 MaeBoard::MaeBoard (const string& file)
 {
@@ -50,12 +47,12 @@ MaeBoard::~MaeBoard ()
 }
 
 /*=============================================================================
- | Create random 64-bit integers to help maintain the hash key for THIS board |
- |                                                                            |
- | Things to consider include pieces, castling privileges, turn and en_passant|
- | capture possibility. A hash lock is also used to avoid collisions in the   |
- | hash table that serves as dictionary of board configurations in the Search |
- | module.                                                                    |
+   Create random 64-bit integers to help maintain the hash key for THIS board
+
+   Things to consider include pieces, castling privileges, turn and en_passant
+   capture possibility. A hash lock is also used to avoid collisions in the
+   hash table that serves as dictionary of board configurations in the Search
+   module.
  =============================================================================*/
 void
 MaeBoard::load_zobrist ()
@@ -84,13 +81,12 @@ MaeBoard::load_zobrist ()
 }
 
 /*============================================================================
- | Remove all the pieces from the board and reset game status, en-passant    |
- | capture possibilities, current turn, castling privileges, etc.            |
+   Remove all the pieces from the board and reset game status, en-passant
+   capture possibilities, current turn, castling privileges, etc.
  ============================================================================*/
 void
 MaeBoard::clear ()
 {
-   // Clear every bitboard
    this->all_pieces = 0;
    for (Piece::Player side = Piece::WHITE; side <= Piece::BLACK; ++side)
    {
@@ -98,32 +94,26 @@ MaeBoard::clear ()
       for (Piece::Type type = Piece::PAWN; type <= Piece::KING; ++type)
          this->piece[side][type] = 0;
 
-      // Clear castle privileges
       this->can_do_castle[side][KING_SIDE] = true;
       this->can_do_castle[side][QUEEN_SIDE] = true;
       this->is_castled_[side][KING_SIDE] = false;
       this->is_castled_[side][QUEEN_SIDE] = false;
    }
-   // Clear array of squares
+
    for (Squares square = a8; square <= h1; ++square)
       this->board[square] = EMPTY_SQUARE;
 
-   // Clear turn information
    this->is_whites_turn = true;
    this->player = Piece::WHITE;
    this->opponent = Piece::BLACK;
 
-   // Clear en-passant captures information
    this->en_passant_capture_square = 0;
    this->game_status = PENDING_GAME;
 
-   // Clear the hash keys
    this->hash_key = this->hash_lock = 0;
 
-   // Empty the hash table used to detect threefold repetition
    this->position_counter.reset ();
 
-   // Empty the game history stack
    while (!this->game_history.empty ())
       this->game_history.pop ();
 
@@ -161,12 +151,12 @@ MaeBoard::load_game (const string& file)
 }
 
 /*=============================================================================
-  Return TRUE if the current game was successfully saved to FILE_NAME.
+  Return TRUE if the current game was successfully saved to FILENAME.
   ===========================================================================*/
 bool
-MaeBoard::save_game (const string& file)
+MaeBoard::save_game (const string& filename)
 {
-   return file.size() > 0;
+   return filename.size() > 0;
 }
 
 /*=============================================================================
@@ -183,6 +173,7 @@ MaeBoard::add_piece (
 
    return add_piece (square, type, player);
 }
+
 /*=============================================================================
   Return TRUE if the specified piece was added to the board in LOCATION
   ===========================================================================*/
@@ -192,7 +183,6 @@ MaeBoard::add_piece (Squares square, Piece::Type type, Piece::Player player)
    if (this->board[square] != EMPTY_SQUARE)
       return false;
 
-   // Add piece in the bitboard representations
    this->piece[player][type] |= Util::to_bitboard[square];
    this->pieces[player] |= Util::to_bitboard[square];
    this->all_pieces |= Util::to_bitboard[square];
@@ -259,7 +249,6 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
 {
    Error move_error;
 
-   // TEST IF THE MOVE IS CORRECT AND FILL IN INFORMATION IN MOVE
    if (this->board[move.from ()] == EMPTY_SQUARE)
       return NO_PIECE_IN_SQUARE;
 
@@ -276,20 +265,15 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
       if ((move_error = can_move (move)) != NO_ERROR)
          return move_error;
 
-   // Move has proven to be pseudo-legal so it may be tried.
    label_move (move);
-
-   // Restoring information is kept in the stack GAME_HISTORY.
    save_restore_information (move);
 
-   // MAKE THE ACTUAL MOVE
    Square initial = board[start];
    Square final = this->board[end];
    remove_piece (start);
    remove_piece (end);
    add_piece (end, initial.piece, initial.player);
 
-   // Remove the pawn captured en-passant
    if (move.get_type () == Move::EN_PASSANT_CAPTURE)
    {
       uint offset = (this->is_whites_turn ? SIZE: -((int) SIZE));
@@ -297,7 +281,6 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
       remove_piece (Squares (position));
    }
 
-   // Check whether making the move leaves the king exposed to check
    int king_position = Util::MSB_position (this->piece[player][Piece::KING]);
    if (attacks_to (Squares (king_position), true /* include_king */))
    {
@@ -306,7 +289,6 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
       if (final.piece != Piece::NULL_PIECE)
          add_piece (end, final.piece, final.player);
 
-      // Restore the pawn captured en-passant
       if (move.get_type () == Move::EN_PASSANT_CAPTURE)
       {
          int offset = (this->is_whites_turn ? SIZE: -((int) SIZE));
@@ -318,7 +300,6 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
       return KING_LEFT_IN_CHECK;
    }
 
-   // Handle special moves and conditions
    handle_en_passant_move (move);
    handle_castling_privileges (move);
    handle_promotion_move (move);
@@ -328,13 +309,11 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
    if (is_king_in_check ())
       move.set_type (Move::CHECK);
 
-   // Record this board so we can detect threefold repetition conditions
    Record::board_key key = { this->hash_key, this->hash_lock };
    ushort times = 0;
    if (!this->position_counter.add_record (key, times) && times == 3)
       return DRAW_BY_REPETITION;
 
-   // Apply 50-move rule here
    if (move.get_type () == Move::NORMAL_CAPTURE ||
        move.get_type () == Move::EN_PASSANT_CAPTURE ||
        move.get_moving_piece () == Piece::PAWN) {
@@ -447,7 +426,6 @@ MaeBoard::undo_move ()
          break;
    }
 
-   // Restore the previous configuration completely
    this->can_do_castle[player][KING_SIDE] = configuration.get_king_castle ();
    this->can_do_castle[player][QUEEN_SIDE] = configuration.get_queen_castle ();
    this->en_passant_capture_square = configuration.get_en_passant ();
@@ -476,18 +454,17 @@ MaeBoard::can_move (const Move& move) const
    bitboard valid_moves;
    ushort start = move.from ();
 
-   // Is the player trying to move his opponent's pieces?
    if (this->player != this->board[start].player)
-      return OPPONENTS_TURN;
+      return Error::OPPONENTS_TURN;
 
    valid_moves =
       this->chessmen[move.get_moving_piece ()]->get_moves (start, this->player, this);
 
    // Is MOVE.TO () included in the set of valid moves from MOVE.FROM () ?
    if (Util::to_bitboard[move.to ()] & valid_moves)
-      return NO_ERROR;
+      return Error::NO_ERROR;
 
-   return WRONG_MOVEMENT;
+   return Error::WRONG_MOVEMENT;
 }
 
 /*=============================================================================
@@ -508,8 +485,7 @@ MaeBoard::label_move (Move& move) const
    {
       move.set_type (Move::SIMPLE_MOVE);
 
-      if ((Util::to_bitboard[end] & this->en_passant_capture_square) &&
-          piece == Piece::PAWN)
+      if ((Util::to_bitboard[end] & this->en_passant_capture_square) && piece == Piece::PAWN)
       {
          move.set_type (Move::EN_PASSANT_CAPTURE);
       }
@@ -534,8 +510,7 @@ MaeBoard::label_move (Move& move) const
    }
 
    // Promotion moves can happen both as simple moves and as capture moves
-   if ((Util::to_bitboard[end] & this->eighth_rank[player]) &&
-       piece == Piece::PAWN)
+   if ((Util::to_bitboard[end] & this->eighth_rank[player]) && piece == Piece::PAWN)
    {
       move.set_type (Move::PROMOTION_MOVE);
    }
@@ -594,9 +569,6 @@ MaeBoard::threats_to (Squares location, Piece::Type type) const
    return attackers;
 }
 
-/*=============================================================================
-  Return TRUE if the king is in check in THIS board.
-  ===========================================================================*/
 bool
 MaeBoard::is_king_in_check () const
 {
@@ -604,7 +576,7 @@ MaeBoard::is_king_in_check () const
 
    // The second argument is set to FALSE since one invariant of this class is
    // that no king can be in check by the other (such thing is illegal)
-   if (attacks_to (Squares (king_location), false))
+   if (attacks_to (Squares (king_location), /* include_king: */ false))
       return true;
 
    return false;
@@ -751,6 +723,7 @@ MaeBoard::handle_promotion_move (const Move& move)
    if (move.get_type () == Move::PROMOTION_MOVE)
    {
       remove_piece (move.to ());
+      // TODO: allow the user to choose which piece they want
       add_piece (move.to (), Piece::QUEEN, this->player);
    }
 }
@@ -826,9 +799,6 @@ MaeBoard::save_restore_information (const Move& move)
    this->game_history.push (restore_information);
 }
 
-/*=============================================================================
-  Update the variables reflecting the current turn
-  ============================================================================*/
 void
 MaeBoard::change_turn ()
 {
@@ -841,16 +811,13 @@ MaeBoard::change_turn ()
    this->hash_lock ^= this->turn_key;
 }
 
-// ACCESSORS
-
 /*=============================================================================
   Return all pseudo-legal moves PIECE can make from SQUARE in the current
-  board, assuming it is PLAYER's turn to move.
+  board, assuming it is THIS->PLAYER's turn to move.
   ===========================================================================*/
 bitboard
 MaeBoard::get_moves (Piece::Type piece, Squares square) const
 {
-   // Every piece implements their own moves
    return this->chessmen[piece]->get_moves (square, this->player, this);
 }
 

@@ -1,10 +1,3 @@
-/*=============================================================================
-  Class name: Move
-
-  Responsabilities:
-  -Specify the initial and final coordinates of a moving piece
-  -Specify the nature of the move (CAPTURE, PAWN PROMOTION, etc.)
-  ===========================================================================*/
 #ifndef MOVE_H
 #define MOVE_H
 
@@ -20,9 +13,6 @@ class Move
    Move (Board::Squares start, Board::Squares end);
    Move (const Move& move);
 
-   /*--------------------------------------------------------------------------
-     PUBLIC CONSTANTS
-     ------------------------------------------------------------------------*/
    enum Type {
       SIMPLE_MOVE,
       NORMAL_CAPTURE,
@@ -34,9 +24,6 @@ class Move
       NULL_MOVE
    };
 
-   /*--------------------------------------------------------------------------
-     PUBLIC METHODS
-     ------------------------------------------------------------------------*/
    Board::Squares from () const;
    Board::Squares to () const;
 
@@ -54,17 +41,11 @@ class Move
 
    bool is_null () const;
 
-   /*--------------------------------------------------------------------------
-     OVERLOADED OPERATORS
-     ------------------------------------------------------------------------*/
    friend std::ostream& operator << (std::ostream& out, const Move& move);
 
    friend bool operator == (const Move& m1, const Move& m2);
    friend bool operator < (const Move& m1, const Move& m2);
 
-   /*--------------------------------------------------------------------------
-     PUBLIC STATIC METHODS
-     ------------------------------------------------------------------------*/
    static bool translate_to_square (const std::string& notation, Board::Squares& square);
    static bool translate_to_notation (Board::Squares square, std::string& notation);
    static bool is_valid_notation (const std::string &notation);

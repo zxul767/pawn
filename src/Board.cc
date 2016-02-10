@@ -1,9 +1,6 @@
 /*==============================================================================
-   Class name: Board
-
-   Responsabilities:
-   -Provide an interface for a chess board using bitboards as the basic data
-    structure
+  Defines a few common operations for the base class. See Board.h to see the
+  interface specification.
  ==============================================================================*/
 
 #include "Board.h"

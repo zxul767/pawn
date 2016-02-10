@@ -1,6 +1,11 @@
 #ifndef QUEEN_H
 #define QUEEN_H
 
+/*==============================================================================
+  Encodes the move rules for a queen, both in its general form (i.e. assumming
+  an empty board), and in specific situations (i.e. in a board with pieces)
+ ==============================================================================*/
+
 #include "Rook.h"
 #include "Bishop.h"
 
