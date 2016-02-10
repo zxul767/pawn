@@ -18,7 +18,7 @@ LIBS = -lm # math
 UNIT_TEST_LIBS =
 
 # PROJECT SETTINGS
-SRC_EXT = cc
+SRC_EXT = cpp
 DEP_EXT = d
 
 PROJECT = mae
