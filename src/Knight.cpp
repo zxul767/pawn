@@ -1,10 +1,12 @@
 /*==============================================================================
   Encodes the move rules for a knight, both in its general form (i.e. assumming
   an empty board), and in specific situations (i.e. in a board with pieces)
- ==============================================================================*/
+  ==============================================================================*/
 
 #include "Knight.hpp"
 
+namespace game_rules
+{
 Knight::Knight ()
 {
    compute_moves ();
@@ -76,7 +78,9 @@ Knight::compute_moves ()
             int y = row + dy[jump];
             int x = col + dx[jump];
             if (Board::is_inside_board (y, x))
-               this->moves_from[square] |= (Util::one << (y * Board::SIZE + x));
+               this->moves_from[square] |= (util::constants::ONE << (y * Board::SIZE + x));
          }
       }
 }
+
+} // namespace game_rules

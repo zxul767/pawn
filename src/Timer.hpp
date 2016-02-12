@@ -5,6 +5,8 @@
 #include <cmath>
 #include "Util.hpp"
 
+namespace diagnostics
+{
 class Timer
 {
  public:
@@ -25,5 +27,7 @@ class Timer
 
    static constexpr double EPSILON = 1E-7;
 };
+
+} // namespace diagnostics
 
 #endif // TIMER_H

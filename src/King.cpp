@@ -2,11 +2,10 @@
 #include <iostream>
 #include <memory>
 
-const bool
-King::neighbors_computed = King::compute_neighbors ();
-
-bitboard
-King::neighbors[Board::SQUARES];
+namespace game_rules
+{
+const bool King::neighbors_computed = King::compute_neighbors ();
+bitboard King::neighbors[Board::SQUARES];
 
 King:: King ()
 {
@@ -35,8 +34,8 @@ King::get_moves (uint square, Player player, const Board* board) const
    {
       // Ensure there are no pieces between the rook and the king
       if (board->can_castle (player, Board::KING_SIDE) &&
-          !(all_pieces & (Util::one << (square + 1))) &&
-          !(all_pieces & (Util::one << (square + 2))))
+          !(all_pieces & (util::constants::ONE << (square + 1))) &&
+          !(all_pieces & (util::constants::ONE << (square + 2))))
       {
          // Make sure there are no attacks on squares the king has to pass
          // through while castling
@@ -44,14 +43,14 @@ King::get_moves (uint square, Player player, const Board* board) const
              !board->attacks_to (Board::Squares (square + 1), false) &&
              !board->attacks_to (Board::Squares (square + 2), false))
          {
-            attacks |= (Util::one << (square + 2));
+            attacks |= (util::constants::ONE << (square + 2));
          }
       }
 
       if (board->can_castle (player, Board::QUEEN_SIDE) &&
-          !(all_pieces & (Util::one << (square - 1))) &&
-          !(all_pieces & (Util::one << (square - 2))) &&
-          !(all_pieces & (Util::one << (square - 3))))
+          !(all_pieces & (util::constants::ONE << (square - 1))) &&
+          !(all_pieces & (util::constants::ONE << (square - 2))) &&
+          !(all_pieces & (util::constants::ONE << (square - 3))))
       {
          // Make sure there are no attacks on squares the king has to pass
          // through while castling
@@ -59,7 +58,7 @@ King::get_moves (uint square, Player player, const Board* board) const
              !board->attacks_to (Board::Squares (square - 1), false) &&
              !board->attacks_to (Board::Squares (square - 2), false))
          {
-            attacks |= (Util::one << (square - 2));
+            attacks |= (util::constants::ONE << (square - 2));
          }
       }
    }
@@ -117,7 +116,7 @@ King::compute_moves ()
             int x = col + dx[jump];
 
             if (Board::is_inside_board (y, x))
-               this->moves_from[square] |= (Util::one << (y * Board::SIZE + x));
+               this->moves_from[square] |= (util::constants::ONE << (y * Board::SIZE + x));
          }
       }
 }
@@ -140,16 +139,18 @@ King::compute_neighbors ()
       bitboard neighborhood = king->get_potential_moves (position, Piece::WHITE);
       bitboard actual_neighbors = neighborhood;
 
-      int square = Util::MSB_position (neighborhood);
+      int square = util::Util::MSB_position (neighborhood);
 
       while (neighborhood && square != -1)
       {
          actual_neighbors |= king->get_potential_moves (square, Piece::WHITE);
-         neighborhood ^= (Util::one << square);
-         square = Util::MSB_position (neighborhood);
+         neighborhood ^= (util::constants::ONE << square);
+         square = util::Util::MSB_position (neighborhood);
       }
 
-      neighbors[position] = actual_neighbors ^ (Util::one << position);
+      neighbors[position] = actual_neighbors ^ (util::constants::ONE << position);
    }
    return true;
 }
+
+} // namespace game_rules

@@ -4,29 +4,33 @@
 /*==============================================================================
   Compares chess evaluation functions (encoded as chromosomes) in order to find
   the best ones when running a genetic algorithm
- ==============================================================================*/
+  ==============================================================================*/
 
 #include <string>
 #include "Util.hpp"
 
-class IChessEngine;
-class Board;
+namespace game_engine { class IChessEngine; class PositionEvaluator; }
+namespace game_rules { class Board; }
+
+namespace learning
+{
 class Chromosome;
-class PositionEvaluator;
 
 class FitnessEvaluator
 {
- public:
-   FitnessEvaluator (IChessEngine* chess_engine);
+  public:
+   FitnessEvaluator (game_engine::IChessEngine*);
    ~FitnessEvaluator ();
 
-   double evaluate (Chromosome& a, Chromosome& b);
+   double evaluate (Chromosome&, Chromosome&);
    static const uint MAX_ALLOWED_MOVEMENTS = 70;
 
- private:
-   IChessEngine* chess_engine;
-   Board* board;
-   PositionEvaluator* evaluator;
+  private:
+   game_rules::Board* board;
+   game_engine::IChessEngine* chess_engine;
+   game_engine::PositionEvaluator* evaluator;
 };
+
+} // namespace learning
 
 #endif // FITNESS_FUNCTION_H

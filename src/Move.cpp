@@ -3,6 +3,8 @@
 #include <cctype>
 #include <cstdlib>
 
+namespace game_rules
+{
 /*=============================================================================
   Create a move given an algebraic chess notation.
 
@@ -228,3 +230,5 @@ Move::is_valid_notation (const std::string &notation)
 
    return false;
 }
+
+} // namespace game_rules

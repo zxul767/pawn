@@ -6,7 +6,7 @@
   whether there is an en-passant capture possibility, what castling privileges
   remain, etc.) that also allows making and taking back moves, according to the
   usual rules of chess.
- ==============================================================================*/
+  ==============================================================================*/
 
 #include <string>
 #include <iostream>
@@ -14,17 +14,21 @@
 #include "Util.hpp"
 #include "Piece.hpp"
 
+namespace game_rules
+{
+using util::ullong;
+
 class Move;
 
 class Board
 {
- public:
+  public:
    Board ();
    virtual ~Board ();
 
-   static const uint SQUARES = 64;
-   static const uint SIZE = 8;
-   static const uint PLAYERS = 2;
+   static constexpr uint SQUARES = 64;
+   static constexpr uint SIZE = 8;
+   static constexpr uint PLAYERS = 2;
 
    enum Squares {
       a8, b8, c8, d8, e8, f8, g8, h8,
@@ -100,18 +104,15 @@ class Board
    virtual uint get_move_number () const = 0;
    virtual ushort get_repetition_count () const = 0;
 
-
    virtual void set_game_status (GameStatus status) = 0;
    virtual void set_en_passant (Squares en_passant_capture_square) = 0;
    virtual void set_turn (Piece::Player player) = 0;
    virtual void set_castling_privilege (
        Piece::Player player, CastleSide side, bool value) = 0;
 
-
    static bool is_inside_board (int row, int col);
    static bool is_inside_board (uint row, uint col);
    static bool is_inside_board (uint square);
-
 
    friend std::ostream& operator << (std::ostream& out, const Board& board);
 };
@@ -121,5 +122,7 @@ operator ++ (Board::Squares& square)
 {
    return (square = Board::Squares (square + 1));
 }
+
+} // namespace game_rules
 
 #endif // BOARD_H

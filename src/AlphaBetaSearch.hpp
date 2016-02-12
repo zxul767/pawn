@@ -4,7 +4,7 @@
 /*==============================================================================
   Implements the AI engine of the game (whose interface can be found in
   IChessEngine.h) using the alpha-beta search algorithm.
- ==============================================================================*/
+  ==============================================================================*/
 
 #include "Util.hpp"
 #include "IChessEngine.hpp"
@@ -14,36 +14,41 @@
 #include <fstream>
 #include <vector>
 
-class MoveGenerator;
+namespace game_engine
+{
 class PositionEvaluator;
 class Dictionary;
+class MoveGenerator;
 
 class AlphaBetaSearch : public IChessEngine
 {
- private:
+  private:
    int alpha_beta (uint depth, int alpha, int beta);
    int quiescence (uint depth, int alpha, int beta);
-   int iterative_deepening (std::vector<Move>& principal_variation);
+   int iterative_deepening (std::vector<game_rules::Move>& principal_variation);
 
-   void print_statistics (std::vector<Move>& principal_variation);
+   void print_statistics (std::vector<game_rules::Move>& principal_variation);
    void reset_statistics ();
-   bool build_principal_variation (Board* board, std::vector<Move>& principal_variation);
+
+   bool build_principal_variation (game_rules::Board*, std::vector<game_rules::Move>& principal_variation);
    void load_factor_weights (std::vector<int>& weights);
 
    PositionEvaluator* evaluator;
    MoveGenerator* generator;
    Dictionary* hash_table;
-   Board* board;
+   game_rules::Board* board;
 
    Result result;
    uint hash_table_hits;
-   Move best_move;
+   game_rules::Move best_move;
 
- public:
-   AlphaBetaSearch (PositionEvaluator* evaluator, MoveGenerator* generator);
+  public:
+   AlphaBetaSearch (PositionEvaluator*, MoveGenerator*);
    ~AlphaBetaSearch ();
 
-   Result get_best_move (uint depth, Board* board, Move& best_move);
+   Result get_best_move (uint depth, game_rules::Board*, game_rules::Move& best_move);
 };
+
+} // namespace game_engine
 
 #endif // ALPHA_BETA_SEARCH_H

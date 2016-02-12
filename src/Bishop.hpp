@@ -4,21 +4,23 @@
 /*==============================================================================
   Encodes the move rules for a bishop, both in its general form (i.e. assumming
   an empty board), and in specific situations (i.e. in a board with pieces)
- ==============================================================================*/
+  ==============================================================================*/
 
 #include "Piece.hpp"
 #include "Board.hpp"
 
+namespace game_rules
+{
 class Bishop : public Piece
 {
-public:
+  public:
    Bishop ();
    ~Bishop ();
 
    bitboard get_moves (uint square, Player player, const Board* board) const;
    bitboard get_potential_moves (uint square, Player player) const;
 
-private:
+  private:
    bitboard get_ray (Board::Squares square, Diagonal direction) const;
    void compute_moves ();
 
@@ -26,4 +28,6 @@ private:
    bitboard all_moves_from[Board::SQUARES];
 };
 
-#endif
+} // namespace game_rules
+
+#endif // BISHOP_H

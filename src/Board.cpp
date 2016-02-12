@@ -1,10 +1,12 @@
 /*==============================================================================
   Defines a few common operations for the base class. See Board.h to see the
   interface specification.
- ==============================================================================*/
+  ==============================================================================*/
 
 #include "Board.hpp"
 
+namespace game_rules
+{
 Board::Board ()
 {
 }
@@ -37,15 +39,15 @@ operator << (std::ostream& out, const Board& board)
    static const uint nplayers = Board::PLAYERS;
 
    static const std::string
-     piece_to_string[][nplayers] =
-     {
-       { "  P  ", " *P* " },
-       { "  N  ", " *N* " },
-       { "  B  ", " *B* " },
-       { "  R  ", " *R* " },
-       { "  Q  ", " *Q* " },
-       { "  K  ", " *K* " },
-     };
+         piece_to_string[][nplayers] =
+         {
+            { "  P  ", " *P* " },
+            { "  N  ", " *N* " },
+            { "  B  ", " *B* " },
+            { "  R  ", " *R* " },
+            { "  Q  ", " *Q* " },
+            { "  K  ", " *K* " },
+         };
 
    out << "  -------------------------------------------------" << std::endl;
    for (uint row = 0; row < Board::SIZE; ++row)
@@ -79,3 +81,5 @@ operator << (std::ostream& out, const Board& board)
 
    return out;
 }
+
+} // namespace game_rules

@@ -8,16 +8,18 @@
   The idea is to think of evaluation functions as members of a population whose
   fitness is measured by having matches between pairs of them (keeping all other
   parts of the chess engine constant, e.g. the search algorithm)
- ==============================================================================*/
-
-class FitnessEvaluator;
+  ==============================================================================*/
 
 #include "Util.hpp"
 #include "Chromosome.hpp"
 
+namespace learning
+{
+class FitnessEvaluator;
+
 class GeneticAlgorithm
 {
- public:
+  public:
    GeneticAlgorithm (
        uint population_size, uint n_iterations, double mutation_probability,
        FitnessEvaluator* fitness);
@@ -28,7 +30,7 @@ class GeneticAlgorithm
    void set_seed (Chromosome& seed);
    Chromosome get_fittest_member ();
 
- private:
+  private:
    void initialize_population ();
    void evaluate_population ();
    void select_breeding_individuals (
@@ -52,5 +54,7 @@ class GeneticAlgorithm
    std::vector<Chromosome> population;
    Chromosome fittest_member;
 };
+
+} // namespace learning
 
 #endif // GENETIC_ALGORITHM

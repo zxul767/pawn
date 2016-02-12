@@ -3,14 +3,18 @@
 
 /*==============================================================================
   Holds a chess board configuration key to be used transposition table lookups
- ==============================================================================*/
+  ==============================================================================*/
 
 #include <unordered_map>
 #include "Util.hpp"
 
+namespace game_rules
+{
+using util::ullong;
+
 class Record
 {
-public:
+  public:
    struct board_key
    {
       ullong hash_key;
@@ -26,24 +30,26 @@ public:
 
    static const size_t size = 4142027;
 
-private:
+  private:
    class hasher
    {
-   public:
+     public:
       size_t operator ()(const board_key& board) const
-         {
-            return (size_t) (board.hash_key % size);
-         }
+      {
+         return (size_t) (board.hash_key % size);
+      }
    };
    class comparer
    {
-   public:
+     public:
       bool operator ()(const board_key& board, const board_key& other) const
-         {
-            return board.hash_lock == other.hash_lock;
-         }
+      {
+         return board.hash_lock == other.hash_lock;
+      }
    };
    std::unordered_map <board_key, ushort, hasher, comparer> record;
 };
+
+} // namespace game_rules
 
 #endif // RECORD_H

@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cstdlib>
 
+namespace util
+{
 std::vector<bitboard> Util::to_bitboard;
 
 bool
@@ -20,11 +22,11 @@ Util::load_to_bitboard ()
 }
 
 /*==============================================================================
-   Get the position of the most significat bit in BITVECTOR (The algorithm used
-   is based on binary search, see LMSBP_algorithm.txt for a description)
+  Get the position of the most significat bit in BITVECTOR (The algorithm used
+  is based on binary search, see LMSBP_algorithm.txt for a description)
 
-   Precondition: bitboard is a 64-bit integer type.
- ==============================================================================*/
+  Precondition: bitboard is a 64-bit integer type.
+  ==============================================================================*/
 int
 Util::MSB_position (bitboard bitvector)
 {
@@ -87,11 +89,11 @@ Util::MSB_position (bitboard bitvector)
 }
 
 /*==============================================================================
- | Get the position of the least significat bit in BITVECTOR (The algorithm    |
- | used is based on binary search, see LMSBP_algorithm.txt for a description)  |
- |                                                                             |
- | Precondition: bitboard is a 64-bit integer type.                            |
- ==============================================================================*/
+  | Get the position of the least significat bit in BITVECTOR (The algorithm    |
+  | used is based on binary search, see LMSBP_algorithm.txt for a description)  |
+  |                                                                             |
+  | Precondition: bitboard is a 64-bit integer type.                            |
+  ==============================================================================*/
 int
 Util::LSB_position (bitboard bitvector)
 {
@@ -157,36 +159,36 @@ Util::LSB_position (bitboard bitvector)
 }
 
 /*==============================================================================
-   Complexity: O(n) where n is the number of turned-on bits
+  Complexity: O(n) where n is the number of turned-on bits
 
-   Note: There are at least two faster methods to do this task:
+  Note: There are at least two faster methods to do this task:
 
-   (a) Using a precomputed table of size 2^8 to count the number of bits in
-   blocks of eight bits. The code required by this method is rather compact,
-   but requires a prior initialization. Complexity is O(1) both for space and
-   time.
+  (a) Using a precomputed table of size 2^8 to count the number of bits in
+  blocks of eight bits. The code required by this method is rather compact,
+  but requires a prior initialization. Complexity is O(1) both for space and
+  time.
 
-   (b) Using binary counters of size 1, 2, 4, ..., 2^64. The code used by this
-   method is rather compact, but without an explanation it is completely
-   cryptic. Complexity is O(1)
+  (b) Using binary counters of size 1, 2, 4, ..., 2^64. The code used by this
+  method is rather compact, but without an explanation it is completely
+  cryptic. Complexity is O(1)
 
-   Precondition: bitboard is a 64-bit integer type.
- ==============================================================================*/
+  Precondition: bitboard is a 64-bit integer type.
+  ==============================================================================*/
 uint
 Util::count_set_bits (bitboard bitvector)
 {
-  // The following commented code is the non-optimized version of the code below
-  //
-  //    uint n_bits = 0;
-  //
-  //    while (bitvector)
-  //    {
-  //       n_bits++;
-  //       bitvector &= bitvector - 1;
-  //    }
-  //    return n_bits;
+   // The following commented code is the non-optimized version of the code below
+   //
+   //    uint n_bits = 0;
+   //
+   //    while (bitvector)
+   //    {
+   //       n_bits++;
+   //       bitvector &= bitvector - 1;
+   //    }
+   //    return n_bits;
 
-  // We are now using method (b)
+   // We are now using method (b)
 
    bitvector = (((0xAAAAAAAAAAAAAAAAuLL & bitvector) >> 0x1) +
                 ((0x5555555555555555uLL & bitvector)));
@@ -244,3 +246,5 @@ Util::random (double low, double high)
    tmp = (rand () / static_cast<double> (RAND_MAX)) * (high-low) + low;
    return tmp;
 }
+
+} // namespace util

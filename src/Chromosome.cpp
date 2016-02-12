@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <ctime>
 
+namespace learning
+{
 using std::vector;
 
 Chromosome::Chromosome ()
@@ -74,7 +76,7 @@ Chromosome::decode (vector<int>& features)
          feature_value |= (1 << j);
       }
 
-	   if (i % BITS_PER_FEATURE == (BITS_PER_FEATURE-1))
+      if (i % BITS_PER_FEATURE == (BITS_PER_FEATURE-1))
       {
          features.push_back (feature_value);
          feature_value = 0;
@@ -107,7 +109,6 @@ Chromosome::reproduce (
    vector<bool> first_born;
    vector<bool> second_born;
    uint i = 0;
-
 
    for (uint k = 0; k < this->gene_string.size(); ++k)
    {
@@ -194,7 +195,7 @@ Chromosome::get_genes () const
 {
    std::string genes = "";
    for (uint i = 0; i < this->gene_string.size (); ++i)
-         genes += (this->gene_string[i] ? "1" : "0");
+      genes += (this->gene_string[i] ? "1" : "0");
    return genes;
 }
 
@@ -280,7 +281,7 @@ Chromosome::operator == (const Chromosome& other) const
 bool
 Chromosome::operator < (const Chromosome& other) const
 {
-   if (fabs (this->fitness - other.fitness) < Util::EPSILON)
+   if (fabs (this->fitness - other.fitness) < util::constants::EPSILON)
       return false;
 
    return this->fitness < other.fitness;
@@ -315,3 +316,5 @@ operator << (std::ostream& out, const Chromosome& other)
 
    return out;
 }
+
+} // namespace learning

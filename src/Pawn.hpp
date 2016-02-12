@@ -4,14 +4,16 @@
 /*==============================================================================
   Encodes the move rules for a pawn, both in its general form (i.e. assumming
   an empty board), and in specific situations (i.e. in a board with pieces)
- ==============================================================================*/
+  ==============================================================================*/
 
 #include "Piece.hpp"
 #include "Board.hpp"
 
+namespace game_rules
+{
 class Pawn : public Piece
 {
- public:
+  public:
    Pawn ();
    ~Pawn ();
 
@@ -23,7 +25,7 @@ class Pawn : public Piece
 
    bitboard get_potential_moves (uint square, Player player) const;
 
- private:
+  private:
 
    bitboard get_simple_moves (uint square, Player player) const;
 
@@ -46,4 +48,6 @@ class Pawn : public Piece
    bitboard side_moves_from[Board::SQUARES][Board::PLAYERS];
 };
 
-#endif
+} // namespace game_rules
+
+#endif // PAWN_H

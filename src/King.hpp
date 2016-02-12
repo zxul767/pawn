@@ -4,14 +4,16 @@
 /*==============================================================================
   Encodes the move rules for a king, both in its general form (i.e. assumming
   an empty board), and in specific situations (i.e. in a board with pieces)
- ==============================================================================*/
+  ==============================================================================*/
 
 #include "Piece.hpp"
 #include "Board.hpp"
 
+namespace game_rules
+{
 class King : public Piece
 {
-public:
+  public:
    King ();
    ~King ();
 
@@ -20,7 +22,7 @@ public:
 
    static bitboard get_neighbors (uint position);
 
-private:
+  private:
    void compute_moves ();
    bitboard moves_from[Board::SQUARES];
 
@@ -29,4 +31,6 @@ private:
    const static bool neighbors_computed;
 };
 
-#endif
+} // namespace game_rules
+
+#endif // KING_H

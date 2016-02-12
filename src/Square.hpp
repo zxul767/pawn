@@ -3,25 +3,29 @@
 
 #include "Piece.hpp"
 
+namespace game_rules
+{
 class Square
 {
- public:
+  public:
    Piece::Player player;
    Piece::Type piece;
 
    bool
-      operator == (const Square& other) const
-      {
-         return (other.player == this->player &&
-                 other.piece == this->piece);
-      }
+   operator == (const Square& other) const
+   {
+      return (other.player == this->player &&
+              other.piece == this->piece);
+   }
 
    bool
-      operator != (const Square& other) const
-      {
-         return (other.player != this->player ||
-                 other.piece != this->piece);
-      }
+   operator != (const Square& other) const
+   {
+      return (other.player != this->player ||
+              other.piece != this->piece);
+   }
 };
+
+} // namespace game_rules
 
 #endif // SQUARE_H

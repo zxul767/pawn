@@ -5,14 +5,16 @@
   Represents a command issued by the user, providing the information
   associated with it (e.g. a command to move a piece should also provide the
   start and end squares)
- ==============================================================================*/
+  ==============================================================================*/
 
 #include <string>
 #include <map>
 
+namespace game_ui
+{
 class Command
 {
- public:
+  public:
    enum Value {
       XBOARD_MODE,
       FEATURES,
@@ -39,7 +41,7 @@ class Command
    std::string get_notation () const;
    Value get_value () const;
 
- private:
+  private:
    std::string command;
    Value value;
 
@@ -50,4 +52,6 @@ class Command
    static const bool commands_loaded;
 };
 
-#endif
+} // namespace game_ui
+
+#endif // COMMAND_H

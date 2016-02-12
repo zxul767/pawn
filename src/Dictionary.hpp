@@ -4,7 +4,7 @@
 /*==============================================================================
   Implements a transposition table, used to improve performance of search
   algorithms such as iterative deepening search
- ==============================================================================*/
+  ==============================================================================*/
 
 #include <unordered_map>
 #include <map>
@@ -13,32 +13,34 @@
 #include "Move.hpp"
 #include "MaeBoard.hpp"
 
+namespace game_engine
+{
 class Dictionary
 {
-public:
+  public:
 
    enum flag { EXACT, UPPER_BOUND, LOWER_BOUND, UNKNOWN };
 
    struct board_key
    {
-      ullong hash_key;
-      ullong hash_lock;
+      util::ullong hash_key;
+      util::ullong hash_lock;
    };
 
    struct hash_info
    {
       int score;
       flag accuracy;
-      Move best_move;
-
-      ushort depth;
+      game_rules::Move best_move;
+      util::ushort depth;
    };
 
    Dictionary (uint hash_size = 0);
 
    bool add_entry (
-       const board_key& board, int score, flag accuracy, const Move& best_move,
-       uint depth);
+       const board_key& board, int score, flag accuracy,
+       const game_rules::Move& best_move, uint depth);
+
    bool exists (const board_key& board);
    bool get_data (const board_key& board, hash_info& data);
    void show_all ();
@@ -52,10 +54,10 @@ public:
    static const ushort MAX_MEMORY = 256;
    static size_t size;
 
-private:
+  private:
    class hasher
    {
-   public:
+     public:
       size_t operator ()(const board_key& board) const
       {
          return (size_t) board.hash_key % size;
@@ -64,7 +66,7 @@ private:
 
    class comparer
    {
-   public:
+     public:
       bool operator ()(const board_key& board, const board_key& other) const
       {
          return board.hash_lock == other.hash_lock;
@@ -74,5 +76,7 @@ private:
    uint hash_size;
    std::unordered_map<board_key, hash_info, hasher, comparer> entry;
 };
+
+} // namespace game_engine
 
 #endif // HASH_DICTIONARY_H

@@ -9,6 +9,8 @@
 #include "Piece.hpp"
 #include "Board.hpp"
 
+namespace game_rules
+{
 class Rook : public Piece
 {
 public:
@@ -26,4 +28,6 @@ private:
    bitboard all_moves_from[Board::SQUARES];
 };
 
-#endif
+} // namespace game_rules
+
+#endif // ROOK_H

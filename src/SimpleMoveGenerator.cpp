@@ -2,19 +2,28 @@
 #include "SimpleEvaluator.hpp"
 #include "Board.hpp"
 #include "Util.hpp"
+#include "Move.hpp"
 
 #include <algorithm>
 #include <cassert>
 
+namespace game_engine
+{
 using std::vector;
+
+using game_rules::Board;
+using game_rules::Move;
+using game_rules::Piece;
+
+using util::bitboard;
 
 SimpleMoveGenerator::SimpleMoveGenerator () {}
 
 /*==========================================================================
-   Generate all pseudo-legal moves and place captures at the beginning of
-   the list, sorted by the Most-Valuable-Victim Least-Valuable-Attacker
-   ratio.
- ==========================================================================*/
+  Generate all pseudo-legal moves and place captures at the beginning of
+  the list, sorted by the Most-Valuable-Victim Least-Valuable-Attacker
+  ratio.
+  ==========================================================================*/
 bool
 SimpleMoveGenerator::generate_moves (Board* board, vector<Move>&  moves)
 {
@@ -32,15 +41,15 @@ SimpleMoveGenerator::generate_moves (Board* board, vector<Move>&  moves)
       while (pieces)
       {
          // extract pseudo-legal moves for the current piece
-         Board::Squares square = Board::Squares (Util::MSB_position (pieces));
+         Board::Squares square = Board::Squares (util::Util::MSB_position (pieces));
          valid_moves = board->get_moves (piece, square);
-         pieces ^= (Util::one << square);
+         pieces ^= (util::constants::ONE << square);
 
          while (valid_moves)
          {
             Board::Squares current_move =
-               Board::Squares (Util::MSB_position (valid_moves));
-            valid_moves ^= (Util::one << current_move);
+                  Board::Squares (util::Util::MSB_position (valid_moves));
+            valid_moves ^= (util::constants::ONE << current_move);
 
             Move move (square, current_move);
             move.set_moving_piece (piece);
@@ -72,9 +81,9 @@ SimpleMoveGenerator::generate_moves (Board* board, vector<Move>&  moves)
 }
 
 /*==========================================================================
-   Generate pseudo legal moves of the kinds contained in FLAGS, as opposed
-   to simply generating all moves.
- ==========================================================================*/
+  Generate pseudo legal moves of the kinds contained in FLAGS, as opposed
+  to simply generating all moves.
+  ==========================================================================*/
 bool
 SimpleMoveGenerator::generate_moves (
     Board* board, vector<Move>& moves, ushort flags)
@@ -98,14 +107,14 @@ SimpleMoveGenerator::generate_moves (
       while (pieces)
       {
          // extract pseudo-legal moves for the current piece
-         Board::Squares square = Board::Squares (Util::MSB_position (pieces));
+         Board::Squares square = Board::Squares (util::Util::MSB_position (pieces));
          valid_moves = board->get_moves (piece, square);
-         pieces ^= (Util::one << square);
+         pieces ^= (util::constants::ONE << square);
 
          while (valid_moves)
          {
-            Board::Squares current_move = Board::Squares (Util::MSB_position (valid_moves));
-            valid_moves ^= (Util::one << current_move);
+            Board::Squares current_move = Board::Squares (util::Util::MSB_position (valid_moves));
+            valid_moves ^= (util::constants::ONE << current_move);
 
             Move move (square, current_move);
             move.set_moving_piece (piece);
@@ -195,7 +204,7 @@ SimpleMoveGenerator::generate_en_prise_evations (
    bitboard pieces = board->get_pieces (player);
    while (pieces)
    {
-      Board::Squares from = Board::Squares (Util::LSB_position (pieces));
+      Board::Squares from = Board::Squares (util::Util::LSB_position (pieces));
       Piece::Type piece_type = board->get_piece (from);
       bitboard threats = board->threats_to (from, piece_type);
 
@@ -211,7 +220,7 @@ SimpleMoveGenerator::generate_en_prise_evations (
          bitboard evasions = board->get_moves (piece_type, from);
          while (evasions)
          {
-            Board::Squares to = Board::Squares (Util::LSB_position (evasions));
+            Board::Squares to = Board::Squares (util::Util::LSB_position (evasions));
             Move move (from, to);
             moves.push_back (move);
             // Watch out! removing a bit this way only works for the LSB
@@ -229,3 +238,5 @@ SimpleMoveGenerator::generate_en_prise_evations (
 
    return moves.size () != 0;
 }
+
+} // namespace game_engine

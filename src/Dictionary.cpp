@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+namespace game_engine
+{
+using game_rules::Move;
 using std::unordered_map;
 
 std::map<ushort, uint> Dictionary::possible_size;
@@ -121,3 +124,5 @@ Dictionary::reset ()
 {
    this->entry.clear ();
 }
+
+} // namespace game_engine

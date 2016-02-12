@@ -9,6 +9,8 @@
 #include "Rook.hpp"
 #include "Bishop.hpp"
 
+namespace game_rules
+{
 class Queen : public Piece
 {
 public:
@@ -24,4 +26,6 @@ private:
    Bishop* bishop;
 };
 
-#endif
+} // namespace game_rules
+
+#endif // QUEEN_H

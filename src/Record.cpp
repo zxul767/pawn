@@ -1,5 +1,7 @@
 #include "Record.hpp"
 
+namespace game_rules
+{
 bool
 Record::add_record (const board_key& key, ushort& times)
 {
@@ -55,3 +57,5 @@ Record::reset ()
 {
    record.clear ();
 }
+
+} // namespace game_rules

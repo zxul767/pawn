@@ -7,10 +7,11 @@
 #include "Record.hpp"
 #include <stack>
 
+namespace game_rules
+{
 class MaeBoard : public Board
 {
- public:
-
+  public:
    MaeBoard ();
    MaeBoard (const std::string& file);
    ~MaeBoard ();
@@ -62,7 +63,7 @@ class MaeBoard : public Board
    void set_turn (Piece::Player player);
    void set_castling_privilege (Piece::Player player, CastleSide side, bool value);
 
- private:
+  private:
    // Do not allow users of this class to make copies
    MaeBoard (const MaeBoard& other);
 
@@ -125,4 +126,6 @@ class MaeBoard : public Board
    void change_turn ();
 };
 
-#endif
+} // namespace game_rules
+
+#endif // MAE_BOARD_H

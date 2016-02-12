@@ -1,6 +1,8 @@
 #include "Bishop.hpp"
 #include <iostream>
 
+namespace game_rules
+{
 Bishop::Bishop ()
 {
    compute_moves ();
@@ -33,9 +35,9 @@ Bishop::get_moves (uint square, Piece::Player player, const Board* board) const
       blocking_pieces = get_ray (Board::Squares (square), ray) & all_pieces;
 
       if (ray == NORTH_EAST || ray == NORTH_WEST)
-         blocker = Board::Squares (Util::MSB_position (blocking_pieces));
+         blocker = Board::Squares (util::Util::MSB_position (blocking_pieces));
       else
-         blocker = Board::Squares (Util::LSB_position (blocking_pieces));
+         blocker = Board::Squares (util::Util::LSB_position (blocking_pieces));
 
       attacks |=
             get_ray (Board::Squares (square), ray) ^
@@ -121,3 +123,5 @@ Bishop::get_ray (Board::Squares square, Diagonal direction) const
 
    return 0;
 }
+
+} // namespace game_rules

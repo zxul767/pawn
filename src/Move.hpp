@@ -5,9 +5,11 @@
 #include "Piece.hpp"
 #include "Board.hpp"
 
+namespace game_rules
+{
 class Move
 {
- public:
+  public:
    Move ();
    Move (const std::string& notation);
    Move (Board::Squares start, Board::Squares end);
@@ -50,7 +52,7 @@ class Move
    static bool translate_to_notation (Board::Squares square, std::string& notation);
    static bool is_valid_notation (const std::string &notation);
 
- private:
+  private:
    Board::Squares start;
    Board::Squares end;
    Type type;
@@ -60,5 +62,7 @@ class Move
    // The score assigned to this move is relative to the position of the board
    int score;
 };
+
+} // namespace game_rules
 
 #endif // MOVE_H

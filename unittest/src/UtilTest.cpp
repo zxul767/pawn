@@ -1,6 +1,10 @@
 #include "catch.hpp"
 #include "Util.hpp"
 
+namespace
+{
+using util::Util;
+
 TEST_CASE("Count number of set bits", "[bits]" ) {
    REQUIRE(Util::count_set_bits(0) == 0);
    REQUIRE(Util::count_set_bits(1) == 1);
@@ -36,3 +40,5 @@ TEST_CASE("Find position of the most significant bit", "[bits][msb]") {
    REQUIRE(Util::MSB_position(7) == 2); // binary: 0111
    REQUIRE(Util::MSB_position(8) == 3); // binary: 1000
 }
+
+} // anonymous namespace

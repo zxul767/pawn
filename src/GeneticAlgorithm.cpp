@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <algorithm>
 
+namespace learning
+{
 using std::vector;
 
 GeneticAlgorithm::GeneticAlgorithm (
@@ -216,7 +218,7 @@ GeneticAlgorithm::select_breeding_individuals (
    }
 
    vector<Chromosome> aux = this->population;
-   double r = Util::random (Util::EPSILON, cumulative_probability);
+   double r = util::Util::random (util::constants::EPSILON, cumulative_probability);
 
    uint i = 0;
    for (; i < aux.size (); ++i)
@@ -242,15 +244,21 @@ GeneticAlgorithm::set_actual_fitness ()
    for (uint i = 0; i < this->population_size; ++i)
       switch(this->population[i].get_result())
       {
-      case Chromosome::WIN:
-         winners.push_back(this->population[i]); break;
-      case Chromosome::LOSS:
-         losers.push_back(this->population[i]); break;
-      case Chromosome::DRAW:
-         mediocres.push_back(this->population[i]); break;
-      default:
-         std::cerr<< "an unclasified individual";
-         abort();
+         case Chromosome::WIN:
+            winners.push_back(this->population[i]);
+            break;
+
+         case Chromosome::LOSS:
+            losers.push_back(this->population[i]);
+            break;
+
+         case Chromosome::DRAW:
+            mediocres.push_back(this->population[i]);
+            break;
+
+         default:
+            std::cerr<< "an unclasified individual";
+            abort();
       }
 
    set_material_fitness(winners);
@@ -301,7 +309,7 @@ GeneticAlgorithm::set_material_fitness(vector<Chromosome>& sub_population)
       if (sub_population[i].get_material_balance() != 0)
       {
          double portion = (double)best_result /
-            (double)sub_population[i].get_material_balance();
+               (double)sub_population[i].get_material_balance();
 
          if (portion > 1.0)
             portion = 1.0 / portion;
@@ -309,7 +317,7 @@ GeneticAlgorithm::set_material_fitness(vector<Chromosome>& sub_population)
          bonus = portion * (2.0 / 9.0);
       }
       else {
-        bonus = 0.0;
+         bonus = 0.0;
       }
 
       if (bonus > (2.0 / 9.0))
@@ -361,7 +369,7 @@ GeneticAlgorithm::set_duration_fitness(
       }
 
       double portion = (double)best_result /
-         (double)sub_population[i].get_game_duration();
+            (double)sub_population[i].get_game_duration();
 
       if (type == Chromosome::LOSS)
          portion = 1 / portion;
@@ -377,3 +385,5 @@ GeneticAlgorithm::set_duration_fitness(
       sub_population[i].set_fitness (sub_population[i].get_fitness() + bonus);
    }
 }
+
+} // namespace learning

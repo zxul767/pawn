@@ -1,7 +1,10 @@
 #include "Command.hpp"
 #include "Move.hpp"
 
+namespace game_ui
+{
 using std::string;
+using game_rules::Move;
 
 std::map<string, Command::Value> Command::commands;
 std::map<Command::Value, string> Command::commandStrings;
@@ -50,7 +53,7 @@ Command::load_commands ()
    commands["think"] = THINK;
    commands["undo"] = UNDO_MOVE;
    commands["see moves"] = SEE_MOVES;
-   commands["usermove"] = USER_MOVE,
+   commands["usermove"] = USER_MOVE;
    commands["remove"] = REMOVE;
    commands["train"] = TRAIN;
    commands["auto"] = COMPUTER_PLAY;
@@ -93,3 +96,5 @@ Command::get_notation () const
 {
    return this->command;
 }
+
+} // namespace game_ui

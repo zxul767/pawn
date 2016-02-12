@@ -2,7 +2,7 @@
   To improve the performance of the basic alpha-beta search algorithm, some
   other algorithms and techniques are used on top of it (e.g. transposition
   tables, iterative deepening search, null-window search, etc.)
- ==============================================================================*/
+  ==============================================================================*/
 
 #include "Board.hpp"
 #include "AlphaBetaSearch.hpp"
@@ -17,7 +17,11 @@
 #include <cassert>
 #include <cmath>
 
+namespace game_engine
+{
 using std::vector;
+using game_rules::Move;
+using game_rules::Board;
 
 AlphaBetaSearch::AlphaBetaSearch (
     PositionEvaluator* evaluator, MoveGenerator* generator)
@@ -214,7 +218,7 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
       // Quiescence search may return a value that is well below the current
       // node evaluation, meaning that all captures considered are really bad.
       this->n_nodes_evaluated++;
-      return Util::max (
+      return util::Util::max (
           this->evaluator->static_evaluation (board),
           quiescence (0, alpha, beta));
    }
@@ -259,7 +263,7 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
       else
       {
          assert(error == Board::NO_ERROR);
-         tentative_value = -alpha_beta (depth + 1, -beta, -Util::max (alpha, best_value));
+         tentative_value = -alpha_beta (depth + 1, -beta, -util::Util::max (alpha, best_value));
       }
 
       assert(board->undo_move ());
@@ -469,3 +473,5 @@ AlphaBetaSearch::load_factor_weights (vector<int>& weights)
    this->hash_table->reset ();
    this->evaluator->load_factor_weights (weights);
 }
+
+} // namespace game_engine

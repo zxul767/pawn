@@ -1,14 +1,16 @@
 #ifndef MOVE_GENERATOR_H
 #define MOVE_GENERATOR_H
 
+#include "Util.hpp"
 #include <vector>
-#include "Move.hpp"
 
-class Board;
+namespace game_rules { class Board; class Move; }
 
+namespace game_engine
+{
 class MoveGenerator
 {
- public:
+  public:
    MoveGenerator () {}
    virtual ~MoveGenerator () {}
 
@@ -27,10 +29,12 @@ class MoveGenerator
      Return a vector of legal moves from the current BOARD configuration
      ---------------------------------------------------------------------*/
    virtual bool generate_moves (
-       Board*  board, std::vector<Move>& moves, ushort flags) = 0;
+       game_rules::Board*, std::vector<game_rules::Move>& moves, util::ushort flags) = 0;
 
-   virtual bool generate_moves (Board* board, std::vector<Move>& moves) = 0;
-   virtual bool generate_en_prise_evations (Board* board, std::vector<Move>& moves) = 0;
+   virtual bool generate_moves (game_rules::Board*, std::vector<game_rules::Move>& moves) = 0;
+   virtual bool generate_en_prise_evations (game_rules::Board*, std::vector<game_rules::Move>& moves) = 0;
 };
+
+} // namespace game_engine
 
 #endif // MOVE_GENERATOR_H

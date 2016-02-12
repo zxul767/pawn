@@ -4,6 +4,8 @@
 
 #include "Timer.hpp"
 
+namespace diagnostics
+{
 Timer::Timer (double time_out)
 {
    this->time_out = time_out;
@@ -69,3 +71,5 @@ Timer::sleep () const
       }
    }
 }
+
+} // namespace diagnostics

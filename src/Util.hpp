@@ -1,21 +1,26 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-typedef unsigned int uint;
-typedef unsigned long long bitboard;
-typedef unsigned long long ullong;
-typedef unsigned short int ushort;
-
 #include <climits>
 #include <vector>
 
+namespace util
+{
+typedef unsigned short int ushort;
+typedef unsigned int uint;
+typedef unsigned long long bitboard;
+typedef unsigned long long ullong;
+
+namespace constants
+{
+constexpr int INFINITUM = INT_MAX / 2;
+constexpr double EPSILON = 1E-6;
+constexpr bitboard ONE = 1;
+}
+
 class Util
 {
- public:
-   static constexpr double EPSILON = 1E-6;
-   static const bitboard one = 1;
-   static const int INFINITUM = (INT_MAX >> 1);
-
+  public:
    static std::vector<bitboard> to_bitboard;
    static bool load_to_bitboard ();
    static bool loaded;
@@ -30,5 +35,7 @@ class Util
    static int max (int a, int b) { return (a > b ? a : b); }
    static ushort bit (ushort n) { return 1 << n; }
 };
+
+} // namespace util
 
 #endif // UTIL_H

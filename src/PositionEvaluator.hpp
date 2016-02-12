@@ -4,21 +4,25 @@
 #include <vector>
 #include "Piece.hpp"
 
-class Board;
+namespace game_rules { class Board; }
 
+namespace game_engine
+{
 class PositionEvaluator
 {
- public:
+  public:
    virtual ~PositionEvaluator () {}
-   virtual int static_evaluation (const Board* board) const = 0;
+   virtual int static_evaluation (const game_rules::Board* board) const = 0;
 
-   virtual int evaluate_material (const Board* board) const = 0;
-   virtual int evaluate_mobility (const Board* board) const = 0;
-   virtual int evaluate_center_control (const Board* board) const = 0;
-   virtual int evaluate_king_safety (const Board* board) const = 0;
+   virtual int evaluate_material (const game_rules::Board* board) const = 0;
+   virtual int evaluate_mobility (const game_rules::Board* board) const = 0;
+   virtual int evaluate_center_control (const game_rules::Board* board) const = 0;
+   virtual int evaluate_king_safety (const game_rules::Board* board) const = 0;
 
    virtual void load_factor_weights (std::vector<int>& weights) = 0;
-   virtual int get_piece_value (Piece::Type piece_type) const = 0;
+   virtual int get_piece_value (game_rules::Piece::Type piece_type) const = 0;
 };
+
+} // namespace game_engine
 
 #endif // POSITION_EVALUATOR

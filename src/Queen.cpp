@@ -1,5 +1,7 @@
 #include "Queen.hpp"
 
+namespace game_rules
+{
 Queen::Queen ()
 {
    this->rook = new Rook ();
@@ -33,3 +35,5 @@ Queen::get_potential_moves (uint square, Player player) const
 
    return moves;
 }
+
+} // namespace game_rules

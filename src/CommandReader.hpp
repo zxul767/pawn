@@ -3,12 +3,16 @@
 
 #include "Command.hpp"
 
+namespace game_ui
+{
 class CommandReader
 {
- public:
+  public:
    CommandReader ();
 
    Command get_command ();
 };
 
-#endif
+} // namespace game_ui
+
+#endif // COMMAND_READER_H

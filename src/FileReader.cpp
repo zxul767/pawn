@@ -1,15 +1,17 @@
 #include "FileReader.hpp"
 #include <cctype>
 
+namespace game_persistence
+{
 using std::string;
 using std::vector;
 
-FileReader:: FileReader ()
+FileReader::FileReader ()
 {
    this->values = new vector<string>[3];
 }
 
-FileReader:: ~FileReader ()
+FileReader::~FileReader ()
 {
    delete[] this->values;
 }
@@ -89,7 +91,7 @@ FileReader::is_empty_line (const string& line) const
 
    for (uint i = 0; i < line.length (); ++i)
       if (!isspace (line[i]))
-        return false;
+         return false;
 
    return true;
 }
@@ -116,7 +118,7 @@ FileReader::set_variables ()
                return false;
       }
       else
-        getline (input, line);
+         getline (input, line);
    }
    input.close ();
 
@@ -149,13 +151,13 @@ FileReader::set_variable (string& input)
    if (tokens.size () > 1)
    {
       if (!variable_was_found (tokens[0], &index_variable))
-        return false;
+         return false;
 
       for (uint i = 1; i < tokens.size (); ++i)
-        if (value_was_found (index_variable, tokens[i], &index_value))
-          set_value (index_variable, tokens[i], index_value);
-        else
-          return false;
+         if (value_was_found (index_variable, tokens[i], &index_value))
+            set_value (index_variable, tokens[i], index_value);
+         else
+            return false;
    }
    return true;
 }
@@ -279,3 +281,5 @@ FileReader::get_type (uint variable) const
 
    return Piece:: KING;
 }
+
+} // namespace game_persistence

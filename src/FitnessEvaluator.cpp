@@ -8,11 +8,18 @@
 
 #include <cstdlib>
 
+namespace learning
+{
+using game_rules::Board;
+using game_rules::Piece;
+
+using game_engine::IChessEngine;
+
 FitnessEvaluator::FitnessEvaluator (IChessEngine* chess_engine)
 {
    this->chess_engine = chess_engine;
-   this->board = new MaeBoard ();
-   this->evaluator = new SimpleEvaluator ();
+   this->board = new game_rules::MaeBoard ();
+   this->evaluator = new game_engine::SimpleEvaluator ();
 }
 
 FitnessEvaluator::~FitnessEvaluator ()
@@ -36,7 +43,7 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
      Use a single engine, just load and unload the factor weights after
      every move...
      -------------------------------------------------------------------------*/
-   Timer* timer = new Timer ();
+   auto timer = new diagnostics::Timer ();
    timer->start ();
 
    this->board->reset ();
@@ -52,7 +59,7 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
       // bitboard key = this->board->get_hash_key ();
       // bitboard lock = this->board->get_hash_lock ();
 
-      Move move;
+      game_rules::Move move;
       result = this->chess_engine->get_best_move (3, this->board, move);
       if (result == IChessEngine::WHITE_MATES ||
           result == IChessEngine::BLACK_MATES ||
@@ -132,3 +139,5 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
 
    return evaluation;
 }
+
+} // namespace learning

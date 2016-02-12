@@ -1,18 +1,19 @@
 #include "Rook.hpp"
 
+namespace game_rules
+{
 Rook::Rook ()
 {
    compute_moves ();
 }
 
 Rook::~Rook () { }
-
 /*=============================================================================
   Get all moves from SQUARE in the current BOARD assumming it is PLAYER'S turn
   to move (moves that may leave the king in check are also included)
 
-  See ATTACKS_algorithm.txt for a graphic explanation of the algorithm used
-  here.
+  TODO: write a high-level description of the algorithm used to find rook valid
+  moves
   ============================================================================*/
 bitboard
 Rook::get_moves (uint square, Piece::Player player, const Board* board) const
@@ -30,9 +31,9 @@ Rook::get_moves (uint square, Piece::Player player, const Board* board) const
       blocking_pieces = get_ray (Board::Squares (square), ray) & all_pieces;
 
       if (ray == NORTH || ray == WEST)
-         blocker = Board::Squares (Util::MSB_position (blocking_pieces));
+         blocker = Board::Squares (util::Util::MSB_position (blocking_pieces));
       else
-         blocker = Board::Squares (Util::LSB_position (blocking_pieces));
+         blocker = Board::Squares (util::Util::LSB_position (blocking_pieces));
 
       attacks |=
             get_ray (Board::Squares (square), ray) ^
@@ -98,7 +99,7 @@ Rook::compute_moves ()
             {
                y += dy[ray];
                x += dx[ray];
-               this->moves_from[square][ray] |= (Util::one << (y * Board::SIZE + x));
+               this->moves_from[square][ray] |= (util::constants::ONE << (y * Board::SIZE + x));
             }
             this->all_moves_from[square] |= this->moves_from[square][ray];
          }
@@ -118,3 +119,5 @@ Rook::get_ray (Board::Squares square, RowColumn direction) const
 
    return 0;
 }
+
+} // namespace game_rules

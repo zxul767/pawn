@@ -1,6 +1,8 @@
 #include "Pawn.hpp"
 
-Pawn:: Pawn ()
+namespace game_rules
+{
+Pawn::Pawn ()
 {
    compute_moves ();
 }
@@ -121,7 +123,7 @@ Pawn::get_double_move (uint square, Player player) const
       else
          end_square = square + offset;
 
-      return (Util::one << (end_square));
+      return (util::constants::ONE << (end_square));
    }
    return 0;
 }
@@ -197,7 +199,7 @@ Pawn::compute_side_moves (uint square, Player player) const
    {
       int x = column + dx[i];
       if (Board::is_inside_board (row, x) && is_valid_row (row, player))
-         side_moves |= (Util::one << (row * Board::SIZE + x));
+         side_moves |= (util::constants::ONE << (row * Board::SIZE + x));
    }
    return side_moves;
 }
@@ -224,7 +226,7 @@ Pawn::compute_capture_move (uint square, Player player, RowColumn direction) con
    int y = row + (player == WHITE ? -dy[position]: dy[position]);
 
    if (Board::is_inside_board (y, x))
-      capture_move |= (Util::one << (y * Board::SIZE + x));
+      capture_move |= (util::constants::ONE << (y * Board::SIZE + x));
 
    return capture_move;
 }
@@ -249,7 +251,7 @@ Pawn::compute_simple_moves (uint square, Player player) const
    {
       int y = row + (player == WHITE? -dy[i]: dy[i]);
       if (Board::is_inside_board (y, column) && is_valid_row (row, player))
-         simple_moves |= (Util::one << (y * Board::SIZE + column));
+         simple_moves |= (util::constants::ONE << (y * Board::SIZE + column));
    }
 
    return simple_moves;
@@ -299,3 +301,5 @@ Pawn::is_valid_row (uint row, Player color) const
 
    return row != 0;
 }
+
+} // namespace game_rules

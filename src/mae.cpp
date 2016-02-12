@@ -14,6 +14,24 @@ using std::unique_ptr;
 using std::cerr;
 using std::endl;
 
+using game_rules::Board;
+using game_rules::MaeBoard;
+using game_rules::Piece;
+using game_rules::Move;
+
+using game_engine::MoveGenerator;
+using game_engine::SimpleMoveGenerator;
+using game_engine::PositionEvaluator;
+using game_engine::SimpleEvaluator;
+using game_engine::IChessEngine;
+using game_engine::AlphaBetaSearch;
+
+using game_ui::Command;
+using game_ui::CommandReader;
+using game_ui::CommandExecuter;
+
+using diagnostics::Timer;
+
 int
 main ()
 {
@@ -23,8 +41,7 @@ main ()
   unique_ptr<Board> board(new MaeBoard);
   unique_ptr<PositionEvaluator> evaluator(new SimpleEvaluator);
   unique_ptr<MoveGenerator> generator(new SimpleMoveGenerator);
-  unique_ptr<IChessEngine> search_engine(
-      new AlphaBetaSearch (evaluator.get(), generator.get()));
+  unique_ptr<IChessEngine> search_engine(new AlphaBetaSearch (evaluator.get(), generator.get()));
   unique_ptr<Timer> timer(new Timer);
 
   Command command;

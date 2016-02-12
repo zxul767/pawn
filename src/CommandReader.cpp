@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 
+namespace game_ui
+{
 CommandReader::CommandReader ()
 {
    // Remove the buffer from the output stream
@@ -19,3 +21,5 @@ CommandReader::get_command ()
 
    return Command (command);
 }
+
+} // namespace game_ui

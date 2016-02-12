@@ -9,6 +9,10 @@
 #include "Util.hpp"
 #include <string>
 
+namespace game_rules
+{
+using util::bitboard;
+
 // Cannot include Board.h because that creates a cyclic dependency
 class Board;
 
@@ -116,5 +120,7 @@ operator ++ (Piece::Player& player)
 
    return (player = Piece::Player (player + 1));
 }
+
+} // namespace game_rules
 
 #endif // PIECE_H

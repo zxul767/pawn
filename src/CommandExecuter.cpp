@@ -6,24 +6,36 @@
 #include "Timer.hpp"
 #include "FitnessEvaluator.hpp"
 #include "GeneticAlgorithm.hpp"
+#include "Move.hpp"
 
 #include <iostream>
 #include <vector>
 #include <cstdlib>
 #include <memory>
 
+namespace game_ui
+{
 using std::string;
 using std::vector;
 using std::cout;
 using std::cerr;
 
+using game_rules::Board;
+using game_rules::Move;
+
+using game_engine::IChessEngine;
+
+using learning::FitnessEvaluator;
+using learning::GeneticAlgorithm;
+using learning::Chromosome;
+
 CommandExecuter::CommandExecuter (
-    Board* board, IChessEngine* chess_engine, Timer* timer)
+    Board* board, IChessEngine* chess_engine, diagnostics::Timer* timer)
 {
    this->timer = timer;
    this->board = board;
    this->chess_engine = chess_engine;
-   this->move_generator = new SimpleMoveGenerator ();
+   this->move_generator = new game_engine::SimpleMoveGenerator ();
 }
 
 bool
@@ -244,3 +256,5 @@ CommandExecuter::train_by_GA (
 
    this->chess_engine->load_factor_weights (best_features);
 }
+
+} // namespace game_ui

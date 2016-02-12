@@ -2,26 +2,32 @@
 #define FILE_READER_H
 
 /*==============================================================================
-  Reads and writes chess games in an ad-hoc notation (see initial.in)
- ==============================================================================*/
+  Reads chess games in an ad-hoc notation (see initial.in)
+  ==============================================================================*/
 
 #include <fstream>
 #include <string>
 #include <vector>
 
 #include "Board.hpp"
+#include "Piece.hpp"
+
+namespace game_persistence
+{
+using game_rules::Board;
+using game_rules::Piece;
 
 class FileReader
 {
- public:
+  public:
    FileReader ();
-   FileReader (const std::string& filename, Board* board);
+   FileReader (const std::string& filename, game_rules::Board* board);
    ~FileReader ();
 
    bool set_variables ();
 
- private:
-   Board* board;
+  private:
+   game_rules::Board* board;
    std::string file_name;
    std::ifstream input;
    std::vector<std::string> variables;
@@ -42,13 +48,15 @@ class FileReader
    bool get_boolean (uint index_value) const;
 
    void tokenize (const std::string& input, std::vector<std::string>& tokens,
-		  const std::string& delimiters = " ") const;
+                  const std::string& delimiters = " ") const;
 
-   Board::GameStatus get_status (uint index_value) const;
-   Piece::Player get_turn (uint index_value) const;
-   Piece::Player get_color (uint variable) const;
-   Board::CastleSide get_side (uint variable) const;
-   Piece::Type get_type (uint variable) const;
+   game_rules::Board::GameStatus get_status (uint index_value) const;
+   game_rules::Piece::Player get_turn (uint index_value) const;
+   game_rules::Piece::Player get_color (uint variable) const;
+   game_rules::Board::CastleSide get_side (uint variable) const;
+   game_rules::Piece::Type get_type (uint variable) const;
 };
 
-#endif
+} // namespace game_persistence
+
+#endif // FILE_READER_H
