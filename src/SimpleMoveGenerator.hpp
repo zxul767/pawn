@@ -13,7 +13,7 @@ class SimpleMoveGenerator : public MoveGenerator
    /*======================================================================
      Return a vector of legal moves from the current BOARD configuration
      =====================================================================*/
-   bool generate_moves (game_rules::Board*, std::vector<game_rules::Move>& moves, util::ushort flags);
+   bool generate_moves (game_rules::Board*, std::vector<game_rules::Move>& moves, ushort flags);
    bool generate_moves (game_rules::Board*, std::vector<game_rules::Move>& moves);
    bool generate_en_prise_evations (game_rules::Board*, std::vector<game_rules::Move>& moves);
 };

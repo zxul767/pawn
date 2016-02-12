@@ -7,8 +7,6 @@ namespace game_rules { class Board; class Move; }
 
 namespace game_engine
 {
-using util::uint;
-
 class IChessEngine
 {
   public:

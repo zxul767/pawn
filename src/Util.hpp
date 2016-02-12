@@ -4,12 +4,13 @@
 #include <climits>
 #include <vector>
 
-namespace util
-{
 typedef unsigned short int ushort;
 typedef unsigned int uint;
-typedef unsigned long long bitboard;
 typedef unsigned long long ullong;
+
+namespace util
+{
+typedef unsigned long long bitboard;
 
 namespace constants
 {

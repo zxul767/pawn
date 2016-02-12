@@ -16,8 +16,6 @@
 
 namespace game_rules
 {
-using util::ullong;
-
 class Move;
 
 class Board

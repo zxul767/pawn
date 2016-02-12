@@ -10,8 +10,6 @@
 
 namespace game_rules
 {
-using util::ullong;
-
 class Record
 {
   public:

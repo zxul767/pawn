@@ -29,7 +29,7 @@ class MoveGenerator
      Return a vector of legal moves from the current BOARD configuration
      ---------------------------------------------------------------------*/
    virtual bool generate_moves (
-       game_rules::Board*, std::vector<game_rules::Move>& moves, util::ushort flags) = 0;
+       game_rules::Board*, std::vector<game_rules::Move>& moves, ushort flags) = 0;
 
    virtual bool generate_moves (game_rules::Board*, std::vector<game_rules::Move>& moves) = 0;
    virtual bool generate_en_prise_evations (game_rules::Board*, std::vector<game_rules::Move>& moves) = 0;

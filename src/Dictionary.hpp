@@ -23,8 +23,8 @@ class Dictionary
 
    struct board_key
    {
-      util::ullong hash_key;
-      util::ullong hash_lock;
+      ullong hash_key;
+      ullong hash_lock;
    };
 
    struct hash_info
@@ -32,7 +32,7 @@ class Dictionary
       int score;
       flag accuracy;
       game_rules::Move best_move;
-      util::ushort depth;
+      ushort depth;
    };
 
    Dictionary (uint hash_size = 0);
