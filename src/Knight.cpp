@@ -19,7 +19,7 @@ Knight::~Knight () { }
   PLAYER's turn to move (moves that leave the king in check are also included)
   ============================================================================*/
 bitboard
-Knight::get_moves (uint square, Player player, const Board* board) const
+Knight::get_moves (uint square, Player player, const IBoard* board) const
 {
    bitboard attacks = get_potential_moves (square, player);
    attacks &= ~board->get_pieces (player);
@@ -34,7 +34,7 @@ bitboard
 // Only for pawns is the player to move relevant in computing the potential moves
 Knight::get_potential_moves (uint square, Player /* player */) const
 {
-   if (Board::is_inside_board (square))
+   if (IBoard::is_inside_board (square))
       return this->moves_from[square];
 
    return 0;
@@ -47,14 +47,14 @@ Knight::get_potential_moves (uint square, Player /* player */) const
 void
 Knight::compute_moves ()
 {
-   int dx[KNIGHT_MOVES] = {+1, +2, +2, +1, -1, -2, -2, -1};
-   int dy[KNIGHT_MOVES] = {-2, -1, +1, +2, +2, +1, -1, -2};
+   int dx[KNIGHT_MOVES_COUNT] = {+1, +2, +2, +1, -1, -2, -2, -1};
+   int dy[KNIGHT_MOVES_COUNT] = {-2, -1, +1, +2, +2, +1, -1, -2};
 
-   for (uint square = 0; square < Board::SQUARES; ++square)
+   for (uint square = 0; square < IBoard::SQUARES_COUNT; ++square)
       this->moves_from[square] = 0;
 
-   for (uint row = 0; row < Board::SIZE; ++row)
-      for (uint col = 0; col < Board::SIZE; ++col)
+   for (uint row = 0; row < IBoard::SIZE; ++row)
+      for (uint col = 0; col < IBoard::SIZE; ++col)
       {
          /*--------------------------------------------------------------------
            Traverse all eight directions a knight can move to:
@@ -72,13 +72,13 @@ Knight::compute_moves ()
            +------------------------+
 
            -------------------------------------------------------------------*/
-         uint square = row * Board::SIZE + col;
-         for (uint jump = 0; jump < KNIGHT_MOVES; ++jump)
+         uint square = row * IBoard::SIZE + col;
+         for (uint jump = 0; jump < KNIGHT_MOVES_COUNT; ++jump)
          {
             int y = row + dy[jump];
             int x = col + dx[jump];
-            if (Board::is_inside_board (y, x))
-               this->moves_from[square] |= (util::constants::ONE << (y * Board::SIZE + x));
+            if (IBoard::is_inside_board (y, x))
+               this->moves_from[square] |= (util::constants::ONE << (y * IBoard::SIZE + x));
          }
       }
 }

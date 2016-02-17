@@ -1,5 +1,5 @@
 #include "Chromosome.hpp"
-#include "Board.hpp"
+#include "IBoard.hpp"
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
@@ -14,11 +14,11 @@ Chromosome::Chromosome ()
 }
 
 // Create a random chromosome
-Chromosome::Chromosome (uint n_features)
+Chromosome::Chromosome (uint features_count)
 {
    initialize_data ();
 
-   for (uint i = 0; i < n_features * BITS_PER_FEATURE; ++i)
+   for (uint i = 0; i < features_count * BITS_PER_FEATURE; ++i)
    {
       this->gene_string.push_back ((rand () & 1) ? true : false);
    }
@@ -104,11 +104,10 @@ void
 Chromosome::reproduce (
     Chromosome& other, std::pair<Chromosome, Chromosome>& children)
 {
-   unsigned short half = this->gene_string.size() / 2;
+   ushort half = this->gene_string.size() / 2;
 
    vector<bool> first_born;
    vector<bool> second_born;
-   uint i = 0;
 
    for (uint k = 0; k < this->gene_string.size(); ++k)
    {
@@ -116,6 +115,7 @@ Chromosome::reproduce (
       second_born.push_back(false);
    }
 
+   uint i = 0;
    for (; i < half; ++i)
    {
       first_born[i] = this->gene_string[i];
@@ -125,7 +125,7 @@ Chromosome::reproduce (
       second_born[half+i]= this->gene_string[half+i];
    }
 
-   if (this->gene_string.size() & 1)
+   if (util::is_odd(this->gene_string.size()))
    {
       first_born[i] = other.gene_string[i];
       second_born[i] = this->gene_string[i];
@@ -168,7 +168,7 @@ Chromosome::encode (const vector<int>& features)
 }
 
 uint
-Chromosome::how_many_features () const
+Chromosome::features_count () const
 {
    return this->gene_string.size () / BITS_PER_FEATURE;
 }
@@ -184,10 +184,8 @@ Chromosome::get_gene (uint position) const
 {
    if (position < this->gene_string.size ())
       return this->gene_string[position];
-   else
-   {
-      return false;
-   }
+
+   return false;
 }
 
 std::string

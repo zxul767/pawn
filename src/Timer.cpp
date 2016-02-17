@@ -31,7 +31,7 @@ Timer::stop ()
 }
 
 void
-Timer::set_clock (double time_out)
+Timer::set_timer (double time_out)
 {
    this->time_out = time_out;
    this->time_elapsed = -1;
@@ -39,7 +39,7 @@ Timer::set_clock (double time_out)
 }
 
 bool
-Timer::is_time_out ()
+Timer::has_timed_out ()
 {
    this->end = clock ();
    this->time_elapsed = (double) (this->end - this->begin) / CLOCKS_PER_SEC;

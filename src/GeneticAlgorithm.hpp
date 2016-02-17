@@ -21,7 +21,7 @@ class GeneticAlgorithm
 {
   public:
    GeneticAlgorithm (
-       uint population_size, uint n_iterations, double mutation_probability,
+       uint population_size, uint iterations_count, double mutation_probability,
        FitnessEvaluator* fitness);
 
    static constexpr double SELECTION_PERCENTAGE = 0.65;
@@ -47,7 +47,7 @@ class GeneticAlgorithm
        std::vector<Chromosome>& sub_population, Chromosome::Outcome population_type);
 
    uint population_size;
-   uint n_iterations;
+   uint iterations_count;
    double mutation_probability;
    FitnessEvaluator* fitness_evaluator;
 

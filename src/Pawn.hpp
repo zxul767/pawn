@@ -7,7 +7,7 @@
   ==============================================================================*/
 
 #include "Piece.hpp"
-#include "Board.hpp"
+#include "IBoard.hpp"
 
 namespace game_rules
 {
@@ -17,7 +17,7 @@ class Pawn : public Piece
    Pawn ();
    ~Pawn ();
 
-   bitboard get_moves (uint square, Player player, const Board* board) const;
+   bitboard get_moves (uint square, Player player, const IBoard* board) const;
 
    bitboard get_side_moves (uint square, Player player) const;
    bitboard get_double_move (uint square, Player player) const;
@@ -40,12 +40,12 @@ class Pawn : public Piece
    uint get_row (uint square) const;
    uint get_column (uint square) const;
 
-   bitboard moves_from[Board::SQUARES][Board::PLAYERS];
-   bitboard simple_moves_from[Board::SQUARES][Board::PLAYERS];
-   bitboard capture_moves_from[Board::SQUARES][Board::PLAYERS][PAWN_MOVES-1];
+   bitboard moves_from[IBoard::SQUARES_COUNT][IBoard::PLAYERS_COUNT];
+   bitboard simple_moves_from[IBoard::SQUARES_COUNT][IBoard::PLAYERS_COUNT];
+   bitboard capture_moves_from[IBoard::SQUARES_COUNT][IBoard::PLAYERS_COUNT][PAWN_CAPTURE_MOVES_COUNT];
 
    // These are not real moves, but they are useful for en-passant handling
-   bitboard side_moves_from[Board::SQUARES][Board::PLAYERS];
+   bitboard side_moves_from[IBoard::SQUARES_COUNT][IBoard::PLAYERS_COUNT];
 };
 
 } // namespace game_rules

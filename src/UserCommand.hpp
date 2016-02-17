@@ -1,5 +1,5 @@
-#ifndef COMMAND_H
-#define COMMAND_H
+#ifndef USER_COMMAND_H
+#define USER_COMMAND_H
 
 /*==============================================================================
   Represents a command issued by the user, providing the information
@@ -12,10 +12,10 @@
 
 namespace game_ui
 {
-class Command
+class UserCommand
 {
   public:
-   enum Value {
+   enum CommandKey {
       XBOARD_MODE,
       FEATURES,
       NEW_GAME,
@@ -31,22 +31,22 @@ class Command
       UNKNOWN
    };
 
-   Command ();
-   Command (Value command_value);
-   Command (std::string& command);
+   UserCommand ();
+   UserCommand (CommandKey key);
+   UserCommand (std::string& notation);
 
    bool is_move () const;
    bool is_quit () const;
 
    std::string get_notation () const;
-   Value get_value () const;
+   CommandKey get_key () const;
 
   private:
-   std::string command;
-   Value value;
+   std::string notation;
+   CommandKey key;
 
-   static std::map<std::string, Value> commands;
-   static std::map<Value, std::string> commandStrings;
+   static std::map<std::string, CommandKey> notation_to_key;
+   static std::map<CommandKey, std::string> key_to_notation;
 
    static bool load_commands ();
    static const bool commands_loaded;
@@ -54,4 +54,4 @@ class Command
 
 } // namespace game_ui
 
-#endif // COMMAND_H
+#endif // USER_COMMAND_H

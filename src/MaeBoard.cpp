@@ -1,5 +1,5 @@
 #include "MaeBoard.hpp"
-#include "FileReader.hpp"
+#include "GameReader.hpp"
 #include "Rook.hpp"
 #include "Knight.hpp"
 #include "Bishop.hpp"
@@ -10,7 +10,7 @@
 namespace game_rules
 {
 using std::string;
-using game_persistence::FileReader;
+using game_persistence::GameReader;
 
 const Square
 MaeBoard::EMPTY_SQUARE = { Piece::NULL_PLAYER, Piece::NULL_PIECE };
@@ -62,22 +62,22 @@ MaeBoard::load_zobrist ()
 {
    srand (RANDOM_SEED);
 
-   for (uint i = 0; i < PIECE_TYPES; ++i)
-      for (uint j = 0; j < PLAYERS; ++j)
-         for (uint k = 0; k < SQUARES; ++k)
-            for (uint m = 0; m < N_HASH_KEYS; ++m)
-               this->zobrist[i][j][k][m] = util::Util::rand64 ();
+   for (uint i = 0; i < Piece::PIECES_COUNT; ++i)
+      for (uint j = 0; j < PLAYERS_COUNT; ++j)
+         for (uint k = 0; k < SQUARES_COUNT; ++k)
+            for (uint m = 0; m < HASH_KEYS_COUNT; ++m)
+               this->zobrist[i][j][k][m] = util::Util::random_ullong ();
 
-   this->turn_key = util::Util::rand64 ();
-   this->castle_key[Piece::WHITE][KING_SIDE]  = util::Util::rand64 ();
-   this->castle_key[Piece::WHITE][QUEEN_SIDE] = util::Util::rand64 ();
-   this->castle_key[Piece::BLACK][KING_SIDE]  = util::Util::rand64 ();
-   this->castle_key[Piece::BLACK][QUEEN_SIDE] = util::Util::rand64 ();
+   this->turn_key = util::Util::random_ullong ();
+   this->castle_key[Piece::WHITE][KING_SIDE]  = util::Util::random_ullong ();
+   this->castle_key[Piece::WHITE][QUEEN_SIDE] = util::Util::random_ullong ();
+   this->castle_key[Piece::BLACK][KING_SIDE]  = util::Util::random_ullong ();
+   this->castle_key[Piece::BLACK][QUEEN_SIDE] = util::Util::random_ullong ();
 
    // This is a waste of memory, since only 16 squares can be possible
    // en-passant capture squares, but this avoids dealing with awful offsets
-   for (uint i = 0; i < SQUARES; ++i)
-      this->en_passant_key[i] = util::Util::rand64 ();
+   for (uint i = 0; i < SQUARES_COUNT; ++i)
+      this->en_passant_key[i] = util::Util::random_ullong ();
 
    this->hash_key = 0;
    this->hash_lock = 0;
@@ -147,10 +147,10 @@ MaeBoard::reset ()
 bool
 MaeBoard::load_game (const string& file)
 {
-   FileReader game_file (file, this);
-   bool load_status = game_file.set_variables ();
+   GameReader reader (file, this);
+   bool loaded_correctly = reader.set_variables ();
 
-   return load_status;
+   return loaded_correctly;
 }
 
 /*=============================================================================
@@ -159,6 +159,7 @@ MaeBoard::load_game (const string& file)
 bool
 MaeBoard::save_game (const string& filename)
 {
+   // NOT YET IMPLEMENTED
    return filename.size() > 0;
 }
 
@@ -312,7 +313,7 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
    if (is_king_in_check ())
       move.set_type (Move::CHECK);
 
-   Record::board_key key = { this->hash_key, this->hash_lock };
+   BoardKey key = { this->hash_key, this->hash_lock };
    ushort times = 0;
    if (!this->position_counter.add_record (key, times) && times == 3)
       return DRAW_BY_REPETITION;
@@ -346,11 +347,10 @@ MaeBoard::undo_move ()
    if (this->game_history.empty ())
       return false;
 
-   BoardStatus configuration = this->game_history.top ();
-   Move move = configuration.get_move ();
-   int size;
+   BoardConfiguration board_configuration = this->game_history.top ();
+   Move move = board_configuration.move;
 
-   Record::board_key key;
+   BoardKey key;
    key.hash_key = this->hash_key;
    key.hash_lock = this->hash_lock;
 
@@ -371,6 +371,7 @@ MaeBoard::undo_move ()
       return false;
    }
 
+   int board_size;
    switch (move.get_type ())
    {
       case Move::NORMAL_CAPTURE:
@@ -381,8 +382,8 @@ MaeBoard::undo_move ()
          break;
 
       case Move::EN_PASSANT_CAPTURE:
-         size = (this->is_whites_turn ? SIZE: -((int)SIZE));
-         if (!add_piece (Squares (move.to () + size), Piece::PAWN, opponent))
+         board_size = (this->is_whites_turn ? SIZE: -((int)SIZE));
+         if (!add_piece (Squares (move.to () + board_size), Piece::PAWN, opponent))
          {
             return false;
          }
@@ -413,8 +414,8 @@ MaeBoard::undo_move ()
          break;
 
       case Move::PROMOTION_MOVE:
-         size = (this->is_whites_turn ? -((int)SIZE): SIZE);
-         if (move.from () + size != move.to ())
+         board_size = (this->is_whites_turn ? -((int)SIZE): SIZE);
+         if (move.from () + board_size != move.to ())
             // There was a capture while doing the promotion
             if (!add_piece (move.to (), move.get_captured_piece (), opponent))
             {
@@ -429,11 +430,11 @@ MaeBoard::undo_move ()
          break;
    }
 
-   this->can_do_castle[player][KING_SIDE] = configuration.get_king_castle ();
-   this->can_do_castle[player][QUEEN_SIDE] = configuration.get_queen_castle ();
-   this->en_passant_capture_square = configuration.get_en_passant ();
-   this->hash_key = configuration.get_hash_key ();
-   this->hash_lock = configuration.get_hash_lock ();
+   this->can_do_castle[player][KING_SIDE] = board_configuration.can_castle_king_side;
+   this->can_do_castle[player][QUEEN_SIDE] = board_configuration.can_castle_queen_side;
+   this->en_passant_capture_square = board_configuration.en_passant_capture_square;
+   this->hash_key = board_configuration.hash_key;
+   this->hash_lock = board_configuration.hash_lock;
 
    this->game_history.pop ();
 
@@ -454,13 +455,12 @@ MaeBoard::undo_move ()
 MaeBoard::Error
 MaeBoard::can_move (const Move& move) const
 {
-   bitboard valid_moves;
    ushort start = move.from ();
 
    if (this->player != this->board[start].player)
       return Error::OPPONENTS_TURN;
 
-   valid_moves =
+   bitboard valid_moves =
          this->chessmen[move.get_moving_piece ()]->get_moves (start, this->player, this);
 
    // Is MOVE.TO () included in the set of valid moves from MOVE.FROM () ?
@@ -556,7 +556,7 @@ MaeBoard::threats_to (Squares location, Piece::Type type) const
 {
    bitboard attackers = 0;
    bitboard pawn_attackers;
-   Pawn* pawn = (Pawn*) chessmen[Piece::PAWN];
+   Pawn* pawn = (Pawn*) this->chessmen[Piece::PAWN];
 
    for (Piece::Type attacked = type; attacked > Piece::PAWN; --attacked)
    {
@@ -794,7 +794,7 @@ MaeBoard::load_support_data ()
 void
 MaeBoard::save_restore_information (const Move& move)
 {
-   BoardStatus restore_information (
+   BoardConfiguration restore_information (
        move, this->en_passant_capture_square,
        this->can_do_castle[player][KING_SIDE], this->can_do_castle[player][QUEEN_SIDE],
        this->hash_key, this->hash_lock);
@@ -878,7 +878,7 @@ MaeBoard::get_en_passant_square () const
    return this->en_passant_capture_square;
 }
 
-Board::Squares
+IBoard::Squares
 MaeBoard::get_initial_king_square (Piece::Player player) const
 {
    return this->original_king_position[player];
@@ -891,7 +891,7 @@ MaeBoard::get_piece_color (Squares square) const
 }
 
 Piece::Player
-MaeBoard::get_turn () const
+MaeBoard::get_player_in_turn () const
 {
    return this->player;
 }
@@ -920,7 +920,7 @@ MaeBoard::get_move_number () const
 ushort
 MaeBoard::get_repetition_count () const
 {
-   Record::board_key key = { this->hash_key, this->hash_lock };
+   BoardKey key = { this->hash_key, this->hash_lock };
    return this->position_counter.get_repetitions (key);
 }
 
@@ -932,14 +932,14 @@ MaeBoard::set_game_status (GameStatus status)
 }
 
 void
-MaeBoard::set_en_passant (Squares en_passant_capture_square)
+MaeBoard::set_en_passant_capture_square (Squares en_passant_capture_square)
 {
    this->en_passant_capture_square =
          util::Util::to_bitboard[en_passant_capture_square];
 }
 
 void
-MaeBoard::set_turn (Piece::Player player)
+MaeBoard::set_player_in_turn (Piece::Player player)
 {
    this->is_whites_turn = (player == Piece::WHITE ? true : false);
    this->player = player;

@@ -1,4 +1,4 @@
-#include "FileReader.hpp"
+#include "GameReader.hpp"
 #include <cctype>
 
 namespace game_persistence
@@ -6,17 +6,17 @@ namespace game_persistence
 using std::string;
 using std::vector;
 
-FileReader::FileReader ()
+GameReader::GameReader ()
 {
    this->values = new vector<string>[3];
 }
 
-FileReader::~FileReader ()
+GameReader::~GameReader ()
 {
    delete[] this->values;
 }
 
-FileReader::FileReader (const string& file_name, Board* board)
+GameReader::GameReader (const string& file_name, IBoard* board)
 {
    this->values = new vector<string>[3];
    this->file_name = file_name;
@@ -27,7 +27,7 @@ FileReader::FileReader (const string& file_name, Board* board)
 }
 
 bool
-FileReader::load_variables ()
+GameReader::load_variables ()
 {
    this->variables.push_back ("GAME_STATUS");
 
@@ -58,7 +58,7 @@ FileReader::load_variables ()
 }
 
 bool
-FileReader::load_values ()
+GameReader::load_values ()
 {
    this->values[0].push_back ("OVER");
    this->values[0].push_back ("PENDING");
@@ -73,7 +73,7 @@ FileReader::load_values ()
 }
 
 bool
-FileReader::load_file ()
+GameReader::load_file ()
 {
    input.open (this->file_name.c_str ());
 
@@ -84,7 +84,7 @@ FileReader::load_file ()
 }
 
 bool
-FileReader::is_empty_line (const string& line) const
+GameReader::is_empty_line (const string& line) const
 {
    if (line.empty ())
       return true;
@@ -97,7 +97,7 @@ FileReader::is_empty_line (const string& line) const
 }
 
 bool
-FileReader::set_variables ()
+GameReader::set_variables ()
 {
    char c;
    string line;
@@ -126,7 +126,7 @@ FileReader::set_variables ()
 }
 
 void
-FileReader::tokenize (
+GameReader::tokenize (
     const string& input, vector<string>& tokens, const string& delimiters) const
 {
    string::size_type begin = input.find_first_not_of (delimiters, 0);
@@ -141,7 +141,7 @@ FileReader::tokenize (
 }
 
 bool
-FileReader::set_variable (string& input)
+GameReader::set_variable (string& input)
 {
    uint index_variable, index_value;
    vector<string> tokens;
@@ -163,7 +163,7 @@ FileReader::set_variable (string& input)
 }
 
 bool
-FileReader::variable_was_found (const string& input, uint* index_variable)
+GameReader::variable_was_found (const string& input, uint* index_variable)
 {
    for (uint i = 0; i < this->variables.size (); i++)
       if (input == this->variables[i])
@@ -175,7 +175,7 @@ FileReader::variable_was_found (const string& input, uint* index_variable)
 }
 
 bool
-FileReader::value_was_found (
+GameReader::value_was_found (
     uint index_variable, const string& input, uint* index_value)
 {
    int index = index_variable;
@@ -196,7 +196,7 @@ FileReader::value_was_found (
 }
 
 bool
-FileReader::set_value (
+GameReader::set_value (
     uint index_variable, const string& token, uint index_value)
 {
    if (index_variable == 0)
@@ -205,7 +205,7 @@ FileReader::set_value (
    }
    else if (index_variable == 1)
    {
-      this->board->set_turn (get_turn (index_value));
+      this->board->set_player_in_turn (get_player_in_turn (index_value));
    }
    else if (index_variable >= 2 && index_variable <= 5)
    {
@@ -216,8 +216,8 @@ FileReader::set_value (
    }
    else if (index_variable == 6)
    {
-      // TODO: implement feature
-      //this->board->set_en_passant (get_boolean (index_value));
+      // TODO: implement loading en-passant capture possibility
+      //this->board->set_en_passant_capture_square (get_boolean (index_value));
    }
    else if (index_variable >= 7 && index_variable <= 18)
    {
@@ -229,26 +229,26 @@ FileReader::set_value (
    return false;
 }
 
-Board::GameStatus
-FileReader::get_status (uint index_value) const
+IBoard::GameStatus
+GameReader::get_status (uint index_value) const
 {
-   return (index_value == 0? Board:: GAME_OVER: Board::PENDING_GAME);
+   return (index_value == 0? IBoard:: GAME_OVER: IBoard::PENDING_GAME);
 }
 
 Piece::Player
-FileReader::get_turn (uint index_value) const
+GameReader::get_player_in_turn (uint index_value) const
 {
    return (index_value == 0? Piece:: WHITE: Piece:: BLACK);
 }
 
 bool
-FileReader::get_boolean (uint index_value) const
+GameReader::get_boolean (uint index_value) const
 {
    return (index_value == 0? true: false);
 }
 
 Piece::Player
-FileReader::get_color (uint variable) const
+GameReader::get_color (uint variable) const
 {
    if (variable == 2 || variable == 3 || (variable >= 7 && variable <= 12))
       return Piece:: WHITE;
@@ -256,17 +256,17 @@ FileReader::get_color (uint variable) const
    return Piece:: BLACK;
 }
 
-Board::CastleSide
-FileReader::get_side (uint variable) const
+IBoard::CastleSide
+GameReader::get_side (uint variable) const
 {
    if (variable == 3 || variable == 5)
-      return Board::QUEEN_SIDE;
+      return IBoard::QUEEN_SIDE;
 
-   return Board::KING_SIDE;
+   return IBoard::KING_SIDE;
 }
 
 Piece::Type
-FileReader::get_type (uint variable) const
+GameReader::get_type (uint variable) const
 {
    if (variable == 7 || variable == 13)
       return Piece:: PAWN;

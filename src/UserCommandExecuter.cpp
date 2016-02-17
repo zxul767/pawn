@@ -1,8 +1,8 @@
-#include "CommandExecuter.hpp"
-#include "Command.hpp"
-#include "IChessEngine.hpp"
-#include "Board.hpp"
-#include "SimpleMoveGenerator.hpp"
+#include "UserCommandExecuter.hpp"
+#include "UserCommand.hpp"
+#include "IEngine.hpp"
+#include "IBoard.hpp"
+#include "MoveGenerator.hpp"
 #include "Timer.hpp"
 #include "FitnessEvaluator.hpp"
 #include "GeneticAlgorithm.hpp"
@@ -20,66 +20,69 @@ using std::vector;
 using std::cout;
 using std::cerr;
 
-using game_rules::Board;
+using game_rules::IBoard;
 using game_rules::Move;
 
-using game_engine::IChessEngine;
+using game_engine::IEngine;
 
 using learning::FitnessEvaluator;
 using learning::GeneticAlgorithm;
 using learning::Chromosome;
 
-CommandExecuter::CommandExecuter (
-    Board* board, IChessEngine* chess_engine, diagnostics::Timer* timer)
+UserCommandExecuter::UserCommandExecuter (
+    IBoard* board, IEngine* game_engine, diagnostics::Timer* timer)
 {
    this->timer = timer;
    this->board = board;
-   this->chess_engine = chess_engine;
-   this->move_generator = new game_engine::SimpleMoveGenerator ();
+   this->game_engine = game_engine;
+   this->move_generator = new game_engine::MoveGenerator ();
 }
 
 bool
-CommandExecuter::execute (const Command& command)
+UserCommandExecuter::execute (const UserCommand& command)
 {
-   switch (command.get_value ())
+   switch (command.get_key ())
    {
-   case Command::NEW_GAME:
+   case UserCommand::NEW_GAME:
       this->board->reset ();
       break;
 
-   case Command::UNDO_MOVE:
+   case UserCommand::UNDO_MOVE:
       this->board->undo_move ();
       break;
 
-   case Command::REMOVE:
+   case UserCommand::REMOVE:
       this->board->undo_move ();
       this->board->undo_move ();
       break;
 
-   case Command::SEE_MOVES:
+   case UserCommand::SEE_MOVES:
       show_possible_moves ();
       break;
 
-   case Command::USER_MOVE:
+   case UserCommand::USER_MOVE:
       make_user_move (command.get_notation ());
       break;
 
-   case Command::FEATURES:
+   case UserCommand::FEATURES:
       cout << "feature setboard=1 usermove=1 time=0 draw=0 sigint=0 "
            << "sigterm=0 variants=\"normal\" analyze=0 colors=0 "
            << "myname=\"MaE\" done=1" << std::endl;
       break;
 
-   case Command::XBOARD_MODE:
+   case UserCommand::XBOARD_MODE:
       cout << std::endl;
       break;
 
-   case Command::THINK:
+   case UserCommand::THINK:
       think ();
       break;
 
-   case Command::TRAIN:
-      train_by_GA (6, 15, 0.004);
+   case UserCommand::TRAIN:
+      train_by_genetic_algorithm (
+          /* population_size: */ 6,
+          /* generations_count: */ 15,
+          /* mutation_probability: */ 0.004);
       break;
 
    default:
@@ -93,7 +96,7 @@ CommandExecuter::execute (const Command& command)
     THIS->BOARD.
   ==============================================================================*/
 void
-CommandExecuter::show_possible_moves ()
+UserCommandExecuter::show_possible_moves ()
 {
    vector<Move> possible_moves;
 
@@ -101,14 +104,14 @@ CommandExecuter::show_possible_moves ()
    cerr << possible_moves.size () << " moves" << std::endl;
 
    for (uint i = 0; i < possible_moves.size (); ++i)
-      if (this->board->make_move (possible_moves[i], true) == Board::NO_ERROR)
+      if (this->board->make_move (possible_moves[i], true) == IBoard::NO_ERROR)
       {
          cerr << possible_moves[i] << " -> " << possible_moves[i].get_score ()
                    << std::endl;
 
          cerr << (*board) << std::endl;
 
-         this->timer->set_clock (2.0);
+         this->timer->set_timer (2.0);
          this->timer->sleep ();
 
          this->board->undo_move ();
@@ -119,7 +122,7 @@ CommandExecuter::show_possible_moves ()
     Communicate to the engine a move made by the user in the GUI
   ==============================================================================*/
 void
-CommandExecuter::make_user_move (const string& command)
+UserCommandExecuter::make_user_move (const string& command)
 {
    string::size_type i = command.find (" ");
 
@@ -128,23 +131,23 @@ CommandExecuter::make_user_move (const string& command)
       // Strip off the string 'usermove ' sent by Xboard before the actual move
       string notation = command.substr (i + 1);
       Move move (notation);
-      Board::Error error = this->board->make_move (move, false);
+      IBoard::Error error = this->board->make_move (move, false);
 
       switch (error)
       {
-      case Board::NO_ERROR:
+      case IBoard::NO_ERROR:
          think ();
          break;
 
-      case Board::DRAW_BY_REPETITION:
+      case IBoard::DRAW_BY_REPETITION:
          cout << "1/2-1/2 {Draw by repetition}" << std::endl;
          break;
 
-      case Board::WRONG_MOVEMENT:
+      case IBoard::WRONG_MOVEMENT:
          cout << "Illegal move: " << notation;
          break;
 
-      case Board::OPPONENTS_TURN:
+      case IBoard::OPPONENTS_TURN:
          cout << "Illegal move: " << notation;
          break;
 
@@ -159,20 +162,19 @@ CommandExecuter::make_user_move (const string& command)
     to the GUI. It also communicates check mates and draws.
   ==============================================================================*/
 void
-CommandExecuter::think ()
+UserCommandExecuter::think ()
 {
-   IChessEngine::Result result;
    Move best_move;
    uint depth = 3;
 
-   result = this->chess_engine->get_best_move (depth, board, best_move);
+   IEngine::GameResult result = this->game_engine->get_best_move (depth, board, best_move);
 
-   if (result == IChessEngine::NORMAL_EVALUATION ||
-       result == IChessEngine::BLACK_MATES ||
-       result == IChessEngine::WHITE_MATES)
+   if (result == IEngine::NORMAL_EVALUATION ||
+       result == IEngine::BLACK_MATES ||
+       result == IEngine::WHITE_MATES)
    {
-      Board::Error error = this->board->make_move (best_move, true);
-      if (error == Board::NO_ERROR)
+      IBoard::Error error = this->board->make_move (best_move, true);
+      if (error == IBoard::NO_ERROR)
       {
          string first, second;
          Move::translate_to_notation (best_move.from (), first);
@@ -186,22 +188,22 @@ CommandExecuter::think ()
          // These errors are not supposed to happen
          switch (error)
          {
-         case Board::KING_LEFT_IN_CHECK:
+         case IBoard::KING_LEFT_IN_CHECK:
             break;
 
-         case Board::OPPONENTS_TURN:
+         case IBoard::OPPONENTS_TURN:
             break;
 
-         case Board::WRONG_MOVEMENT:
+         case IBoard::WRONG_MOVEMENT:
             break;
 
-         case Board::GAME_FINISHED:
+         case IBoard::GAME_FINISHED:
             break;
 
-         case Board::NO_PIECE_IN_SQUARE:
+         case IBoard::NO_PIECE_IN_SQUARE:
             break;
 
-         case Board::DRAW_BY_REPETITION:
+         case IBoard::DRAW_BY_REPETITION:
             cout << "1/2-1/2 {Draw by repetition}" << std::endl;
             break;
 
@@ -211,33 +213,33 @@ CommandExecuter::think ()
          }
       }
 
-      if (result == IChessEngine::WHITE_MATES)
+      if (result == IEngine::WHITE_MATES)
       {
          cout << "1-0 {White mates}" << std::endl;
       }
-      else if (result == IChessEngine::BLACK_MATES)
+      else if (result == IEngine::BLACK_MATES)
       {
          cout << "0-1 {Black mates}" << std::endl;
       }
    }
-   else if (result == IChessEngine::STALEMATE)
+   else if (result == IEngine::STALEMATE)
    {
       cout << "1/2-1/2 {Stalemate}" << std::endl;
    }
-   else if (result == IChessEngine::DRAW_BY_REPETITION)
+   else if (result == IEngine::DRAW_BY_REPETITION)
    {
       cout << "1/2-1/2 {Draw by repetition}" << std::endl;
    }
 }
 
 void
-CommandExecuter::train_by_GA (
+UserCommandExecuter::train_by_genetic_algorithm (
     uint population_size, uint n_generations, double mutation_probability)
 {
    std::unique_ptr<FitnessEvaluator> fitness_evaluator(
-       new FitnessEvaluator (this->chess_engine));
+       new FitnessEvaluator (this->game_engine));
 
-   std::unique_ptr<GeneticAlgorithm> GA(
+   std::unique_ptr<GeneticAlgorithm> algorithm(
        new GeneticAlgorithm (
            population_size, n_generations, mutation_probability, fitness_evaluator.get()));
 
@@ -248,13 +250,13 @@ CommandExecuter::train_by_GA (
    features_a.push_back (10);
    Chromosome seed (features_a);
 
-   GA->set_seed (seed);
-   GA->run ();
+   algorithm->set_seed (seed);
+   algorithm->run ();
 
    vector<int> best_features;
-   GA->get_fittest_member ().decode (best_features);
+   algorithm->get_fittest_member ().decode (best_features);
 
-   this->chess_engine->load_factor_weights (best_features);
+   this->game_engine->load_factor_weights (best_features);
 }
 
 } // namespace game_ui

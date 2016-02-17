@@ -3,15 +3,15 @@
 
 #include "Util.hpp"
 
-namespace game_rules { class Board; class Move; }
+namespace game_rules { class IBoard; class Move; }
 
 namespace game_engine
 {
-class IChessEngine
+class IEngine
 {
   public:
 
-   enum Result {
+   enum GameResult {
       BLACK_MATES = -util::constants::INFINITUM,
       WHITE_MATES = +util::constants::INFINITUM,
       STALEMATE,
@@ -24,11 +24,11 @@ class IChessEngine
    static const int MATE_VALUE = -util::constants::INFINITUM;
    static const uint MAX_QUIESCENCE_DEPTH = 4;
 
-   IChessEngine () {}
-   virtual ~IChessEngine () {}
+   IEngine () {}
+   virtual ~IEngine () {}
 
    virtual void load_factor_weights (std::vector<int>& weights) = 0;
-   virtual Result get_best_move (uint depth, game_rules::Board*, game_rules::Move& best_move) = 0;
+   virtual GameResult get_best_move (uint depth, game_rules::IBoard*, game_rules::Move& best_move) = 0;
 
   protected:
    uint max_depth;

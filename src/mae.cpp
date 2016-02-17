@@ -4,31 +4,31 @@
 
 #include "MaeBoard.hpp"
 #include "Timer.hpp"
-#include "CommandReader.hpp"
-#include "CommandExecuter.hpp"
+#include "UserCommandReader.hpp"
+#include "UserCommandExecuter.hpp"
 #include "AlphaBetaSearch.hpp"
-#include "SimpleMoveGenerator.hpp"
-#include "SimpleEvaluator.hpp"
+#include "MoveGenerator.hpp"
+#include "PositionEvaluator.hpp"
 
 using std::unique_ptr;
 using std::cerr;
 using std::endl;
 
-using game_rules::Board;
+using game_rules::IBoard;
 using game_rules::MaeBoard;
 using game_rules::Piece;
 using game_rules::Move;
 
+using game_engine::IMoveGenerator;
 using game_engine::MoveGenerator;
-using game_engine::SimpleMoveGenerator;
+using game_engine::IPositionEvaluator;
 using game_engine::PositionEvaluator;
-using game_engine::SimpleEvaluator;
-using game_engine::IChessEngine;
+using game_engine::IEngine;
 using game_engine::AlphaBetaSearch;
 
-using game_ui::Command;
-using game_ui::CommandReader;
-using game_ui::CommandExecuter;
+using game_ui::UserCommand;
+using game_ui::UserCommandReader;
+using game_ui::UserCommandExecuter;
 
 using diagnostics::Timer;
 
@@ -38,46 +38,48 @@ main ()
   bool auto_play = false;
   bool xboard_mode = false;
 
-  unique_ptr<Board> board(new MaeBoard);
-  unique_ptr<PositionEvaluator> evaluator(new SimpleEvaluator);
-  unique_ptr<MoveGenerator> generator(new SimpleMoveGenerator);
-  unique_ptr<IChessEngine> search_engine(new AlphaBetaSearch (evaluator.get(), generator.get()));
+  unique_ptr<IBoard> board(new MaeBoard());
+  unique_ptr<IPositionEvaluator> position_evaluator(new PositionEvaluator());
+  unique_ptr<MoveGenerator> generator(new MoveGenerator());
+  unique_ptr<IEngine> search_engine(
+      new AlphaBetaSearch (position_evaluator.get(), generator.get()));
+
   unique_ptr<Timer> timer(new Timer);
 
-  Command command;
-  unique_ptr<CommandReader> command_reader(new CommandReader);
-  unique_ptr<CommandExecuter> command_executer(
-      new CommandExecuter(board.get(), search_engine.get(), timer.get()));
+  UserCommand command;
+  unique_ptr<UserCommandReader> command_reader(new UserCommandReader());
+  unique_ptr<UserCommandExecuter> command_executer(
+      new UserCommandExecuter(board.get(), search_engine.get(), timer.get()));
 
   cerr << (*board) << endl;
-  cerr << (board->get_turn () == Piece::WHITE ?
+  cerr << (board->get_player_in_turn () == Piece::WHITE ?
            "[White's turn]: " : "[Black's turn]: ");
 
-  command = command_reader->get_command ();
+  command = command_reader->get_user_command ();
   while (!command.is_quit ())
   {
     if (command.is_move ())
     {
       Move move (command.get_notation ());
 
-      Board::Error error = board->make_move (move, false);
-      if (error != Board::NO_ERROR)
+      IBoard::Error error = board->make_move (move, false);
+      if (error != IBoard::NO_ERROR)
       {
         switch (error)
         {
-          case Board::GAME_FINISHED:
+          case IBoard::GAME_FINISHED:
             cerr << "Game finished" << endl;
             break;
-          case Board::NO_PIECE_IN_SQUARE:
+          case IBoard::NO_PIECE_IN_SQUARE:
             cerr << "No piece in square" << endl;
             break;
-          case Board::OPPONENTS_TURN:
+          case IBoard::OPPONENTS_TURN:
             cerr << "Opponents turn" << endl;
             break;
-          case Board::WRONG_MOVEMENT:
+          case IBoard::WRONG_MOVEMENT:
             cerr << "Wrong movement" << endl;
             break;
-          case Board::KING_LEFT_IN_CHECK:
+          case IBoard::KING_LEFT_IN_CHECK:
             cerr << "King left in check" << endl;
             break;
           default:
@@ -89,24 +91,24 @@ main ()
       }
       else if (auto_play)
       {
-        Command response (Command::THINK);
+        UserCommand response (UserCommand::THINK);
         command_executer->execute (response);
       }
     }
     else
     {
-      if (command.get_value () == Command::XBOARD_MODE)
+      if (command.get_key () == UserCommand::XBOARD_MODE)
       {
         xboard_mode = true;
         auto_play = true;
         command_executer->execute (command);
       }
-      else if (command.get_value () == Command::COMPUTER_PLAY)
+      else if (command.get_key () == UserCommand::COMPUTER_PLAY)
       {
         auto_play = !auto_play;
         if (auto_play)
         {
-          Command response (Command::THINK);
+          UserCommand response (UserCommand::THINK);
           command_executer->execute (response);
         }
       }
@@ -117,11 +119,11 @@ main ()
     if (!xboard_mode)
     {
       cerr << (*board) << endl;
-      cerr << (board->get_turn () == Piece::WHITE ?
+      cerr << (board->get_player_in_turn () == Piece::WHITE ?
                "[White's turn]: " : "[Black's turn]: ");
     }
 
-    command = command_reader->get_command ();
+    command = command_reader->get_user_command ();
   }
 
   return 0;

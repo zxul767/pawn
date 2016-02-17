@@ -1,6 +1,6 @@
-#include "SimpleMoveGenerator.hpp"
-#include "SimpleEvaluator.hpp"
-#include "Board.hpp"
+#include "MoveGenerator.hpp"
+#include "PositionEvaluator.hpp"
+#include "IBoard.hpp"
 #include "Util.hpp"
 #include "Move.hpp"
 
@@ -11,13 +11,11 @@ namespace game_engine
 {
 using std::vector;
 
-using game_rules::Board;
+using game_rules::IBoard;
 using game_rules::Move;
 using game_rules::Piece;
 
 using util::bitboard;
-
-SimpleMoveGenerator::SimpleMoveGenerator () {}
 
 /*==========================================================================
   Generate all pseudo-legal moves and place captures at the beginning of
@@ -25,13 +23,13 @@ SimpleMoveGenerator::SimpleMoveGenerator () {}
   ratio.
   ==========================================================================*/
 bool
-SimpleMoveGenerator::generate_moves (Board* board, vector<Move>&  moves)
+MoveGenerator::generate_moves (IBoard* board, vector<Move>&  moves)
 {
-   SimpleEvaluator evaluator;
+   PositionEvaluator position_evaluator;
    vector<Move> captures;
    bitboard pieces;
    bitboard valid_moves;
-   Piece::Player player = board->get_turn ();
+   Piece::Player player = board->get_player_in_turn ();
 
    // for each piece, add its pseudo-legal moves to the list
    for (Piece::Type piece = Piece::PAWN; piece <= Piece::KING; ++piece)
@@ -41,14 +39,14 @@ SimpleMoveGenerator::generate_moves (Board* board, vector<Move>&  moves)
       while (pieces)
       {
          // extract pseudo-legal moves for the current piece
-         Board::Squares square = Board::Squares (util::Util::MSB_position (pieces));
+         IBoard::Squares square = IBoard::Squares (util::Util::MSB_position (pieces));
          valid_moves = board->get_moves (piece, square);
          pieces ^= (util::constants::ONE << square);
 
          while (valid_moves)
          {
-            Board::Squares current_move =
-                  Board::Squares (util::Util::MSB_position (valid_moves));
+            IBoard::Squares current_move =
+                  IBoard::Squares (util::Util::MSB_position (valid_moves));
             valid_moves ^= (util::constants::ONE << current_move);
 
             Move move (square, current_move);
@@ -60,8 +58,8 @@ SimpleMoveGenerator::generate_moves (Board* board, vector<Move>&  moves)
                 move_type == Move::EN_PASSANT_CAPTURE)
             {
                move.set_captured_piece (board->get_piece (current_move));
-               double score = evaluator.get_piece_value (move.get_moving_piece ());
-               score /= evaluator.get_piece_value (move.get_captured_piece ());
+               double score = position_evaluator.get_piece_value (move.get_moving_piece ());
+               score /= position_evaluator.get_piece_value (move.get_captured_piece ());
                move.set_score ((int)(10 * score));
                captures.push_back (move);
             }
@@ -85,10 +83,10 @@ SimpleMoveGenerator::generate_moves (Board* board, vector<Move>&  moves)
   to simply generating all moves.
   ==========================================================================*/
 bool
-SimpleMoveGenerator::generate_moves (
-    Board* board, vector<Move>& moves, ushort flags)
+MoveGenerator::generate_moves (
+    IBoard* board, vector<Move>& moves, ushort kind_of_moves)
 {
-   SimpleEvaluator evaluator;
+   PositionEvaluator evaluator;
 
    vector<Move> promotions;
    vector<Move> captures;
@@ -97,7 +95,7 @@ SimpleMoveGenerator::generate_moves (
 
    bitboard pieces;
    bitboard valid_moves;
-   Piece::Player player = board->get_turn ();
+   Piece::Player player = board->get_player_in_turn ();
 
    // for each piece, add its pseudo-legal moves to the list
    for (Piece::Type piece = Piece::PAWN; piece <= Piece::KING; ++piece)
@@ -107,13 +105,13 @@ SimpleMoveGenerator::generate_moves (
       while (pieces)
       {
          // extract pseudo-legal moves for the current piece
-         Board::Squares square = Board::Squares (util::Util::MSB_position (pieces));
+         IBoard::Squares square = IBoard::Squares (util::Util::MSB_position (pieces));
          valid_moves = board->get_moves (piece, square);
          pieces ^= (util::constants::ONE << square);
 
          while (valid_moves)
          {
-            Board::Squares current_move = Board::Squares (util::Util::MSB_position (valid_moves));
+            IBoard::Squares current_move = IBoard::Squares (util::Util::MSB_position (valid_moves));
             valid_moves ^= (util::constants::ONE << current_move);
 
             Move move (square, current_move);
@@ -126,7 +124,7 @@ SimpleMoveGenerator::generate_moves (
             {
                move.set_captured_piece (board->get_piece (current_move));
 
-               if (flags & MoveGenerator::CAPTURES)
+               if (kind_of_moves & MoveGenerator::CAPTURES)
                {
                   double score = evaluator.get_piece_value (move.get_moving_piece ());
                   score /= evaluator.get_piece_value (move.get_captured_piece ());
@@ -135,33 +133,33 @@ SimpleMoveGenerator::generate_moves (
                }
             }
 
-            if ((flags & MoveGenerator::CHECKS) && move_type == Move::CHECK)
+            if ((kind_of_moves & MoveGenerator::CHECKS) && move_type == Move::CHECK)
                checks.push_back (move);
 
-            if ((flags & MoveGenerator::PAWN_PROMOTIONS) &&
+            if ((kind_of_moves & MoveGenerator::PAWN_PROMOTIONS) &&
                 move_type == Move::PROMOTION_MOVE)
                promotions.push_back (move);
 
-            if ((flags & MoveGenerator::SIMPLE) &&
+            if ((kind_of_moves & MoveGenerator::SIMPLE) &&
                 (move_type == Move::SIMPLE_MOVE ||
                  move_type == Move::CASTLE_KING_SIDE ||
                  move_type == Move::CASTLE_QUEEN_SIDE))
                other_moves.push_back (move);
 
-            if ((flags & MoveGenerator::CHECK_EVASIONS) &&
+            if ((kind_of_moves & MoveGenerator::CHECK_EVASIONS) &&
                 board->is_king_in_check ())
             {
-               Board::Error error = board->make_move (move, true);
-               if (error == Board::NO_ERROR)
+               IBoard::Error error = board->make_move (move, true);
+               if (error == IBoard::NO_ERROR)
                {
                   check_evasions.push_back (move);
                   assert(board->undo_move());
                }
-               else if (error == Board::DRAW_BY_REPETITION)
+               else if (error == IBoard::DRAW_BY_REPETITION)
                {
                   assert(board->undo_move());
                }
-               else if (error != Board::KING_LEFT_IN_CHECK)
+               else if (error != IBoard::KING_LEFT_IN_CHECK)
                {
                   // TODO: implement proper logging
                }
@@ -196,15 +194,14 @@ SimpleMoveGenerator::generate_moves (
 }
 
 bool
-SimpleMoveGenerator::generate_en_prise_evations (
-    Board* board, vector<Move>& moves)
+MoveGenerator::generate_en_prise_evations (IBoard* board, vector<Move>& moves)
 {
-   Piece::Player player = board->get_turn ();
+   Piece::Player player = board->get_player_in_turn ();
 
    bitboard pieces = board->get_pieces (player);
    while (pieces)
    {
-      Board::Squares from = Board::Squares (util::Util::LSB_position (pieces));
+      IBoard::Squares from = IBoard::Squares (util::Util::LSB_position (pieces));
       Piece::Type piece_type = board->get_piece (from);
       bitboard threats = board->threats_to (from, piece_type);
 
@@ -220,7 +217,7 @@ SimpleMoveGenerator::generate_en_prise_evations (
          bitboard evasions = board->get_moves (piece_type, from);
          while (evasions)
          {
-            Board::Squares to = Board::Squares (util::Util::LSB_position (evasions));
+            IBoard::Squares to = IBoard::Squares (util::Util::LSB_position (evasions));
             Move move (from, to);
             moves.push_back (move);
             // Watch out! removing a bit this way only works for the LSB

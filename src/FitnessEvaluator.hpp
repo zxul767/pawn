@@ -9,8 +9,8 @@
 #include <string>
 #include "Util.hpp"
 
-namespace game_engine { class IChessEngine; class PositionEvaluator; }
-namespace game_rules { class Board; }
+namespace game_engine { class IEngine; class PositionEvaluator; }
+namespace game_rules { class IBoard; }
 
 namespace learning
 {
@@ -19,15 +19,15 @@ class Chromosome;
 class FitnessEvaluator
 {
   public:
-   FitnessEvaluator (game_engine::IChessEngine*);
+   FitnessEvaluator (game_engine::IEngine*);
    ~FitnessEvaluator ();
 
    double evaluate (Chromosome&, Chromosome&);
    static const uint MAX_ALLOWED_MOVEMENTS = 70;
 
   private:
-   game_rules::Board* board;
-   game_engine::IChessEngine* chess_engine;
+   game_rules::IBoard* board;
+   game_engine::IEngine* chess_engine;
    game_engine::PositionEvaluator* evaluator;
 };
 

@@ -1,15 +1,15 @@
 #ifndef MAE_BOARD_H
 #define MAE_BOARD_H
 
-#include "Board.hpp"
+#include "IBoard.hpp"
 #include "Square.hpp"
-#include "BoardStatus.hpp"
-#include "Record.hpp"
+#include "BoardConfiguration.hpp"
+#include "BoardConfigurationTracker.hpp"
 #include <stack>
 
 namespace game_rules
 {
-class MaeBoard : public Board
+class MaeBoard : public IBoard
 {
   public:
    MaeBoard ();
@@ -22,8 +22,8 @@ class MaeBoard : public Board
    bool load_game (const std::string& file);
    bool save_game (const std::string& file);
 
-   bool add_piece (const std::string& location, Piece::Type type, Piece::Player player);
-   bool add_piece (Squares square, Piece::Type type, Piece::Player player);
+   bool add_piece (const std::string& location, Piece::Type type, Piece::Player);
+   bool add_piece (Squares square, Piece::Type, Piece::Player);
 
    bool remove_piece (const std::string& location);
    bool remove_piece (Squares square);
@@ -39,57 +39,55 @@ class MaeBoard : public Board
 
    bitboard get_moves (Piece::Type piece, Squares square) const;
    bitboard get_all_pieces () const;
-   bitboard get_pieces (Piece::Player player) const;
-   bitboard get_pieces (Piece::Player player, Piece::Type piece) const;
+   bitboard get_pieces (Piece::Player) const;
+   bitboard get_pieces (Piece::Player, Piece::Type) const;
 
    bool is_en_passant_on () const;
-   bool can_castle (Piece::Player player, CastleSide side) const;
-   bool is_castled (Piece::Player player, CastleSide side) const;
+   bool can_castle (Piece::Player, CastleSide) const;
+   bool is_castled (Piece::Player, CastleSide) const;
 
    bitboard get_en_passant_square () const;
-   Squares get_initial_king_square (Piece::Player player) const;
+   Squares get_initial_king_square (Piece::Player) const;
 
    Piece::Player get_piece_color (Squares square) const;
-   Piece::Player get_turn () const;
+   Piece::Player get_player_in_turn () const;
    Piece::Type get_piece (Squares square) const;
    ullong get_hash_key () const;
    ullong get_hash_lock () const;
    uint get_move_number () const;
    ushort get_repetition_count () const;
 
-
    void set_game_status (GameStatus status);
-   void set_en_passant (Squares en_passant_capture_square);
-   void set_turn (Piece::Player player);
-   void set_castling_privilege (Piece::Player player, CastleSide side, bool value);
+   void set_en_passant_capture_square (Squares en_passant_capture_square);
+   void set_player_in_turn (Piece::Player);
+   void set_castling_privilege (Piece::Player, CastleSide, bool value);
 
   private:
    // Do not allow users of this class to make copies
-   MaeBoard (const MaeBoard& other);
+   MaeBoard (const MaeBoard&);
 
-   static const uint PIECE_TYPES  =  6;
-   static const uint CASTLE_SIDES =  2;
+   static const uint CASTLE_SIDES_COUNT =  2;
    static const uint RANDOM_SEED  =  8;
-   static const uint N_HASH_KEYS  =  2;
+   static const uint HASH_KEYS_COUNT  =  2;
    static const Square EMPTY_SQUARE;
 
    // Basic board representation
-   bitboard piece[PLAYERS][PIECE_TYPES];
-   bitboard pieces[PLAYERS];
+   bitboard piece[PLAYERS_COUNT][Piece::PIECES_COUNT];
+   bitboard pieces[PLAYERS_COUNT];
    bitboard all_pieces;
-   Square board[SQUARES];
+   Square board[SQUARES_COUNT];
 
    // Hash key information
-   ullong zobrist[PIECE_TYPES][PLAYERS][SQUARES][N_HASH_KEYS];
+   ullong zobrist[Piece::PIECES_COUNT][PLAYERS_COUNT][SQUARES_COUNT][HASH_KEYS_COUNT];
    ullong hash_key;
    ullong hash_lock;
    ullong turn_key;
-   ullong castle_key[PLAYERS][CASTLE_SIDES];
-   ullong en_passant_key[SQUARES];
+   ullong castle_key[PLAYERS_COUNT][CASTLE_SIDES_COUNT];
+   ullong en_passant_key[SQUARES_COUNT];
 
    // Special moves information
-   bool can_do_castle[PLAYERS][CASTLE_SIDES];
-   bool is_castled_[PLAYERS][CASTLE_SIDES];
+   bool can_do_castle[PLAYERS_COUNT][CASTLE_SIDES_COUNT];
+   bool is_castled_[PLAYERS_COUNT][CASTLE_SIDES_COUNT];
    bitboard en_passant_capture_square;
 
    // Turn information
@@ -99,30 +97,30 @@ class MaeBoard : public Board
    // This information is intended to resume interrupted games
    GameStatus game_status;
 
-   // Dictionary to detect threefold repetition conditions
-   Record position_counter;
+   // Useful to detect threefold repetition conditions
+   BoardConfigurationTracker position_counter;
 
    // Counter used to detect draws by the 50-move rule
    uint fifty_move_counter;
 
-   std::stack<BoardStatus> game_history;
-   Piece* chessmen[PIECE_TYPES];
+   std::stack<BoardConfiguration> game_history;
+   Piece* chessmen[Piece::PIECES_COUNT];
 
-   bitboard eighth_rank[PLAYERS];
-   Squares corner[PLAYERS][CASTLE_SIDES];
-   Squares original_king_position[PLAYERS];
+   bitboard eighth_rank[PLAYERS_COUNT];
+   Squares corner[PLAYERS_COUNT][CASTLE_SIDES_COUNT];
+   Squares original_king_position[PLAYERS_COUNT];
 
-   void handle_en_passant_move (const Move& move);
-   void handle_castling_privileges (const Move& move);
-   void handle_promotion_move (const Move& move);
+   void handle_en_passant_move (const Move&);
+   void handle_castling_privileges (const Move&);
+   void handle_promotion_move (const Move&);
 
-   Error can_move (const Move& move) const;
+   Error can_move (const Move&) const;
 
    void load_chessmen ();
    void load_support_data ();
    void load_zobrist ();
 
-   void save_restore_information (const Move& move);
+   void save_restore_information (const Move&);
    void change_turn ();
 };
 

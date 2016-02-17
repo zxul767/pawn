@@ -19,7 +19,7 @@ Queen::~Queen ()
   it is PLAYER's turn (moves that leave the king in check are also included)
   ===========================================================================*/
 bitboard
-Queen::get_moves (uint square, Player player, const Board* board) const
+Queen::get_moves (uint square, Player player, const IBoard* board) const
 {
    bitboard attacks = this->bishop->get_moves (square, player, board);
    attacks |= this->rook->get_moves (square, player, board);

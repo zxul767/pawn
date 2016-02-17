@@ -5,18 +5,18 @@
 #include <iostream>
 #include <cstdlib>
 #include <algorithm>
+#include <cassert>
 
 namespace learning
 {
 using std::vector;
 
 GeneticAlgorithm::GeneticAlgorithm (
-    uint population_size, uint n_iterations, double mutation_probability,
+    uint population_size, uint iterations_count, double mutation_probability,
     FitnessEvaluator* fitness_evaluator)
 {
-   std::cerr << "Initializing parameters for GA" << std::endl;
    this->population_size = population_size;
-   this->n_iterations = n_iterations;
+   this->iterations_count = iterations_count;
    this->mutation_probability = mutation_probability;
    this->fitness_evaluator = fitness_evaluator;
 }
@@ -24,24 +24,20 @@ GeneticAlgorithm::GeneticAlgorithm (
 void
 GeneticAlgorithm::run ()
 {
-   std::cerr << "Main loop of the GA is running now" << std::endl;
-
    initialize_population ();
-   uint k = (uint)(this->population_size * SELECTION_PERCENTAGE);
-   if (k & 1) ++k;
 
-   for (uint i = 0; i < this->n_iterations; ++i)
+   uint subpopulation_size = (uint)(this->population_size * SELECTION_PERCENTAGE);
+   if (util::is_odd(subpopulation_size))
+      ++subpopulation_size;
+
+   for (uint i = 0; i < this->iterations_count; ++i)
    {
-      std::cerr << "iteration # " << i << std::endl;
-
       evaluate_population ();
       set_actual_fitness ();
 
       vector<Chromosome> parents;
       parents.clear ();
-      select_breeding_individuals (this->population, k, parents);
-
-      std::cerr << "\nStarting reproduction ... ";
+      select_breeding_individuals (this->population, subpopulation_size, parents);
 
       vector<Chromosome> offspring;
       offspring.clear ();
@@ -64,10 +60,10 @@ GeneticAlgorithm::run ()
          offspring.push_back (children.first);
          offspring.push_back (children.second);
 
-         size--;
+         --size;
       }
 
-      reduce_population (k);
+      reduce_population (subpopulation_size);
       add_on_population (offspring);
 
       uint individuals = rand() % population_size;
@@ -80,14 +76,6 @@ GeneticAlgorithm::run ()
       if (converge ())
          break;
    }
-
-   vector<int> ft;
-   std::cerr << "\nThe fittest member in evolution is: \n";
-   std::cerr << fittest_member << std::endl;
-   fittest_member.decode(ft);
-   for (uint i=0; i<ft.size(); ++i)
-      std::cerr << ft[i] << ',';
-   std::cerr << std::endl;
 }
 
 bool
@@ -103,7 +91,7 @@ GeneticAlgorithm::reduce_population (uint size)
 
    sort (this->population.begin (), this->population.end ());
 
-   for (uint i=0; i<size; ++i)
+   for (uint i = 0; i < size; ++i)
       this->population.erase (this->population.begin());
 
    this->population_size = this->population.size ();
@@ -114,7 +102,7 @@ GeneticAlgorithm::add_on_population (const vector<Chromosome>& elements)
 {
    uint size = elements.size();
 
-   for (uint i=0; i<size; ++i)
+   for (uint i = 0; i < size; ++i)
       this->population.push_back(elements[i]);
 
    this->population_size = population.size ();
@@ -123,7 +111,6 @@ GeneticAlgorithm::add_on_population (const vector<Chromosome>& elements)
 void
 GeneticAlgorithm::set_seed (Chromosome& seed)
 {
-   std::cerr << "Setting seed for the GA" << std::endl;
    this->fittest_member = seed;
 }
 
@@ -138,47 +125,33 @@ GeneticAlgorithm::get_fittest_member ()
 void
 GeneticAlgorithm::initialize_population ()
 {
-   std::cerr << "Setting initial population" << std::endl;
-
-   uint n_features = this->fittest_member.how_many_features ();
+   uint features_count = this->fittest_member.features_count ();
    vector<int> features;
 
    for (uint i = 0; i < this->population_size; ++i)
    {
-      Chromosome individual (n_features);
+      Chromosome individual (features_count);
       this->population.push_back (individual);
-
-      individual.decode (features);
-      for (uint j = 0; j < features.size (); ++j)
-         std::cerr << features[j] << '\t';
-      std::cerr << std::endl;
    }
 }
 
 void
 GeneticAlgorithm::evaluate_population ()
 {
-   std::cerr << "Evaluating fitness of each candidate solution" << std::endl;
-
    uint best_index = 0;
    uint average_game_duration = 0;
 
    for (uint i = 0; i < this->population.size (); ++i)
    {
-      std::cerr << "Evaluating individual #" << i << std::endl;
-      double score = this->fitness_evaluator->evaluate (fittest_member, population[i]);
+      double score = this->fitness_evaluator->evaluate (this->fittest_member, population[i]);
       this->population[i].set_fitness (score);
 
       average_game_duration += this->population[i].get_game_duration ();
 
-      // Update the fittest member so far
       if (this->fittest_member.get_fitness () < this->population[i].get_fitness ())
          best_index = i;
    }
    average_game_duration /= this->population.size ();
-
-   std::cerr << "Average game duration: " << average_game_duration << std::endl;
-
    this->fittest_member = this->population[best_index];
 }
 
@@ -201,11 +174,7 @@ GeneticAlgorithm::select_breeding_individuals (
 
    for (uint i = 0; i < this->population.size (); ++i)
    {
-      if (this->population[i].get_fitness () == 0)
-      {
-         std::cerr << "this individual's got 0 as a fitness";
-         abort();
-      }
+      assert(this->population[i].get_fitness () != 0);
       this->population[i].set_selection_probability (
           this->population[i].get_fitness() / population_fitness);
    }
@@ -217,28 +186,27 @@ GeneticAlgorithm::select_breeding_individuals (
       population[i].set_cumulative_probability (cumulative_probability);
    }
 
-   vector<Chromosome> aux = this->population;
+   vector<Chromosome> eligible_population = this->population;
    double r = util::Util::random (util::constants::EPSILON, cumulative_probability);
 
    uint i = 0;
-   for (; i < aux.size (); ++i)
+   for (; i < eligible_population.size (); ++i)
    {
-      if (r > aux[i].get_cumulative_probability() && i+1 < aux.size())
+      if (r > eligible_population[i].get_cumulative_probability() && i + 1 < eligible_population.size())
          continue;
       else
          break;
    }
-
    selection.push_back (this->population[i]);
-   aux.erase(aux.begin() + i);
+   eligible_population.erase(eligible_population.begin() + i);
    select_breeding_individuals (
-       aux, breeding_population_size-1, selection);
+       eligible_population, breeding_population_size - 1, selection);
 }
 
 void
 GeneticAlgorithm::set_actual_fitness ()
 {
-   vector<Chromosome> winners, losers, mediocres;
+   vector<Chromosome> winners, losers, averages;
    this->population_size = this->population.size();
 
    for (uint i = 0; i < this->population_size; ++i)
@@ -253,7 +221,7 @@ GeneticAlgorithm::set_actual_fitness ()
             break;
 
          case Chromosome::DRAW:
-            mediocres.push_back(this->population[i]);
+            averages.push_back(this->population[i]);
             break;
 
          default:
@@ -263,7 +231,7 @@ GeneticAlgorithm::set_actual_fitness ()
 
    set_material_fitness(winners);
    set_material_fitness(losers);
-   set_material_fitness(mediocres);
+   set_material_fitness(averages);
    set_duration_fitness(winners, Chromosome::WIN);
    set_duration_fitness(losers, Chromosome::LOSS);
 
@@ -275,29 +243,25 @@ GeneticAlgorithm::set_actual_fitness ()
    size = losers.size();
    for (uint i = 0; i < size; ++i)
       this->population.push_back(losers[i]);
-   size = mediocres.size();
+   size = averages.size();
 
    for (uint i = 0; i < size; ++i)
-      this->population.push_back(mediocres[i]);
+      this->population.push_back(averages[i]);
 
-   if (this->population_size != this->population.size())
-   {
-      std::cerr << "error in population size";
-      abort();
-   }
+   assert(this->population_size == this->population.size());
 }
 
 void
-GeneticAlgorithm::set_material_fitness(vector<Chromosome>& sub_population)
+GeneticAlgorithm::set_material_fitness(vector<Chromosome>& subpopulation)
 {
-   uint size = sub_population.size();
+   uint size = subpopulation.size();
 
    if (size == 0)
       return;
 
    vector<int> total;
    for (uint i = 0; i < size; ++i)
-      total.push_back(sub_population[i].get_material_balance());
+      total.push_back(subpopulation[i].get_material_balance());
 
    sort (total.begin(), total.end());
    int best_result = total.back();
@@ -306,10 +270,10 @@ GeneticAlgorithm::set_material_fitness(vector<Chromosome>& sub_population)
    {
       double bonus;
 
-      if (sub_population[i].get_material_balance() != 0)
+      if (subpopulation[i].get_material_balance() != 0)
       {
          double portion = (double)best_result /
-               (double)sub_population[i].get_material_balance();
+               (double)subpopulation[i].get_material_balance();
 
          if (portion > 1.0)
             portion = 1.0 / portion;
@@ -320,32 +284,23 @@ GeneticAlgorithm::set_material_fitness(vector<Chromosome>& sub_population)
          bonus = 0.0;
       }
 
-      if (bonus > (2.0 / 9.0))
-      {
-         std::cerr << "\nerror computing bonus [" << bonus
-                   << "] on material balance\n";
-
-         std::cerr << "best :" << best_result << ", material : "
-                   << sub_population[i].get_material_balance() << '\n';
-         abort ();
-      }
-
-      sub_population[i].set_fitness (sub_population[i].get_fitness() + bonus);
+      assert(bonus <= (2.0 / 9.0));
+      subpopulation[i].set_fitness (subpopulation[i].get_fitness() + bonus);
    }
 }
 
 void
 GeneticAlgorithm::set_duration_fitness(
-    vector<Chromosome>& sub_population, Chromosome::Outcome type)
+    vector<Chromosome>& subpopulation, Chromosome::Outcome type)
 {
-   uint size = sub_population.size();
+   uint size = subpopulation.size();
 
    if (size == 0)
       return;
 
    vector<uint> total;
    for (uint i = 0; i < size; ++i)
-      total.push_back( sub_population[i].get_game_duration() );
+      total.push_back(subpopulation[i].get_game_duration());
 
    sort (total.begin(), total.end());
    uint best_result;
@@ -356,33 +311,23 @@ GeneticAlgorithm::set_duration_fitness(
       best_result = total.back ();
    else
    {
-      std::cerr << "this is an invalid kind of sub-population";
-      abort ();
+      assert(false);
    }
 
    for (uint i = 0; i < size; ++i)
    {
-      if (sub_population[i].get_game_duration() == 0)
-      {
-         std::cerr <<"\nDivision by zero";
-         abort();
-      }
+      assert(subpopulation[i].get_game_duration() != 0);
 
       double portion = (double)best_result /
-            (double)sub_population[i].get_game_duration();
+            (double)subpopulation[i].get_game_duration();
 
       if (type == Chromosome::LOSS)
          portion = 1 / portion;
 
       double bonus = portion * (1.0 / 9.0);
 
-      if (bonus > (1.0 / 9.0))
-      {
-         std::cerr << "\nerror computing bonus on duration\n";
-         abort ();
-      }
-
-      sub_population[i].set_fitness (sub_population[i].get_fitness() + bonus);
+      assert(bonus <= (1.0 / 9.0));
+      subpopulation[i].set_fitness (subpopulation[i].get_fitness() + bonus);
    }
 }
 

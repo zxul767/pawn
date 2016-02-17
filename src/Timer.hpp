@@ -13,8 +13,8 @@ class Timer
    Timer (double time_out = 1.0);
    ~Timer ();
 
-   void set_clock (double time_out);
-   bool is_time_out  ();
+   void set_timer (double time_out);
+   bool has_timed_out  ();
    double elapsed_time ();
    void start ();
    void stop  ();

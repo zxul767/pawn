@@ -4,6 +4,11 @@
 
 namespace util
 {
+bool is_odd(uint n)
+{
+   return n % 2 == 1;
+}
+
 std::vector<bitboard> Util::to_bitboard;
 
 bool
@@ -212,7 +217,7 @@ Util::count_set_bits (bitboard bitvector)
 }
 
 ullong
-Util::rand64 ()
+Util::random_ullong ()
 {
    return (((ullong) rand ()) ^
            ((ullong) rand () << 15) ^

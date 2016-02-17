@@ -21,14 +21,12 @@ class Chromosome
 {
   public:
    Chromosome ();
-
-   // Create an individual with random features
-   Chromosome (uint n_features);
-   Chromosome (const Chromosome& copy);
+   Chromosome (uint features_count);
+   Chromosome (const Chromosome&);
    Chromosome (const std::vector<int>& features);
    Chromosome (const std::vector<bool>& genes);
 
-   enum Outcome {WIN, LOSS, DRAW, ERROR};
+   enum Outcome { WIN, LOSS, DRAW, ERROR };
 
    void decode (std::vector<int>& features);
    void mutate (double probability);
@@ -40,7 +38,7 @@ class Chromosome
    std::string get_genes () const;
    uint get_game_duration () const;
    Outcome get_result () const;
-   uint how_many_features () const;
+   uint features_count () const;
    double get_cumulative_probability () const;
    double get_selection_probability () const;
    int get_material_balance () const;

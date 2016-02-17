@@ -1,5 +1,5 @@
-#ifndef DICTIONARY_H
-#define DICTIONARY_H
+#ifndef TRANSPOSITION_TABLE_H
+#define TRANSPOSITION_TABLE_H
 
 /*==============================================================================
   Implements a transposition table, used to improve performance of search
@@ -12,22 +12,18 @@
 #include "Util.hpp"
 #include "Move.hpp"
 #include "MaeBoard.hpp"
+#include "BoardKey.hpp"
 
 namespace game_engine
 {
-class Dictionary
+using game_rules::BoardKey;
+
+class TranspositionTable
 {
   public:
-
    enum flag { EXACT, UPPER_BOUND, LOWER_BOUND, UNKNOWN };
 
-   struct board_key
-   {
-      ullong hash_key;
-      ullong hash_lock;
-   };
-
-   struct hash_info
+   struct BoardEntry
    {
       int score;
       flag accuracy;
@@ -35,15 +31,14 @@ class Dictionary
       ushort depth;
    };
 
-   Dictionary (uint hash_size = 0);
+   TranspositionTable (uint hash_size = 0);
 
    bool add_entry (
-       const board_key& board, int score, flag accuracy,
+       const BoardKey&, int score, flag accuracy,
        const game_rules::Move& best_move, uint depth);
 
-   bool exists (const board_key& board);
-   bool get_data (const board_key& board, hash_info& data);
-   void show_all ();
+   bool exists (const BoardKey&);
+   bool get_entry (const BoardKey&, BoardEntry&);
    uint get_size () const;
    uint get_capacity () const;
    void reset ();
@@ -55,28 +50,28 @@ class Dictionary
    static size_t size;
 
   private:
-   class hasher
+   class board_hasher
    {
      public:
-      size_t operator ()(const board_key& board) const
+      size_t operator ()(const BoardKey& key) const
       {
-         return (size_t) board.hash_key % size;
+         return (size_t) key.hash_key % size;
       }
    };
 
-   class comparer
+   class board_comparer
    {
      public:
-      bool operator ()(const board_key& board, const board_key& other) const
+      bool operator ()(const BoardKey& key, const BoardKey& other_key) const
       {
-         return board.hash_lock == other.hash_lock;
+         return key.hash_lock == other_key.hash_lock;
       }
    };
 
    uint hash_size;
-   std::unordered_map<board_key, hash_info, hasher, comparer> entry;
+   std::unordered_map<BoardKey, BoardEntry, board_hasher, board_comparer> entries;
 };
 
 } // namespace game_engine
 
-#endif // HASH_DICTIONARY_H
+#endif // HASH_TRANSPOSITION_TABLE_H

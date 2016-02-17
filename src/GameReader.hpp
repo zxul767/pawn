@@ -9,25 +9,25 @@
 #include <string>
 #include <vector>
 
-#include "Board.hpp"
+#include "IBoard.hpp"
 #include "Piece.hpp"
 
 namespace game_persistence
 {
-using game_rules::Board;
+using game_rules::IBoard;
 using game_rules::Piece;
 
-class FileReader
+class GameReader
 {
   public:
-   FileReader ();
-   FileReader (const std::string& filename, game_rules::Board* board);
-   ~FileReader ();
+   GameReader ();
+   GameReader (const std::string& filename, game_rules::IBoard* board);
+   ~GameReader ();
 
    bool set_variables ();
 
   private:
-   game_rules::Board* board;
+   game_rules::IBoard* board;
    std::string file_name;
    std::ifstream input;
    std::vector<std::string> variables;
@@ -50,10 +50,10 @@ class FileReader
    void tokenize (const std::string& input, std::vector<std::string>& tokens,
                   const std::string& delimiters = " ") const;
 
-   game_rules::Board::GameStatus get_status (uint index_value) const;
-   game_rules::Piece::Player get_turn (uint index_value) const;
+   game_rules::IBoard::GameStatus get_status (uint index_value) const;
+   game_rules::Piece::Player get_player_in_turn (uint index_value) const;
    game_rules::Piece::Player get_color (uint variable) const;
-   game_rules::Board::CastleSide get_side (uint variable) const;
+   game_rules::IBoard::CastleSide get_side (uint variable) const;
    game_rules::Piece::Type get_type (uint variable) const;
 };
 

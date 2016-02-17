@@ -4,11 +4,12 @@
   tables, iterative deepening search, null-window search, etc.)
   ==============================================================================*/
 
-#include "Board.hpp"
+#include "IBoard.hpp"
 #include "AlphaBetaSearch.hpp"
 #include "MoveGenerator.hpp"
 #include "PositionEvaluator.hpp"
-#include "Dictionary.hpp"
+#include "TranspositionTable.hpp"
+#include "BoardKey.hpp"
 
 #include <algorithm>
 #include <iterator>
@@ -21,20 +22,20 @@ namespace game_engine
 {
 using std::vector;
 using game_rules::Move;
-using game_rules::Board;
+using game_rules::IBoard;
 
 AlphaBetaSearch::AlphaBetaSearch (
-    PositionEvaluator* evaluator, MoveGenerator* generator)
+    IPositionEvaluator* position_evaluator, MoveGenerator* move_generator)
 {
    this->board = nullptr;
-   this->generator = generator;
-   this->evaluator = evaluator;
-   this->hash_table = new Dictionary (64);
+   this->move_generator = move_generator;
+   this->position_evaluator = position_evaluator;
+   this->transposition_table = new TranspositionTable (64);
 }
 
 AlphaBetaSearch::~AlphaBetaSearch ()
 {
-   delete this->hash_table;
+   delete this->transposition_table;
 }
 
 void
@@ -76,16 +77,16 @@ AlphaBetaSearch::reset_statistics ()
   Possible results are: NORMAL_EVALUATION, WHITE_MATES, BLACK_MATES,
   STALEMATE, DRAW_BY_REPETITION.
   ==============================================================================*/
-IChessEngine::Result
-AlphaBetaSearch::get_best_move (uint depth, Board* board, Move& best_move)
+IEngine::GameResult
+AlphaBetaSearch::get_best_move (uint depth, IBoard* board, Move& best_move)
 {
-   Result winner[Board::PLAYERS][Board::PLAYERS] = {
-      { WHITE_MATES, BLACK_MATES },
-      { BLACK_MATES, WHITE_MATES }
+   GameResult winner[IBoard::PLAYERS_COUNT][IBoard::PLAYERS_COUNT] = {
+      { GameResult::WHITE_MATES, GameResult::BLACK_MATES },
+      { GameResult::BLACK_MATES, GameResult::WHITE_MATES }
    };
 
    if (board == 0)
-      return IChessEngine::ERROR;
+      return IEngine::ERROR;
 
    this->board = board;
    this->max_depth = depth;
@@ -94,13 +95,13 @@ AlphaBetaSearch::get_best_move (uint depth, Board* board, Move& best_move)
    this->root_value = iterative_deepening (principal_variation);
 
    if (abs (this->root_value) == abs(MATE_VALUE))
-      this->result = winner[root_value > 0 ? 0 : 1][board->get_turn ()];
+      this->result = winner[root_value > 0 ? 0 : 1][board->get_player_in_turn ()];
 
    else if (root_value == DRAW_VALUE && result == STALEMATE)
-      this->result = STALEMATE;
+      this->result = GameResult::STALEMATE;
 
    else
-      this->result = NORMAL_EVALUATION;
+      this->result = GameResult::NORMAL_EVALUATION;
 
    // If we are not using transposition tables, we cannot reconstruct the
    // principal variation
@@ -125,12 +126,12 @@ AlphaBetaSearch::get_best_move (uint depth, Board* board, Move& best_move)
 int
 AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
 {
-   uint expanding_offset = pow(2, 6);
+   uint search_window_size = pow(2, 6);
    int alpha, beta;
 
    // This estimation of the negamax value may be really wrong if we are in
    // the middle of a tactical sequence
-   this->root_value = this->evaluator->static_evaluation (board);
+   this->root_value = this->position_evaluator->static_evaluation (board);
 
    for (uint depth = 1; depth <= this->max_depth; ++depth)
    {
@@ -142,8 +143,8 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
          reset_statistics ();
 
          // Close window around the likely real value of the root node.
-         alpha = root_value - expanding_offset;
-         beta = root_value + expanding_offset;
+         alpha = root_value - search_window_size;
+         beta = root_value + search_window_size;
 
          this->root_value = alpha_beta (0, alpha, beta);
 
@@ -152,10 +153,10 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
 
          if (this->root_value > alpha && this->root_value < beta)
          {
-            expanding_offset /= 2;
+            search_window_size /= 2;
             break;
          }
-         expanding_offset *= 2;
+         search_window_size *= 2;
       }
    }
 
@@ -187,26 +188,29 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
    int tentative_value;
    int best_value = MATE_VALUE; // Initially the best_value you can do is lose the game!
 
-   result = NORMAL_EVALUATION;
+   this->result = GameResult::NORMAL_EVALUATION;
 
    // Probe the transposition table to avoid recomputing
    bool hash_hit = false;
-   Dictionary::hash_info data;
-   Dictionary::board_key key = { board->get_hash_key (), board->get_hash_lock ()};
-   if (this->hash_table->get_data (key, data))
+   TranspositionTable::BoardEntry entry;
+   BoardKey key = {
+      this->board->get_hash_key (),
+      this->board->get_hash_lock ()
+   };
+   if (this->transposition_table->get_entry (key, entry))
    {
-      if (data.depth >= max_depth - depth)
-         if (data.accuracy == Dictionary::EXACT ||
-             (data.accuracy == Dictionary::UPPER_BOUND && data.score >= beta) ||
-             (data.accuracy == Dictionary::LOWER_BOUND && data.score <= alpha))
+      if (entry.depth >= max_depth - depth)
+         if (entry.accuracy == TranspositionTable::EXACT ||
+             (entry.accuracy == TranspositionTable::UPPER_BOUND && entry.score >= beta) ||
+             (entry.accuracy == TranspositionTable::LOWER_BOUND && entry.score <= alpha))
          {
-            if (board->get_repetition_count () == 1)
+            if (this->board->get_repetition_count () == 1)
             {
                this->hash_table_hits++;
                this->n_leaf_nodes++;
-               this->best_move = data.best_move;
+               this->best_move = entry.best_move;
 
-               return data.score;
+               return entry.score;
             }
          }
       hash_hit = true;
@@ -219,17 +223,17 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
       // node evaluation, meaning that all captures considered are really bad.
       this->n_nodes_evaluated++;
       return util::Util::max (
-          this->evaluator->static_evaluation (board),
+          this->position_evaluator->static_evaluation (this->board),
           quiescence (0, alpha, beta));
    }
 
-   this->generator->generate_moves (board, moves);
+   this->move_generator->generate_moves (this->board, moves);
    if (moves.size () == 0)
    {
-      if (!board->is_king_in_check ())
+      if (!this->board->is_king_in_check ())
       {
          this->n_nodes_evaluated++;
-         return this->evaluator->static_evaluation (board);
+         return this->position_evaluator->static_evaluation (this->board);
       }
       return MATE_VALUE;
    }
@@ -239,41 +243,41 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
    // a narrower alpha-beta window
    if (hash_hit)
    {
-      vector<Move>::iterator p = find (moves.begin (), moves.end (), data.best_move);
+      vector<Move>::iterator p = find (moves.begin (), moves.end (), entry.best_move);
       if (p != moves.end ())
       {
          moves.erase (p);
-         moves.insert (moves.begin (), data.best_move);
+         moves.insert (moves.begin (), entry.best_move);
       }
    }
 
    uint n_moves_made = 0;
    for (uint i = 0, n = moves.size (); i < n; ++i)
    {
-      Board::Error error = board->make_move (moves[i], true);
-      if (error == Board::KING_LEFT_IN_CHECK)
+      IBoard::Error error = this->board->make_move (moves[i], /* is_computer_move: */ true);
+      if (error == IBoard::KING_LEFT_IN_CHECK)
          continue;
 
       n_moves_made++;
 
-      if (error == Board::DRAW_BY_REPETITION)
+      if (error == IBoard::DRAW_BY_REPETITION)
       {
          tentative_value = DRAW_VALUE;
       }
       else
       {
-         assert(error == Board::NO_ERROR);
+         assert(error == IBoard::NO_ERROR);
          tentative_value = -alpha_beta (depth + 1, -beta, -util::Util::max (alpha, best_value));
       }
 
-      assert(board->undo_move ());
+      assert(this->board->undo_move ());
 
       if (tentative_value > best_value)
       {
-         if (error == Board::DRAW_BY_REPETITION)
-            result = DRAW_BY_REPETITION;
+         if (error == IBoard::DRAW_BY_REPETITION)
+            this->result = DRAW_BY_REPETITION;
          else
-            result = NORMAL_EVALUATION;
+            this->result = NORMAL_EVALUATION;
 
          best_value = tentative_value;
          best_value_index = i;
@@ -288,12 +292,12 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
    if (n_moves_made == 0)
    {
       std::cerr << "No moves could be done" << std::endl;
-      if (board->is_king_in_check ())
+      if (this->board->is_king_in_check ())
          best_value = MATE_VALUE;
       else
       {
          std::cerr << "Draw by stalemate" << std::endl;
-         result = STALEMATE;
+         this->result = STALEMATE;
          best_value = DRAW_VALUE;
       }
    }
@@ -302,13 +306,12 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
       // Store this board configuration along with its negamax value or the
       // lower/upper bound found. Also store the depth to which it was explored.
       uint real_depth = max_depth - depth;
-      Dictionary::flag accuracy;
+      TranspositionTable::flag accuracy =
+            best_value >= beta ? TranspositionTable::UPPER_BOUND :
+            best_value > alpha ? TranspositionTable::EXACT :
+            TranspositionTable::LOWER_BOUND;
 
-      if (best_value >= beta)       accuracy = Dictionary::UPPER_BOUND;
-      else if (best_value > alpha)  accuracy = Dictionary::EXACT;
-      else                          accuracy = Dictionary::LOWER_BOUND;
-
-      this->hash_table->add_entry (
+      this->transposition_table->add_entry (
           key, best_value, accuracy, moves[best_value_index], real_depth);
       this->best_move = moves[best_value_index];
       this->n_internal_nodes++;
@@ -331,7 +334,7 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
    int best_value = MATE_VALUE;
 
    this->n_nodes_evaluated++;
-   node_value = this->evaluator->static_evaluation (board);
+   node_value = this->position_evaluator->static_evaluation (board);
 
    // Assumption made: making a move will improve the position
    // In zugzwang positions, this is not true.
@@ -347,21 +350,21 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
       alpha = node_value;
 
    // Failing to pay attention to an ongoing check has fatal consequences
-   if (depth >= MAX_QUIESCENCE_DEPTH && !board->is_king_in_check ())
+   if (depth >= MAX_QUIESCENCE_DEPTH && !this->board->is_king_in_check ())
    {
       this->n_leaf_nodes++;
 
       return node_value;
    }
-   this->generator->generate_moves (
-       board, moves,
+   this->move_generator->generate_moves (
+       this->board, moves,
        MoveGenerator::CAPTURES |
        MoveGenerator::CHECKS   |
        MoveGenerator::CHECK_EVASIONS |
        MoveGenerator::PAWN_PROMOTIONS);
 
    // A checkmate
-   if (board->is_king_in_check () && moves.size () == 0)
+   if (this->board->is_king_in_check () && moves.size () == 0)
    {
       this->n_leaf_nodes++;
 
@@ -373,7 +376,7 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
    {
       // Make sure none of the pieces of the player in turn is being
       // attacked by a lower value piece
-      this->generator->generate_en_prise_evations (board, moves);
+      this->move_generator->generate_en_prise_evations (this->board, moves);
 
       if (moves.size () == 0)
       {
@@ -386,25 +389,25 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
    this->n_internal_nodes++;
    for (uint i = 0, n = moves.size (); i < n; ++i)
    {
-      Board::Error error = board->make_move (moves[i], true);
-      if (error == Board::KING_LEFT_IN_CHECK)
+      IBoard::Error error = this->board->make_move (moves[i], /* is_computer_move: */ true);
+      if (error == IBoard::KING_LEFT_IN_CHECK)
          continue;
 
-      if (error == Board::DRAW_BY_REPETITION)
+      if (error == IBoard::DRAW_BY_REPETITION)
          tentative_value = DRAW_VALUE;
       else
          tentative_value = -quiescence (depth + 1, -beta, -alpha);
 
       this->average_branching_factor++;
 
-      assert(board->undo_move ());
+      assert(this->board->undo_move ());
 
       if (tentative_value > best_value)
       {
-         if (error == Board::DRAW_BY_REPETITION)
-            result = IChessEngine::DRAW_BY_REPETITION;
+         if (error == IBoard::DRAW_BY_REPETITION)
+            this->result = GameResult::DRAW_BY_REPETITION;
          else
-            result = NORMAL_EVALUATION;
+            this->result = GameResult::NORMAL_EVALUATION;
 
          best_value = tentative_value;
          if (best_value >= beta) // Alpha-beta cutoff
@@ -414,7 +417,7 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
 
    // If all the possible violent moves (captures, checks, pawn promotions, ...)
    // are bad, we are not forced to make any move, unless we are in check
-   if (best_value < node_value && !board->is_king_in_check ())
+   if (best_value < node_value && !this->board->is_king_in_check ())
       best_value = node_value;
 
    return best_value;
@@ -428,37 +431,36 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
   ============================================================================*/
 bool
 AlphaBetaSearch::build_principal_variation (
-    Board* board, vector<Move>& principal_variation)
+    IBoard* board, vector<Move>& principal_variation)
 {
-   Dictionary::board_key key = {
+   BoardKey key = {
       board->get_hash_key (),
       board->get_hash_lock ()
    };
-   Dictionary::hash_info data;
+   TranspositionTable::BoardEntry entry;
    bool return_value = true;
 
-   if (this->hash_table->get_data (key, data))
+   if (this->transposition_table->get_entry (key, entry))
    {
-      principal_variation.push_back (data.best_move);
-      Board::Error error = board->make_move (data.best_move, true);
+      principal_variation.push_back (entry.best_move);
+      IBoard::Error error = board->make_move (entry.best_move, /* is_computer_move: */ true);
 
-      if (error == Board::NO_ERROR)
+      if (error == IBoard::NO_ERROR)
       {
          if (!build_principal_variation (board, principal_variation))
          {
-            std::cerr << "couldn't build rest of path" << std::endl;
             principal_variation.pop_back ();
             return_value = false;
          }
          assert(board->undo_move ());
       }
-      else if (error != Board::KING_LEFT_IN_CHECK &&
-               error != Board::DRAW_BY_REPETITION)
+      else if (error != IBoard::KING_LEFT_IN_CHECK &&
+               error != IBoard::DRAW_BY_REPETITION)
       {
          assert(board->undo_move ());
          return_value = false;
       }
-      else if (error == Board::DRAW_BY_REPETITION)
+      else if (error == IBoard::DRAW_BY_REPETITION)
       {
          assert(board->undo_move ());
       }
@@ -470,8 +472,8 @@ AlphaBetaSearch::build_principal_variation (
 void
 AlphaBetaSearch::load_factor_weights (vector<int>& weights)
 {
-   this->hash_table->reset ();
-   this->evaluator->load_factor_weights (weights);
+   this->transposition_table->reset ();
+   this->position_evaluator->load_factor_weights (weights);
 }
 
 } // namespace game_engine

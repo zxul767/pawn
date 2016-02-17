@@ -3,7 +3,7 @@
 
 #include <string>
 #include "Piece.hpp"
-#include "Board.hpp"
+#include "IBoard.hpp"
 
 namespace game_rules
 {
@@ -12,8 +12,8 @@ class Move
   public:
    Move ();
    Move (const std::string& notation);
-   Move (Board::Squares start, Board::Squares end);
-   Move (const Move& move);
+   Move (IBoard::Squares start, IBoard::Squares end);
+   Move (const Move&);
 
    enum Type {
       SIMPLE_MOVE,
@@ -26,8 +26,8 @@ class Move
       NULL_MOVE
    };
 
-   Board::Squares from () const;
-   Board::Squares to () const;
+   IBoard::Squares from () const;
+   IBoard::Squares to () const;
 
    Type get_type () const;
    void set_type (Type type);
@@ -48,13 +48,13 @@ class Move
    friend bool operator == (const Move& m1, const Move& m2);
    friend bool operator < (const Move& m1, const Move& m2);
 
-   static bool translate_to_square (const std::string& notation, Board::Squares& square);
-   static bool translate_to_notation (Board::Squares square, std::string& notation);
+   static bool translate_to_square (const std::string& notation, IBoard::Squares& square);
+   static bool translate_to_notation (IBoard::Squares square, std::string& notation);
    static bool is_valid_notation (const std::string &notation);
 
   private:
-   Board::Squares start;
-   Board::Squares end;
+   IBoard::Squares start;
+   IBoard::Squares end;
    Type type;
    Piece::Type moving_piece;
    Piece::Type captured_piece;

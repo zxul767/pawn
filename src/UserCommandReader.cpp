@@ -1,25 +1,25 @@
-#include "CommandReader.hpp"
-#include "Command.hpp"
+#include "UserCommandReader.hpp"
+#include "UserCommand.hpp"
 
 #include <string>
 #include <iostream>
 
 namespace game_ui
 {
-CommandReader::CommandReader ()
+UserCommandReader::UserCommandReader ()
 {
    // Remove the buffer from the output stream
    std::cout.setf (std::ios::unitbuf);
 }
 
-Command
-CommandReader::get_command ()
+UserCommand
+UserCommandReader::get_user_command ()
 {
    std::string command = "";
 
    std::getline (std::cin, command);
 
-   return Command (command);
+   return UserCommand (command);
 }
 
 } // namespace game_ui

@@ -1,6 +1,6 @@
 #include "FitnessEvaluator.hpp"
-#include "SimpleEvaluator.hpp"
-#include "IChessEngine.hpp"
+#include "PositionEvaluator.hpp"
+#include "IEngine.hpp"
 #include "Chromosome.hpp"
 #include "MaeBoard.hpp"
 #include "Move.hpp"
@@ -10,16 +10,16 @@
 
 namespace learning
 {
-using game_rules::Board;
+using game_rules::IBoard;
 using game_rules::Piece;
 
-using game_engine::IChessEngine;
+using game_engine::IEngine;
 
-FitnessEvaluator::FitnessEvaluator (IChessEngine* chess_engine)
+FitnessEvaluator::FitnessEvaluator (IEngine* chess_engine)
 {
    this->chess_engine = chess_engine;
    this->board = new game_rules::MaeBoard ();
-   this->evaluator = new game_engine::SimpleEvaluator ();
+   this->evaluator = new game_engine::PositionEvaluator ();
 }
 
 FitnessEvaluator::~FitnessEvaluator ()
@@ -49,7 +49,7 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
    this->board->reset ();
 
    // Chromosome A plays white
-   IChessEngine::Result result;
+   IEngine::GameResult result;
    uint turn = 0;
    do
    {
@@ -61,24 +61,24 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
 
       game_rules::Move move;
       result = this->chess_engine->get_best_move (3, this->board, move);
-      if (result == IChessEngine::WHITE_MATES ||
-          result == IChessEngine::BLACK_MATES ||
-          result == IChessEngine::STALEMATE) break;
+      if (result == IEngine::WHITE_MATES ||
+          result == IEngine::BLACK_MATES ||
+          result == IEngine::STALEMATE) break;
 
       // TODO: turn into an assertion
       // if (key == this->board->get_hash_key () || lock != this->board->get_hash_lock ())
       // {
       // }
 
-      Board::Error error = this->board->make_move (move, true);
-      if (error != Board::NO_ERROR && error != Board::DRAW_BY_REPETITION)
+      IBoard::Error error = this->board->make_move (move, true);
+      if (error != IBoard::NO_ERROR && error != IBoard::DRAW_BY_REPETITION)
       {
          abort ();
       }
-      else if (error == Board::DRAW_BY_REPETITION)
+      else if (error == IBoard::DRAW_BY_REPETITION)
       {
          this->board->undo_move ();
-         result = IChessEngine::DRAW_BY_REPETITION;
+         result = IEngine::DRAW_BY_REPETITION;
          break;
       }
       turn = (turn + 1) % 2;
@@ -88,21 +88,21 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
          int r = this->evaluator->evaluate_material(board);
 
          if (r == 0) {
-            result = IChessEngine::STALEMATE;
+            result = IEngine::STALEMATE;
          }
-         else if (board->get_turn() == Piece::WHITE)
+         else if (board->get_player_in_turn() == Piece::WHITE)
          {
             if (r > 0)
-               result = IChessEngine::WHITE_MATES;
+               result = IEngine::WHITE_MATES;
             else
-               result = IChessEngine::BLACK_MATES;
+               result = IEngine::BLACK_MATES;
          }
          else
          {
             if (r > 0)
-               result = IChessEngine::BLACK_MATES;
+               result = IEngine::BLACK_MATES;
             else
-               result = IChessEngine::WHITE_MATES;
+               result = IEngine::WHITE_MATES;
          }
          break;
       }
@@ -110,7 +110,7 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
 
    timer->stop ();
 
-   if (result == IChessEngine::STALEMATE || result == IChessEngine::DRAW_BY_REPETITION)
+   if (result == IEngine::STALEMATE || result == IEngine::DRAW_BY_REPETITION)
    {
       evaluation = 1.0 / 2.0;
       b.set_result (Chromosome::DRAW);
@@ -119,7 +119,7 @@ FitnessEvaluator::evaluate (Chromosome& a, Chromosome& b)
    {
       evaluation = 6.0 / 9.0;
 
-      if (result == IChessEngine::WHITE_MATES)
+      if (result == IEngine::WHITE_MATES)
       {
          evaluation = 1 - evaluation;
          b.set_result (Chromosome::LOSS);

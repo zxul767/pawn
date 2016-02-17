@@ -13,8 +13,8 @@ namespace game_rules
 {
 using util::bitboard;
 
-// Cannot include Board.h because that creates a cyclic dependency
-class Board;
+// Cannot include IBoard.h because that creates a cyclic dependency
+class IBoard;
 
 class Piece
 {
@@ -22,19 +22,22 @@ public:
    Piece () { }
    virtual ~Piece () { }
 
-   static const uint PIECES = 6;
+   static const uint PIECES_COUNT = 6;
 
    // Number of directions a bishop or rook can move to.
-   static const uint RAYS = 4;
+   static const uint RAY_DIRECTIONS_COUNT = 4;
 
    // Number of jumps a knight can make in the center of the board.
-   static const uint KNIGHT_MOVES = 8;
+   static const uint KNIGHT_MOVES_COUNT = 8;
 
    // Number of moves a king can make in the center of the board.
-   static const uint KING_MOVES = 8;
+   static const uint KING_MOVES_COUNT = 8;
 
    // Number of moves a pawn can make in the center of the board.
-   static const uint PAWN_MOVES = 3;
+   static const uint PAWN_MOVES_COUNT = 3;
+
+   // Number of capture moves a pawn can do (assuming there are pieces to capture)
+   static const uint PAWN_CAPTURE_MOVES_COUNT = 2;
 
    enum Type {
       PAWN,
@@ -71,7 +74,7 @@ public:
    static std::string pieceString (Type piece_type);
 
    virtual bitboard get_moves (
-       uint square, Player player, const Board* board) const = 0;
+       uint square, Player player, const IBoard* board) const = 0;
 
    virtual bitboard get_potential_moves (uint  square, Player player) const = 0;
 };

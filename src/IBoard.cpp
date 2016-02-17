@@ -1,45 +1,43 @@
 /*==============================================================================
-  Defines a few common operations for the base class. See Board.h to see the
+  Defines a few common operations for the base class. See IBoard.h to see the
   interface specification.
   ==============================================================================*/
 
-#include "Board.hpp"
+#include "IBoard.hpp"
 
 namespace game_rules
 {
-Board::Board ()
+IBoard::IBoard ()
 {
 }
 
-Board::~Board ()
+IBoard::~IBoard ()
 {
 }
 
 bool
-Board::is_inside_board (int row, int col)
+IBoard::is_inside_board (int row, int col)
 {
    return (row >= 0 && row < (int)SIZE) && (col >= 0 && col < (int)SIZE);
 }
 
 bool
-Board::is_inside_board (uint row, uint col)
+IBoard::is_inside_board (uint row, uint col)
 {
    return (row < SIZE) && (col < SIZE);
 }
 
 bool
-Board::is_inside_board (uint square)
+IBoard::is_inside_board (uint square)
 {
-   return (square < SQUARES);
+   return (square < SQUARES_COUNT);
 }
 
 std::ostream&
-operator << (std::ostream& out, const Board& board)
+operator << (std::ostream& out, const IBoard& board)
 {
-   static const uint nplayers = Board::PLAYERS;
-
    static const std::string
-         piece_to_string[][nplayers] =
+         piece_to_string[Piece::PIECES_COUNT][IBoard::PLAYERS_COUNT] =
          {
             { "  P  ", " *P* " },
             { "  N  ", " *N* " },
@@ -50,16 +48,16 @@ operator << (std::ostream& out, const Board& board)
          };
 
    out << "  -------------------------------------------------" << std::endl;
-   for (uint row = 0; row < Board::SIZE; ++row)
+   for (uint row = 0; row < IBoard::SIZE; ++row)
    {
       out << "  |     |     |     |     |     |     |     |     |" << std::endl;
-      out << (Board::SIZE - row) << ' ';
+      out << (IBoard::SIZE - row) << ' ';
 
-      for (uint col = 0; col < Board::SIZE; ++col)
+      for (uint col = 0; col < IBoard::SIZE; ++col)
       {
          out << '|';
 
-         Board::Squares square = (Board::Squares) (row * Board::SIZE + col);
+         IBoard::Squares square = (IBoard::Squares) (row * IBoard::SIZE + col);
          Piece::Player  player = board.get_piece_color (square);
          Piece::Type    piece  = board.get_piece (square);
 

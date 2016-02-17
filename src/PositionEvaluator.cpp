@@ -1,17 +1,17 @@
-#include "Board.hpp"
-#include "SimpleEvaluator.hpp"
+#include "IBoard.hpp"
+#include "PositionEvaluator.hpp"
 #include "King.hpp"
 #include "Util.hpp"
 #include <iostream>
 
 namespace game_engine
 {
-using game_rules::Board;
+using game_rules::IBoard;
 using game_rules::Piece;
 
 using util::bitboard;
 
-SimpleEvaluator::SimpleEvaluator ()
+PositionEvaluator::PositionEvaluator ()
 {
    int KING_VALUE = util::constants::INFINITUM;
 
@@ -29,13 +29,13 @@ SimpleEvaluator::SimpleEvaluator ()
 }
 
 int
-SimpleEvaluator::static_evaluation (const Board* board) const
+PositionEvaluator::static_evaluation (const IBoard* board) const
 {
    int material;
    int mobility;
    int king_safety = 0;
    int center_control;
-   int sign = (board->get_turn () == Piece::WHITE ? 1 : -1);
+   int sign = (board->get_player_in_turn () == Piece::WHITE ? 1 : -1);
 
    material = evaluate_material (board);
    mobility = evaluate_mobility (board);
@@ -49,7 +49,7 @@ SimpleEvaluator::static_evaluation (const Board* board) const
 }
 
 int
-SimpleEvaluator::evaluate_material (const Board* board) const
+PositionEvaluator::evaluate_material (const IBoard* board) const
 {
    bitboard player_piece;
    bitboard opponent_piece;
@@ -67,7 +67,7 @@ SimpleEvaluator::evaluate_material (const Board* board) const
 }
 
 int
-SimpleEvaluator::evaluate_mobility (const Board* board) const
+PositionEvaluator::evaluate_mobility (const IBoard* board) const
 {
    bitboard player_piece;
    bitboard opponent_piece;
@@ -85,7 +85,7 @@ SimpleEvaluator::evaluate_mobility (const Board* board) const
 }
 
 int
-SimpleEvaluator::evaluate_center_control (const Board* board) const
+PositionEvaluator::evaluate_center_control (const IBoard* board) const
 {
    bitboard player_piece;
    bitboard opponent_piece;
@@ -103,21 +103,21 @@ SimpleEvaluator::evaluate_center_control (const Board* board) const
 }
 
 int
-SimpleEvaluator::evaluate_king_safety (const Board* board) const
+PositionEvaluator::evaluate_king_safety (const IBoard* board) const
 {
    return (king_safety_value (board, Piece::WHITE) -
            king_safety_value (board, Piece::BLACK));
 }
 
 int
-SimpleEvaluator::material_value (bitboard piece, Piece::Type piece_type) const
+PositionEvaluator::material_value (bitboard piece, Piece::Type piece_type) const
 {
    return util::Util::count_set_bits (piece) * piece_value[piece_type];
 }
 
 int
-SimpleEvaluator::mobility_value (
-    const Board* board, bitboard piece, Piece::Type  piece_type) const
+PositionEvaluator::mobility_value (
+    const IBoard* board, bitboard piece, Piece::Type  piece_type) const
 {
    bitboard moves = 0;
    uint n_moves = 0;
@@ -125,7 +125,7 @@ SimpleEvaluator::mobility_value (
    int position = util::Util::MSB_position (piece);
    while (piece && position != -1)
    {
-      moves = board->get_moves (piece_type, Board::Squares (position));
+      moves = board->get_moves (piece_type, IBoard::Squares (position));
       n_moves += util::Util::count_set_bits (moves);
       piece ^= util::constants::ONE << position;
       position = util::Util::MSB_position (piece);
@@ -138,8 +138,8 @@ SimpleEvaluator::mobility_value (
 }
 
 int
-SimpleEvaluator::center_control_value (
-    const Board* board, bitboard piece, Piece::Type  piece_type) const
+PositionEvaluator::center_control_value (
+    const IBoard* board, bitboard piece, Piece::Type  piece_type) const
 {
    bitboard center =
          (util::constants::ONE << 27) |
@@ -155,7 +155,7 @@ SimpleEvaluator::center_control_value (
    int position = util::Util::MSB_position (piece);
    while (piece && position != -1)
    {
-      attacks = board->get_moves (piece_type, Board::Squares (position));
+      attacks = board->get_moves (piece_type, IBoard::Squares (position));
       squares_controled += util::Util::count_set_bits (attacks & center);
       piece ^= util::constants::ONE << position;
       position = util::Util::MSB_position (piece);
@@ -165,24 +165,24 @@ SimpleEvaluator::center_control_value (
 }
 
 int
-SimpleEvaluator::king_safety_value (
-    const Board* board, Piece::Player player) const
+PositionEvaluator::king_safety_value (
+    const IBoard* board, Piece::Player player) const
 {
-   static bitboard pawns[Board::PLAYERS][Board::PLAYERS] =
+   static bitboard pawns[IBoard::PLAYERS_COUNT][IBoard::PLAYERS_COUNT] =
          {
-            { util::Util::to_bitboard[Board::f2] |
-              util::Util::to_bitboard[Board::g2] |
-              util::Util::to_bitboard[Board::h2],
-              util::Util::to_bitboard[Board::a2] |
-              util::Util::to_bitboard[Board::b2] |
-              util::Util::to_bitboard[Board::c2] },
+            { util::Util::to_bitboard[IBoard::f2] |
+              util::Util::to_bitboard[IBoard::g2] |
+              util::Util::to_bitboard[IBoard::h2],
+              util::Util::to_bitboard[IBoard::a2] |
+              util::Util::to_bitboard[IBoard::b2] |
+              util::Util::to_bitboard[IBoard::c2] },
 
-            { util::Util::to_bitboard[Board::f7] |
-              util::Util::to_bitboard[Board::g7] |
-              util::Util::to_bitboard[Board::h7],
-              util::Util::to_bitboard[Board::a7] |
-              util::Util::to_bitboard[Board::b7] |
-              util::Util::to_bitboard[Board::c7] }
+            { util::Util::to_bitboard[IBoard::f7] |
+              util::Util::to_bitboard[IBoard::g7] |
+              util::Util::to_bitboard[IBoard::h7],
+              util::Util::to_bitboard[IBoard::a7] |
+              util::Util::to_bitboard[IBoard::b7] |
+              util::Util::to_bitboard[IBoard::c7] }
          };
 
    int safety_value = 0;
@@ -194,10 +194,10 @@ SimpleEvaluator::king_safety_value (
       has_moved = true;
    }
 
-   if (board->is_castled (player, Board::KING_SIDE))
+   if (board->is_castled (player, IBoard::KING_SIDE))
    {
-      if (pawns[player][Board::KING_SIDE] ==
-          (pawns[player][Board::KING_SIDE] & board->get_pieces (player, Piece::PAWN)))
+      if (pawns[player][IBoard::KING_SIDE] ==
+          (pawns[player][IBoard::KING_SIDE] & board->get_pieces (player, Piece::PAWN)))
       {
          safety_value = 20;
       }
@@ -206,10 +206,10 @@ SimpleEvaluator::king_safety_value (
          safety_value = -40;
       }
    }
-   else if (board->is_castled (player, Board::QUEEN_SIDE))
+   else if (board->is_castled (player, IBoard::QUEEN_SIDE))
    {
-      if (pawns[player][Board::QUEEN_SIDE] ==
-          (pawns[player][Board::QUEEN_SIDE] & board->get_pieces (player, Piece::PAWN)))
+      if (pawns[player][IBoard::QUEEN_SIDE] ==
+          (pawns[player][IBoard::QUEEN_SIDE] & board->get_pieces (player, Piece::PAWN)))
       {
          safety_value = 20;
       }
@@ -229,13 +229,13 @@ SimpleEvaluator::king_safety_value (
 }
 
 int
-SimpleEvaluator::get_piece_value (Piece::Type piece_type) const
+PositionEvaluator::get_piece_value (Piece::Type piece_type) const
 {
    return this->piece_value[piece_type];
 }
 
 void
-SimpleEvaluator::load_factor_weights (std::vector<int>& weights)
+PositionEvaluator::load_factor_weights (std::vector<int>& weights)
 {
    for (uint i = 0; i < weights.size (); ++i)
    {
