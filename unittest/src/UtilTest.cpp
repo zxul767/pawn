@@ -7,14 +7,14 @@ using util::Util;
 
 TEST_CASE("Count number of set bits", "[bits]" ) {
    REQUIRE(Util::count_set_bits(0) == 0);
-   REQUIRE(Util::count_set_bits(1) == 1);
-   REQUIRE(Util::count_set_bits(2) == 1);
-   REQUIRE(Util::count_set_bits(3) == 2);
-   REQUIRE(Util::count_set_bits(4) == 1);
-   REQUIRE(Util::count_set_bits(5) == 2);
-   REQUIRE(Util::count_set_bits(6) == 2);
-   REQUIRE(Util::count_set_bits(7) == 3);
-   REQUIRE(Util::count_set_bits(8) == 1);
+   REQUIRE(Util::count_set_bits(1) == 1); // binary: 0001
+   REQUIRE(Util::count_set_bits(2) == 1); // binary: 0010
+   REQUIRE(Util::count_set_bits(3) == 2); // binary: 0011
+   REQUIRE(Util::count_set_bits(4) == 1); // binary: 0100
+   REQUIRE(Util::count_set_bits(5) == 2); // binary: 0101
+   REQUIRE(Util::count_set_bits(6) == 2); // binary: 0110
+   REQUIRE(Util::count_set_bits(7) == 3); // binary: 0111
+   REQUIRE(Util::count_set_bits(8) == 1); // binary: 1000
 }
 
 TEST_CASE("Find position of the least significant bit", "[bits][lsb]") {
