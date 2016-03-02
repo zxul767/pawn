@@ -7,10 +7,13 @@
   ==============================================================================*/
 
 #include "Piece.hpp"
-#include "IBoard.hpp"
+#include "GameTraits.hpp"
+#include "BoardTraits.hpp"
 
 namespace game_rules
 {
+class IBoard;
+
 class Knight : public Piece
 {
   public:
@@ -23,7 +26,7 @@ class Knight : public Piece
   private:
    void compute_moves ();
 
-   bitboard moves_from[IBoard::SQUARES_COUNT];
+   bitboard moves_from[BOARD_SQUARES_COUNT];
 };
 
 } // namespace game_rules

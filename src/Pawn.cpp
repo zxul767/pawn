@@ -1,4 +1,5 @@
 #include "Pawn.hpp"
+#include "IBoard.hpp"
 
 namespace game_rules
 {
@@ -113,7 +114,7 @@ Pawn::get_double_move (uint square, Player player) const
    if (!IBoard::is_inside_board (square))
       return 0;
 
-   uint offset = IBoard::SIZE + IBoard::SIZE;
+   uint offset = BOARD_SIZE + BOARD_SIZE;
    uint end_square;
 
    if (is_second_row (get_row (square), player))
@@ -135,7 +136,7 @@ Pawn::get_double_move (uint square, Player player) const
 bitboard
 Pawn::get_side_moves (uint square, Player player) const
 {
-   if (IBoard:: is_inside_board (square))
+   if (IBoard::is_inside_board (square))
       return this->side_moves_from[square][player];
 
    return 0;
@@ -148,10 +149,10 @@ Pawn::get_side_moves (uint square, Player player) const
 void
 Pawn::compute_moves ()
 {
-   for (uint row = 0; row < IBoard::SIZE; ++row)
-      for (uint col = 0; col < IBoard::SIZE; ++col)
+   for (uint row = 0; row < BOARD_SIZE; ++row)
+      for (uint col = 0; col < BOARD_SIZE; ++col)
       {
-         uint square = row * IBoard::SIZE + col;
+         uint square = row * BOARD_SIZE + col;
 
          for (Player player = WHITE; player <= BLACK; ++player)
          {
@@ -199,7 +200,7 @@ Pawn::compute_side_moves (uint square, Player player) const
    {
       int x = column + dx[i];
       if (IBoard::is_inside_board (row, x) && is_valid_row (row, player))
-         side_moves |= (util::constants::ONE << (row * IBoard::SIZE + x));
+         side_moves |= (util::constants::ONE << (row * BOARD_SIZE + x));
    }
    return side_moves;
 }
@@ -226,7 +227,7 @@ Pawn::compute_capture_move (uint square, Player player, RowColumn direction) con
    int y = row + (player == WHITE ? -dy[position]: dy[position]);
 
    if (IBoard::is_inside_board (y, x))
-      capture_move |= (util::constants::ONE << (y * IBoard::SIZE + x));
+      capture_move |= (util::constants::ONE << (y * BOARD_SIZE + x));
 
    return capture_move;
 }
@@ -251,7 +252,7 @@ Pawn::compute_simple_moves (uint square, Player player) const
    {
       int y = row + (player == WHITE? -dy[i]: dy[i]);
       if (IBoard::is_inside_board (y, column) && is_valid_row (row, player))
-         simple_moves |= (util::constants::ONE << (y * IBoard::SIZE + column));
+         simple_moves |= (util::constants::ONE << (y * BOARD_SIZE + column));
    }
 
    return simple_moves;
@@ -265,29 +266,29 @@ bool
 Pawn::is_second_row (uint row, Player player) const
 {
    if (player == WHITE)
-      return row == IBoard::SIZE-2;
+      return row == BOARD_SIZE - 2;
 
    return row == 1;
 }
 
 /*=============================================================================
   Return the row corresponding to SQUARE on the chess board.
-  Precondition: SQUARE is in [0, IBoard::SQUARES_COUNT)
+  Precondition: SQUARE is in [0, BOARD_SQUARES_COUNT)
   =============================================================================*/
 uint
 Pawn::get_row (uint square) const
 {
-   return (square / IBoard::SIZE);
+   return (square / BOARD_SIZE);
 }
 
 /*=============================================================================
   Return the column corresponding to SQUARE on the chess board.
-  Precondition: SQUARE is in [0, IBoard::SQUARES_COUNT)
+  Precondition: SQUARE is in [0, BOARD_SQUARES_COUNT)
   =============================================================================*/
 uint
 Pawn::get_column (uint square) const
 {
-   return square % IBoard::SIZE;
+   return square % BOARD_SIZE;
 }
 
 /*=============================================================================
@@ -297,7 +298,7 @@ bool
 Pawn::is_valid_row (uint row, Player color) const
 {
    if (color == WHITE)
-      return row != IBoard::SIZE - 1;
+      return row != BOARD_SIZE - 1;
 
    return row != 0;
 }

@@ -4,6 +4,8 @@
   ==============================================================================*/
 
 #include "IBoard.hpp"
+#include "GameTraits.hpp"
+#include "BoardTraits.hpp"
 
 namespace game_rules
 {
@@ -18,26 +20,26 @@ IBoard::~IBoard ()
 bool
 IBoard::is_inside_board (int row, int col)
 {
-   return (row >= 0 && row < (int)SIZE) && (col >= 0 && col < (int)SIZE);
+   return (row >= 0 && row < (int)BOARD_SIZE) && (col >= 0 && col < (int)BOARD_SIZE);
 }
 
 bool
 IBoard::is_inside_board (uint row, uint col)
 {
-   return (row < SIZE) && (col < SIZE);
+   return (row < BOARD_SIZE) && (col < BOARD_SIZE);
 }
 
 bool
 IBoard::is_inside_board (uint square)
 {
-   return (square < SQUARES_COUNT);
+   return (square < BOARD_SQUARES_COUNT);
 }
 
 std::ostream&
 operator << (std::ostream& out, const IBoard& board)
 {
    static const std::string
-         piece_to_string[Piece::PIECES_COUNT][IBoard::PLAYERS_COUNT] =
+         piece_to_string[PIECE_KINDS_COUNT][PLAYERS_COUNT] =
          {
             { "  P  ", " *P* " },
             { "  N  ", " *N* " },
@@ -48,18 +50,18 @@ operator << (std::ostream& out, const IBoard& board)
          };
 
    out << "  -------------------------------------------------" << std::endl;
-   for (uint row = 0; row < IBoard::SIZE; ++row)
+   for (uint row = 0; row < BOARD_SIZE; ++row)
    {
       out << "  |     |     |     |     |     |     |     |     |" << std::endl;
-      out << (IBoard::SIZE - row) << ' ';
+      out << (BOARD_SIZE - row) << ' ';
 
-      for (uint col = 0; col < IBoard::SIZE; ++col)
+      for (uint col = 0; col < BOARD_SIZE; ++col)
       {
          out << '|';
 
-         IBoard::Squares square = (IBoard::Squares) (row * IBoard::SIZE + col);
-         Piece::Player  player = board.get_piece_color (square);
-         Piece::Type    piece  = board.get_piece (square);
+         auto square = (BoardSquare) (row * BOARD_SIZE + col);
+         Piece::Player player = board.get_piece_color (square);
+         Piece::Type piece  = board.get_piece (square);
 
          if ((player != Piece::NULL_PLAYER) && (piece != Piece::NULL_PIECE))
          {

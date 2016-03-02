@@ -7,10 +7,13 @@
  ==============================================================================*/
 
 #include "Piece.hpp"
-#include "IBoard.hpp"
+#include "GameTraits.hpp"
+#include "BoardTraits.hpp"
 
 namespace game_rules
 {
+class IBoard;
+
 class Rook : public Piece
 {
 public:
@@ -21,11 +24,11 @@ public:
    bitboard get_potential_moves (uint square, Player player) const;
 
 private:
-   bitboard get_ray_from (IBoard::Squares square, RowColumn direction) const;
+   bitboard get_ray_from (BoardSquare square, RowColumn direction) const;
    void compute_moves ();
 
-   bitboard moves_from[IBoard::SQUARES_COUNT][Piece::RAY_DIRECTIONS_COUNT];
-   bitboard all_moves_from[IBoard::SQUARES_COUNT];
+   bitboard moves_from[BOARD_SQUARES_COUNT][Piece::RAY_DIRECTIONS_COUNT];
+   bitboard all_moves_from[BOARD_SQUARES_COUNT];
 };
 
 } // namespace game_rules

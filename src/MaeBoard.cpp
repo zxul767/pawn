@@ -64,7 +64,7 @@ MaeBoard::load_zobrist ()
 
    for (uint i = 0; i < Piece::PIECES_COUNT; ++i)
       for (uint j = 0; j < PLAYERS_COUNT; ++j)
-         for (uint k = 0; k < SQUARES_COUNT; ++k)
+         for (uint k = 0; k < BOARD_SQUARES_COUNT; ++k)
             for (uint m = 0; m < HASH_KEYS_COUNT; ++m)
                this->zobrist[i][j][k][m] = util::Util::random_ullong ();
 
@@ -76,7 +76,7 @@ MaeBoard::load_zobrist ()
 
    // This is a waste of memory, since only 16 squares can be possible
    // en-passant capture squares, but this avoids dealing with awful offsets
-   for (uint i = 0; i < SQUARES_COUNT; ++i)
+   for (uint i = 0; i < BOARD_SQUARES_COUNT; ++i)
       this->en_passant_key[i] = util::Util::random_ullong ();
 
    this->hash_key = 0;
@@ -103,7 +103,7 @@ MaeBoard::clear ()
       this->is_castled_[side][QUEEN_SIDE] = false;
    }
 
-   for (Squares square = a8; square <= h1; ++square)
+   for (auto square = BoardSquare::a8; square <= BoardSquare::h1; ++square)
       this->board[square] = EMPTY_SQUARE;
 
    this->is_whites_turn = true;
@@ -170,7 +170,7 @@ bool
 MaeBoard::add_piece (
     const string& location, Piece::Type type, Piece::Player player)
 {
-   Squares square;
+   BoardSquare square;
 
    if (!Move::translate_to_square (location, square))
       return false;
@@ -182,7 +182,7 @@ MaeBoard::add_piece (
   Return TRUE if the specified piece was added to the board in LOCATION
   ===========================================================================*/
 bool
-MaeBoard::add_piece (Squares square, Piece::Type type, Piece::Player player)
+MaeBoard::add_piece (BoardSquare square, Piece::Type type, Piece::Player player)
 {
    if (this->board[square] != EMPTY_SQUARE)
       return false;
@@ -206,7 +206,7 @@ MaeBoard::add_piece (Squares square, Piece::Type type, Piece::Player player)
 bool
 MaeBoard::remove_piece (const string& location)
 {
-   Squares square;
+   BoardSquare square;
 
    if (!Move::translate_to_square (location, square))
       return false;
@@ -219,7 +219,7 @@ MaeBoard::remove_piece (const string& location)
   Precondition: Board::is_inside_board (square) = TRUE
   ===========================================================================*/
 bool
-MaeBoard::remove_piece (Squares square)
+MaeBoard::remove_piece (BoardSquare square)
 {
    if (this->board[square] == EMPTY_SQUARE)
       return false;
@@ -256,8 +256,8 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
    if (this->board[move.from ()] == EMPTY_SQUARE)
       return NO_PIECE_IN_SQUARE;
 
-   Squares start = move.from ();
-   Squares end = move.to ();
+   BoardSquare start = move.from ();
+   BoardSquare end = move.to ();
 
    move.set_moving_piece (board[start].piece);
    if (board[end] != EMPTY_SQUARE)
@@ -280,13 +280,13 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
 
    if (move.get_type () == Move::EN_PASSANT_CAPTURE)
    {
-      uint offset = this->is_whites_turn ? SIZE: -((int) SIZE);
+      uint offset = this->is_whites_turn ? BOARD_SIZE: -((int) BOARD_SIZE);
       uint position = util::Util::MSB_position (this->en_passant_capture_square) + offset;
-      remove_piece (Squares (position));
+      remove_piece (BoardSquare (position));
    }
 
    int king_position = util::Util::MSB_position (this->piece[player][Piece::KING]);
-   if (attacks_to (Squares (king_position), true /* include_king */))
+   if (attacks_to (BoardSquare (king_position), true /* include_king */))
    {
       remove_piece (end);
       add_piece (start, initial.piece, initial.player);
@@ -295,9 +295,9 @@ MaeBoard::make_move (Move& move, bool is_computer_move)
 
       if (move.get_type () == Move::EN_PASSANT_CAPTURE)
       {
-         int offset = (this->is_whites_turn ? SIZE: -((int) SIZE));
+         int offset = (this->is_whites_turn ? BOARD_SIZE: -((int) BOARD_SIZE));
          uint position = util::Util::MSB_position (en_passant_capture_square) + offset;
-         add_piece (Squares (position), Piece::PAWN, opponent);
+         add_piece (BoardSquare (position), Piece::PAWN, opponent);
       }
       this->game_history.pop ();
 
@@ -382,15 +382,15 @@ MaeBoard::undo_move ()
          break;
 
       case Move::EN_PASSANT_CAPTURE:
-         board_size = (this->is_whites_turn ? SIZE: -((int)SIZE));
-         if (!add_piece (Squares (move.to () + board_size), Piece::PAWN, opponent))
+         board_size = (this->is_whites_turn ? BOARD_SIZE: -((int)BOARD_SIZE));
+         if (!add_piece (BoardSquare (move.to () + board_size), Piece::PAWN, opponent))
          {
             return false;
          }
          break;
 
       case Move::CASTLE_KING_SIDE:
-         if (!remove_piece (Squares (move.from () + 1)))
+         if (!remove_piece (BoardSquare (move.from () + 1)))
          {
             return false;
          }
@@ -402,7 +402,7 @@ MaeBoard::undo_move ()
          break;
 
       case Move::CASTLE_QUEEN_SIDE:
-         if (!remove_piece (Squares (move.from () - 1)))
+         if (!remove_piece (BoardSquare (move.from () - 1)))
          {
             return false;
          }
@@ -414,7 +414,7 @@ MaeBoard::undo_move ()
          break;
 
       case Move::PROMOTION_MOVE:
-         board_size = (this->is_whites_turn ? -((int)SIZE): SIZE);
+         board_size = (this->is_whites_turn ? -((int)BOARD_SIZE): BOARD_SIZE);
          if (move.from () + board_size != move.to ())
             // There was a capture while doing the promotion
             if (!add_piece (move.to (), move.get_captured_piece (), opponent))
@@ -523,7 +523,7 @@ MaeBoard::label_move (Move& move) const
   Get a bitboard containing all enemy pieces that atack LOCATION
   ===========================================================================*/
 bitboard
-MaeBoard::attacks_to (Squares location, bool include_king) const
+MaeBoard::attacks_to (BoardSquare location, bool include_king) const
 {
    bitboard attackers = 0;
    bitboard pawn_attacks;
@@ -552,7 +552,7 @@ MaeBoard::attacks_to (Squares location, bool include_king) const
   value is less than that of a piece of type TYPE
   ===========================================================================*/
 bitboard
-MaeBoard::threats_to (Squares location, Piece::Type type) const
+MaeBoard::threats_to (BoardSquare location, Piece::Type type) const
 {
    bitboard attackers = 0;
    bitboard pawn_attackers;
@@ -579,7 +579,7 @@ MaeBoard::is_king_in_check () const
 
    // The second argument is set to FALSE since one invariant of this class is
    // that no king can be in check by the other (such thing is illegal)
-   if (attacks_to (Squares (king_location), /* include_king: */ false))
+   if (attacks_to (BoardSquare (king_location), /* include_king: */ false))
       return true;
 
    return false;
@@ -621,12 +621,12 @@ MaeBoard::handle_en_passant_move (const Move& move)
 
    // Turn the en-passant flag if necessary
    if ((pawn->get_side_moves (end, player) & this->piece[opponent][Piece::PAWN]) &&
-       (abs (end - start) == SIZE + SIZE))
+       (abs (end - start) == BOARD_SIZE + BOARD_SIZE))
    {
       int min = (start < end ? start : end);
       int max = (start > end ? start : end);
       int row = (this->is_whites_turn ? min : max);
-      int size = (this->is_whites_turn ? SIZE : -((int)SIZE));
+      int size = (this->is_whites_turn ? BOARD_SIZE : -((int)BOARD_SIZE));
 
       this->en_passant_capture_square = util::Util::to_bitboard[row + size];
       int square = util::Util::MSB_position (this->en_passant_capture_square);
@@ -652,14 +652,14 @@ MaeBoard::handle_castling_privileges (const Move& move)
       // If this move was a castle, move the rook next to the king
       if (move.get_type () == Move::CASTLE_KING_SIDE)
       {
-         add_piece (Squares (end-1), board[end+1].piece, board[end+1].player);
-         remove_piece (Squares (end + 1));
+         add_piece (BoardSquare (end-1), board[end+1].piece, board[end+1].player);
+         remove_piece (BoardSquare (end + 1));
          this->is_castled_[player][KING_SIDE] = true;
       }
       else if (move.get_type () == Move::CASTLE_QUEEN_SIDE)
       {
-         add_piece (Squares (end+1), board[end-2].piece, board[end-2].player);
-         remove_piece (Squares (end - 2));
+         add_piece (BoardSquare (end+1), board[end-2].piece, board[end-2].player);
+         remove_piece (BoardSquare (end - 2));
          this->is_castled_[player][QUEEN_SIDE] = true;
       }
       this->can_do_castle[player][KING_SIDE] = false;
@@ -819,7 +819,7 @@ MaeBoard::change_turn ()
   board, assuming it is THIS->PLAYER's turn to move.
   ===========================================================================*/
 bitboard
-MaeBoard::get_moves (Piece::Type piece, Squares square) const
+MaeBoard::get_moves (Piece::Type piece, BoardSquare square) const
 {
    return this->chessmen[piece]->get_moves (square, this->player, this);
 }
@@ -878,14 +878,14 @@ MaeBoard::get_en_passant_square () const
    return this->en_passant_capture_square;
 }
 
-IBoard::Squares
+BoardSquare
 MaeBoard::get_initial_king_square (Piece::Player player) const
 {
    return this->original_king_position[player];
 }
 
 Piece::Player
-MaeBoard::get_piece_color (Squares square) const
+MaeBoard::get_piece_color (BoardSquare square) const
 {
    return this->board[square].player;
 }
@@ -897,7 +897,7 @@ MaeBoard::get_player_in_turn () const
 }
 
 Piece::Type
-MaeBoard::get_piece (Squares square) const
+MaeBoard::get_piece (BoardSquare square) const
 {
    return this->board[square].piece;
 }
@@ -932,7 +932,7 @@ MaeBoard::set_game_status (GameStatus status)
 }
 
 void
-MaeBoard::set_en_passant_capture_square (Squares en_passant_capture_square)
+MaeBoard::set_en_passant_capture_square (BoardSquare en_passant_capture_square)
 {
    this->en_passant_capture_square =
          util::Util::to_bitboard[en_passant_capture_square];

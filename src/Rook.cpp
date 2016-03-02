@@ -1,4 +1,5 @@
 #include "Rook.hpp"
+#include "IBoard.hpp"
 
 namespace game_rules
 {
@@ -20,21 +21,21 @@ Rook::get_moves (uint square, Piece::Player player, const IBoard* board) const
 {
    bitboard attacks = 0;
    bitboard blocking_pieces;
-   IBoard::Squares first_blocking_piece;
+   BoardSquare first_blocking_piece;
 
    // Compute attacks to each of the possible directions a rook can point to
    bitboard all_pieces = board->get_all_pieces ();
    for (RowColumn ray = NORTH; ray <= WEST; ++ray)
    {
-      blocking_pieces = get_ray_from (IBoard::Squares (square), ray) & all_pieces;
+      blocking_pieces = get_ray_from (BoardSquare (square), ray) & all_pieces;
 
       if (ray == NORTH || ray == WEST)
-         first_blocking_piece = IBoard::Squares (util::Util::MSB_position (blocking_pieces));
+         first_blocking_piece = BoardSquare (util::Util::MSB_position (blocking_pieces));
       else
-         first_blocking_piece = IBoard::Squares (util::Util::LSB_position (blocking_pieces));
+         first_blocking_piece = BoardSquare (util::Util::LSB_position (blocking_pieces));
 
       attacks |=
-            get_ray_from (IBoard::Squares (square), ray) ^
+            get_ray_from (BoardSquare (square), ray) ^
             (blocking_pieces ? get_ray_from (first_blocking_piece, ray) : 0);
    }
    attacks &= ~board->get_pieces (player);
@@ -65,7 +66,7 @@ Rook::compute_moves ()
    int dx[Piece::RAY_DIRECTIONS_COUNT] = {  0, +1,  0, -1 };
    int dy[Piece::RAY_DIRECTIONS_COUNT] = { -1,  0, +1,  0 };
 
-   for (IBoard::Squares square = IBoard::a8; square <= IBoard::h1; ++square)
+   for (BoardSquare square = BoardSquare::a8; square <= BoardSquare::h1; ++square)
    {
       for (uint ray = 0; ray < Piece::RAY_DIRECTIONS_COUNT; ++ray)
          this->moves_from[square][ray] = 0;
@@ -73,10 +74,10 @@ Rook::compute_moves ()
       this->all_moves_from[square] = 0;
    }
 
-   for (uint row = 0; row < IBoard::SIZE; ++row)
-      for (uint col = 0; col < IBoard::SIZE; ++col)
+   for (uint row = 0; row < BOARD_SIZE; ++row)
+      for (uint col = 0; col < BOARD_SIZE; ++col)
       {
-         IBoard::Squares square = IBoard::Squares (row * IBoard::SIZE + col);
+         auto square = BoardSquare (row * BOARD_SIZE + col);
          RowColumn ray;
 
          /*--------------------------------------------------------------------
@@ -97,7 +98,7 @@ Rook::compute_moves ()
             {
                y += dy[ray];
                x += dx[ray];
-               this->moves_from[square][ray] |= (util::constants::ONE << (y * IBoard::SIZE + x));
+               this->moves_from[square][ray] |= (util::constants::ONE << (y * BOARD_SIZE + x));
             }
             this->all_moves_from[square] |= this->moves_from[square][ray];
          }
@@ -110,7 +111,7 @@ Rook::compute_moves ()
   board is empty.
   ============================================================================*/
 bitboard
-Rook::get_ray_from (IBoard::Squares square, RowColumn direction) const
+Rook::get_ray_from (BoardSquare square, RowColumn direction) const
 {
    if (IBoard::is_inside_board (square))
       return this->moves_from[square][direction];

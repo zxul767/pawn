@@ -1,11 +1,12 @@
 #include "King.hpp"
 #include <iostream>
 #include <memory>
+#include "IBoard.hpp"
 
 namespace game_rules
 {
 const bool King::neighbors_computed = King::compute_neighbors ();
-bitboard King::neighbors[IBoard::SQUARES_COUNT];
+bitboard King::neighbors[BOARD_SQUARES_COUNT];
 
 King:: King ()
 {
@@ -28,33 +29,33 @@ King::get_moves (uint square, Player player, const IBoard* board) const
    bitboard attacks = get_potential_moves (square, player);
 
    // Include castling moves as valid
-   if (IBoard::Squares (square) == board->get_initial_king_square (player))
+   if (BoardSquare (square) == board->get_initial_king_square (player))
    {
       // Ensure there are no pieces between the rook and the king
-      if (board->can_castle (player, IBoard::KING_SIDE) &&
+      if (board->can_castle (player, CastleSide::KING_SIDE) &&
           !(all_pieces & (util::constants::ONE << (square + 1))) &&
           !(all_pieces & (util::constants::ONE << (square + 2))))
       {
          // Make sure there are no attacks on squares the king has to pass
          // through while castling
-         if (!board->attacks_to (IBoard::Squares (square), false) &&
-             !board->attacks_to (IBoard::Squares (square + 1), false) &&
-             !board->attacks_to (IBoard::Squares (square + 2), false))
+         if (!board->attacks_to (BoardSquare (square), false) &&
+             !board->attacks_to (BoardSquare (square + 1), false) &&
+             !board->attacks_to (BoardSquare (square + 2), false))
          {
             attacks |= (util::constants::ONE << (square + 2));
          }
       }
 
-      if (board->can_castle (player, IBoard::QUEEN_SIDE) &&
+      if (board->can_castle (player, CastleSide::QUEEN_SIDE) &&
           !(all_pieces & (util::constants::ONE << (square - 1))) &&
           !(all_pieces & (util::constants::ONE << (square - 2))) &&
           !(all_pieces & (util::constants::ONE << (square - 3))))
       {
          // Make sure there are no attacks on squares the king has to pass
          // through while castling
-         if (!board->attacks_to (IBoard::Squares (square), false) &&
-             !board->attacks_to (IBoard::Squares (square - 1), false) &&
-             !board->attacks_to (IBoard::Squares (square - 2), false))
+         if (!board->attacks_to (BoardSquare (square), false) &&
+             !board->attacks_to (BoardSquare (square - 1), false) &&
+             !board->attacks_to (BoardSquare (square - 2), false))
          {
             attacks |= (util::constants::ONE << (square - 2));
          }
@@ -82,11 +83,11 @@ King::compute_moves ()
    int dx[KING_MOVES_COUNT] = {-1,  0, +1, +1, +1,  0, -1, -1};
    int dy[KING_MOVES_COUNT] = {+1, +1, +1,  0, -1, -1, -1,  0};
 
-   for (uint square = 0; square < IBoard::SQUARES_COUNT; square++)
+   for (uint square = 0; square < BOARD_SQUARES_COUNT; square++)
       this->moves_from[square] = 0;
 
-   for (uint row = 0; row < IBoard::SIZE; ++row)
-      for (uint col = 0; col < IBoard::SIZE; ++col)
+   for (uint row = 0; row < BOARD_SIZE; ++row)
+      for (uint col = 0; col < BOARD_SIZE; ++col)
       {
          /*------------------------------------------------------------
            Traverse all eight directions a king can move to:
@@ -106,7 +107,7 @@ King::compute_moves ()
            Jumps occur in clockwise order from 0 to 7.
            ------------------------------------------------------------*/
 
-         uint square = row * IBoard::SIZE + col;
+         uint square = row * BOARD_SIZE + col;
 
          for (uint jump = 0; jump < KING_MOVES_COUNT; jump++)
          {
@@ -114,7 +115,7 @@ King::compute_moves ()
             int x = col + dx[jump];
 
             if (IBoard::is_inside_board (y, x))
-               this->moves_from[square] |= (util::constants::ONE << (y * IBoard::SIZE + x));
+               this->moves_from[square] |= (util::constants::ONE << (y * BOARD_SIZE + x));
          }
       }
 }
@@ -132,7 +133,7 @@ King::compute_neighbors ()
 {
    std::unique_ptr<Piece> king(new King());
 
-   for (uint position = 0; position < IBoard::SQUARES_COUNT; ++position)
+   for (uint position = 0; position < BOARD_SQUARES_COUNT; ++position)
    {
       bitboard neighborhood = king->get_potential_moves (position, Piece::WHITE);
       bitboard actual_neighbors = neighborhood;

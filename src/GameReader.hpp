@@ -53,7 +53,7 @@ class GameReader
    game_rules::IBoard::GameStatus get_status (uint index_value) const;
    game_rules::Piece::Player get_player_in_turn (uint index_value) const;
    game_rules::Piece::Player get_color (uint variable) const;
-   game_rules::IBoard::CastleSide get_side (uint variable) const;
+   game_rules::CastleSide get_side (uint variable) const;
    game_rules::Piece::Type get_type (uint variable) const;
 };
 

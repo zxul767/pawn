@@ -5,6 +5,7 @@
 #include "Square.hpp"
 #include "BoardConfiguration.hpp"
 #include "BoardConfigurationTracker.hpp"
+#include "GameTraits.hpp"
 #include <stack>
 
 namespace game_rules
@@ -23,10 +24,10 @@ class MaeBoard : public IBoard
    bool save_game (const std::string& file);
 
    bool add_piece (const std::string& location, Piece::Type type, Piece::Player);
-   bool add_piece (Squares square, Piece::Type, Piece::Player);
+   bool add_piece (BoardSquare square, Piece::Type, Piece::Player);
 
    bool remove_piece (const std::string& location);
-   bool remove_piece (Squares square);
+   bool remove_piece (BoardSquare square);
 
    Error make_move (Move& move, bool is_computer_move);
    bool undo_move ();
@@ -34,10 +35,10 @@ class MaeBoard : public IBoard
    void label_move (Move& move) const;
 
    bool is_king_in_check () const;
-   bitboard attacks_to (Squares location, bool include_king) const;
-   bitboard threats_to (Squares location, Piece::Type type) const;
+   bitboard attacks_to (BoardSquare location, bool include_king) const;
+   bitboard threats_to (BoardSquare location, Piece::Type type) const;
 
-   bitboard get_moves (Piece::Type piece, Squares square) const;
+   bitboard get_moves (Piece::Type piece, BoardSquare square) const;
    bitboard get_all_pieces () const;
    bitboard get_pieces (Piece::Player) const;
    bitboard get_pieces (Piece::Player, Piece::Type) const;
@@ -47,18 +48,18 @@ class MaeBoard : public IBoard
    bool is_castled (Piece::Player, CastleSide) const;
 
    bitboard get_en_passant_square () const;
-   Squares get_initial_king_square (Piece::Player) const;
+   BoardSquare get_initial_king_square (Piece::Player) const;
 
-   Piece::Player get_piece_color (Squares square) const;
+   Piece::Player get_piece_color (BoardSquare square) const;
    Piece::Player get_player_in_turn () const;
-   Piece::Type get_piece (Squares square) const;
+   Piece::Type get_piece (BoardSquare square) const;
    ullong get_hash_key () const;
    ullong get_hash_lock () const;
    uint get_move_number () const;
    ushort get_repetition_count () const;
 
    void set_game_status (GameStatus status);
-   void set_en_passant_capture_square (Squares en_passant_capture_square);
+   void set_en_passant_capture_square (BoardSquare en_passant_capture_square);
    void set_player_in_turn (Piece::Player);
    void set_castling_privilege (Piece::Player, CastleSide, bool value);
 
@@ -72,18 +73,18 @@ class MaeBoard : public IBoard
    static const Square EMPTY_SQUARE;
 
    // Basic board representation
-   bitboard piece[PLAYERS_COUNT][Piece::PIECES_COUNT];
+   bitboard piece[PLAYERS_COUNT][PIECE_KINDS_COUNT];
    bitboard pieces[PLAYERS_COUNT];
    bitboard all_pieces;
-   Square board[SQUARES_COUNT];
+   Square board[BOARD_SQUARES_COUNT];
 
    // Hash key information
-   ullong zobrist[Piece::PIECES_COUNT][PLAYERS_COUNT][SQUARES_COUNT][HASH_KEYS_COUNT];
+   ullong zobrist[PIECE_KINDS_COUNT][PLAYERS_COUNT][BOARD_SQUARES_COUNT][HASH_KEYS_COUNT];
    ullong hash_key;
    ullong hash_lock;
    ullong turn_key;
    ullong castle_key[PLAYERS_COUNT][CASTLE_SIDES_COUNT];
-   ullong en_passant_key[SQUARES_COUNT];
+   ullong en_passant_key[BOARD_SQUARES_COUNT];
 
    // Special moves information
    bool can_do_castle[PLAYERS_COUNT][CASTLE_SIDES_COUNT];
@@ -104,11 +105,11 @@ class MaeBoard : public IBoard
    uint fifty_move_counter;
 
    std::stack<BoardConfiguration> game_history;
-   Piece* chessmen[Piece::PIECES_COUNT];
+   Piece* chessmen[PIECE_KINDS_COUNT];
 
    bitboard eighth_rank[PLAYERS_COUNT];
-   Squares corner[PLAYERS_COUNT][CASTLE_SIDES_COUNT];
-   Squares original_king_position[PLAYERS_COUNT];
+   BoardSquare corner[PLAYERS_COUNT][CASTLE_SIDES_COUNT];
+   BoardSquare original_king_position[PLAYERS_COUNT];
 
    void handle_en_passant_move (const Move&);
    void handle_castling_privileges (const Move&);

@@ -1,5 +1,7 @@
 #include "Move.hpp"
 #include "IBoard.hpp"
+#include "GameTraits.hpp"
+#include "BoardTraits.hpp"
 #include <cctype>
 #include <cstdlib>
 
@@ -18,7 +20,7 @@ Move::Move (const std::string& move_notation)
    {
       // Create a null move if NOTATION was incorrect
       this->score = 0;
-      this->start = this->end = IBoard::a8;
+      this->start = this->end = BoardSquare::a8;
       this->type = NULL_MOVE;
       this->moving_piece = Piece::NULL_PIECE;
       this->captured_piece = Piece::NULL_PIECE;
@@ -34,8 +36,7 @@ Move::Move (const std::string& move_notation)
 Move::Move ()
 {
    this->score = 0;
-   this->start = IBoard::a1;
-   this->end = IBoard::a1;
+   this->start = this->end = BoardSquare::a1;
    this->type = NULL_MOVE;
    this->moving_piece = Piece::NULL_PIECE;
    this->captured_piece = Piece::NULL_PIECE;
@@ -57,7 +58,7 @@ Move::Move (const Move& move)
   This is done this way  since the kind of move is usually known only after some
   processing which requires only the START and END squares
   ============================================================================*/
-Move::Move (IBoard::Squares start, IBoard::Squares end)
+Move::Move (BoardSquare start, BoardSquare end)
 {
    this->score = 0;
    this->start = start;
@@ -109,13 +110,13 @@ operator < (const Move& m1, const Move& m2)
    return m1.score < m2.score;
 }
 
-IBoard::Squares
+BoardSquare
 Move::from () const
 {
    return this->start;
 }
 
-IBoard::Squares
+BoardSquare
 Move::to () const
 {
    return this->end;
@@ -171,7 +172,7 @@ Move::get_score () const
 
 /*=============================================================================
   Return TRUE if NOTATION was correctly translated into a number in the range
-  [0..IBoard::SQUARES_COUNT); return FALSE otherwise.
+  [0 .. BOARD_SQUARES_COUNT); return FALSE otherwise.
 
   The function mapping chess notation to squares is as follows:
 
@@ -182,14 +183,14 @@ Move::get_score () const
   f(A1) -> 56, f(H1) -> 63
   ============================================================================*/
 bool
-Move::translate_to_square (const std::string& notation, IBoard::Squares& square)
+Move::translate_to_square (const std::string& notation, BoardSquare& square)
 {
    if (is_valid_notation (notation))
    {
       ushort column = toupper (notation[0]) - 'A';
-      ushort row = (IBoard::SIZE - 1) - (notation[1] - '1');
+      ushort row = (BOARD_SIZE - 1) - (notation[1] - '1');
 
-      square = (IBoard::Squares) (row * IBoard::SIZE + column);
+      square = (BoardSquare) (row * BOARD_SIZE + column);
       return true;
    }
    return false;
@@ -199,14 +200,14 @@ Move::translate_to_square (const std::string& notation, IBoard::Squares& square)
   Inverse function of translate_to_square
   ============================================================================*/
 bool
-Move::translate_to_notation (IBoard::Squares square, std::string& notation)
+Move::translate_to_notation (BoardSquare square, std::string& notation)
 {
    if (!IBoard::is_inside_board (square))
       return false;
 
    notation.clear ();
-   notation += (char) ('a' + (square % IBoard::SIZE));
-   notation += (char) ('8' - (square / IBoard::SIZE));
+   notation += (char) ('a' + (square % BOARD_SIZE));
+   notation += (char) ('8' - (square / BOARD_SIZE));
 
    return true;
 }

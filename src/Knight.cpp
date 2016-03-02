@@ -4,6 +4,7 @@
   ==============================================================================*/
 
 #include "Knight.hpp"
+#include "IBoard.hpp"
 
 namespace game_rules
 {
@@ -50,11 +51,11 @@ Knight::compute_moves ()
    int dx[KNIGHT_MOVES_COUNT] = {+1, +2, +2, +1, -1, -2, -2, -1};
    int dy[KNIGHT_MOVES_COUNT] = {-2, -1, +1, +2, +2, +1, -1, -2};
 
-   for (uint square = 0; square < IBoard::SQUARES_COUNT; ++square)
+   for (uint square = 0; square < BOARD_SQUARES_COUNT; ++square)
       this->moves_from[square] = 0;
 
-   for (uint row = 0; row < IBoard::SIZE; ++row)
-      for (uint col = 0; col < IBoard::SIZE; ++col)
+   for (uint row = 0; row < BOARD_SIZE; ++row)
+      for (uint col = 0; col < BOARD_SIZE; ++col)
       {
          /*--------------------------------------------------------------------
            Traverse all eight directions a knight can move to:
@@ -72,13 +73,13 @@ Knight::compute_moves ()
            +------------------------+
 
            -------------------------------------------------------------------*/
-         uint square = row * IBoard::SIZE + col;
+         uint square = row * BOARD_SIZE + col;
          for (uint jump = 0; jump < KNIGHT_MOVES_COUNT; ++jump)
          {
             int y = row + dy[jump];
             int x = col + dx[jump];
             if (IBoard::is_inside_board (y, x))
-               this->moves_from[square] |= (util::constants::ONE << (y * IBoard::SIZE + x));
+               this->moves_from[square] |= (util::constants::ONE << (y * BOARD_SIZE + x));
          }
       }
 }

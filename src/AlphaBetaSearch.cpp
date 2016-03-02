@@ -80,7 +80,7 @@ AlphaBetaSearch::reset_statistics ()
 IEngine::GameResult
 AlphaBetaSearch::get_best_move (uint depth, IBoard* board, Move& best_move)
 {
-   GameResult winner[IBoard::PLAYERS_COUNT][IBoard::PLAYERS_COUNT] = {
+   GameResult winner[game_rules::PLAYERS_COUNT][game_rules::PLAYERS_COUNT] = {
       { GameResult::WHITE_MATES, GameResult::BLACK_MATES },
       { GameResult::BLACK_MATES, GameResult::WHITE_MATES }
    };

@@ -7,10 +7,13 @@
   ==============================================================================*/
 
 #include "Piece.hpp"
-#include "IBoard.hpp"
+#include "GameTraits.hpp"
+#include "BoardTraits.hpp"
 
 namespace game_rules
 {
+class IBoard;
+
 class Pawn : public Piece
 {
   public:
@@ -32,20 +35,19 @@ class Pawn : public Piece
    void compute_moves ();
    bitboard compute_simple_moves (uint square, Player player) const;
    bitboard compute_side_moves (uint square, Player player) const;
-   bitboard compute_capture_move (
-       uint square, Player player, RowColumn direction) const;
+   bitboard compute_capture_move (uint square, Player player, RowColumn direction) const;
 
    bool is_second_row (uint row, Player player) const;
    bool is_valid_row (uint row, Player player) const;
    uint get_row (uint square) const;
    uint get_column (uint square) const;
 
-   bitboard moves_from[IBoard::SQUARES_COUNT][IBoard::PLAYERS_COUNT];
-   bitboard simple_moves_from[IBoard::SQUARES_COUNT][IBoard::PLAYERS_COUNT];
-   bitboard capture_moves_from[IBoard::SQUARES_COUNT][IBoard::PLAYERS_COUNT][PAWN_CAPTURE_MOVES_COUNT];
+   bitboard moves_from[BOARD_SQUARES_COUNT][PLAYERS_COUNT];
+   bitboard simple_moves_from[BOARD_SQUARES_COUNT][PLAYERS_COUNT];
+   bitboard capture_moves_from[BOARD_SQUARES_COUNT][PLAYERS_COUNT][PAWN_CAPTURE_MOVES_COUNT];
 
    // These are not real moves, but they are useful for en-passant handling
-   bitboard side_moves_from[IBoard::SQUARES_COUNT][IBoard::PLAYERS_COUNT];
+   bitboard side_moves_from[BOARD_SQUARES_COUNT][PLAYERS_COUNT];
 };
 
 } // namespace game_rules

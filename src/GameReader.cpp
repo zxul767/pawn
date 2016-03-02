@@ -256,13 +256,13 @@ GameReader::get_color (uint variable) const
    return Piece:: BLACK;
 }
 
-IBoard::CastleSide
+game_rules::CastleSide
 GameReader::get_side (uint variable) const
 {
    if (variable == 3 || variable == 5)
-      return IBoard::QUEEN_SIDE;
+      return game_rules::CastleSide::QUEEN_SIDE;
 
-   return IBoard::KING_SIDE;
+   return game_rules::CastleSide::KING_SIDE;
 }
 
 Piece::Type

@@ -2,12 +2,16 @@
 #include "PositionEvaluator.hpp"
 #include "King.hpp"
 #include "Util.hpp"
+#include "GameTraits.hpp"
+#include "BoardTraits.hpp"
 #include <iostream>
 
 namespace game_engine
 {
 using game_rules::IBoard;
 using game_rules::Piece;
+using game_rules::BoardSquare;
+using game_rules::CastleSide;
 
 using util::bitboard;
 
@@ -125,7 +129,7 @@ PositionEvaluator::mobility_value (
    int position = util::Util::MSB_position (piece);
    while (piece && position != -1)
    {
-      moves = board->get_moves (piece_type, IBoard::Squares (position));
+      moves = board->get_moves (piece_type, BoardSquare (position));
       n_moves += util::Util::count_set_bits (moves);
       piece ^= util::constants::ONE << position;
       position = util::Util::MSB_position (piece);
@@ -155,7 +159,7 @@ PositionEvaluator::center_control_value (
    int position = util::Util::MSB_position (piece);
    while (piece && position != -1)
    {
-      attacks = board->get_moves (piece_type, IBoard::Squares (position));
+      attacks = board->get_moves (piece_type, BoardSquare (position));
       squares_controled += util::Util::count_set_bits (attacks & center);
       piece ^= util::constants::ONE << position;
       position = util::Util::MSB_position (piece);
@@ -168,21 +172,21 @@ int
 PositionEvaluator::king_safety_value (
     const IBoard* board, Piece::Player player) const
 {
-   static bitboard pawns[IBoard::PLAYERS_COUNT][IBoard::PLAYERS_COUNT] =
+   static bitboard pawns[game_rules::PLAYERS_COUNT][game_rules::PLAYERS_COUNT] =
          {
-            { util::Util::to_bitboard[IBoard::f2] |
-              util::Util::to_bitboard[IBoard::g2] |
-              util::Util::to_bitboard[IBoard::h2],
-              util::Util::to_bitboard[IBoard::a2] |
-              util::Util::to_bitboard[IBoard::b2] |
-              util::Util::to_bitboard[IBoard::c2] },
+            { util::Util::to_bitboard[BoardSquare::f2] |
+              util::Util::to_bitboard[BoardSquare::g2] |
+              util::Util::to_bitboard[BoardSquare::h2],
+              util::Util::to_bitboard[BoardSquare::a2] |
+              util::Util::to_bitboard[BoardSquare::b2] |
+              util::Util::to_bitboard[BoardSquare::c2] },
 
-            { util::Util::to_bitboard[IBoard::f7] |
-              util::Util::to_bitboard[IBoard::g7] |
-              util::Util::to_bitboard[IBoard::h7],
-              util::Util::to_bitboard[IBoard::a7] |
-              util::Util::to_bitboard[IBoard::b7] |
-              util::Util::to_bitboard[IBoard::c7] }
+            { util::Util::to_bitboard[BoardSquare::f7] |
+              util::Util::to_bitboard[BoardSquare::g7] |
+              util::Util::to_bitboard[BoardSquare::h7],
+              util::Util::to_bitboard[BoardSquare::a7] |
+              util::Util::to_bitboard[BoardSquare::b7] |
+              util::Util::to_bitboard[BoardSquare::c7] }
          };
 
    int safety_value = 0;
@@ -194,10 +198,10 @@ PositionEvaluator::king_safety_value (
       has_moved = true;
    }
 
-   if (board->is_castled (player, IBoard::KING_SIDE))
+   if (board->is_castled (player, CastleSide::KING_SIDE))
    {
-      if (pawns[player][IBoard::KING_SIDE] ==
-          (pawns[player][IBoard::KING_SIDE] & board->get_pieces (player, Piece::PAWN)))
+      if (pawns[player][CastleSide::KING_SIDE] ==
+          (pawns[player][CastleSide::KING_SIDE] & board->get_pieces (player, Piece::PAWN)))
       {
          safety_value = 20;
       }
@@ -206,10 +210,10 @@ PositionEvaluator::king_safety_value (
          safety_value = -40;
       }
    }
-   else if (board->is_castled (player, IBoard::QUEEN_SIDE))
+   else if (board->is_castled (player, CastleSide::QUEEN_SIDE))
    {
-      if (pawns[player][IBoard::QUEEN_SIDE] ==
-          (pawns[player][IBoard::QUEEN_SIDE] & board->get_pieces (player, Piece::PAWN)))
+      if (pawns[player][CastleSide::QUEEN_SIDE] ==
+          (pawns[player][CastleSide::QUEEN_SIDE] & board->get_pieces (player, Piece::PAWN)))
       {
          safety_value = 20;
       }
