@@ -8,12 +8,12 @@ Originally written as a project to investigate AI techniques, Pawn is now at a d
 
 I will be adding details about its architecture and the research behind it later on.
 
-# Build & Run
+## Build & Run
 ```c++
 make && bin/mae
 ```
 
-# Unit Testing
+## Unit Testing
 ```c++
 make unittest
 ```
