@@ -8,6 +8,7 @@
 
 #include "Util.hpp"
 #include "IEngine.hpp"
+#include "IMoveGenerator.hpp"
 #include "Move.hpp"
 
 #include <stack>
@@ -18,7 +19,6 @@ namespace game_engine
 {
 class IPositionEvaluator;
 class TranspositionTable;
-class MoveGenerator;
 
 class AlphaBetaSearch : public IEngine
 {
@@ -34,7 +34,7 @@ class AlphaBetaSearch : public IEngine
    void load_factor_weights (std::vector<int>& weights);
 
    IPositionEvaluator* position_evaluator;
-   MoveGenerator* move_generator;
+   IMoveGenerator* move_generator;
    TranspositionTable* transposition_table;
    game_rules::IBoard* board;
 
@@ -43,7 +43,7 @@ class AlphaBetaSearch : public IEngine
    game_rules::Move best_move;
 
   public:
-   AlphaBetaSearch (IPositionEvaluator*, MoveGenerator*);
+   AlphaBetaSearch (IPositionEvaluator*, IMoveGenerator*);
    ~AlphaBetaSearch ();
 
    GameResult get_best_move (uint depth, game_rules::IBoard*, game_rules::Move& best_move);

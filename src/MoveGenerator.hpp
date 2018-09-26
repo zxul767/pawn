@@ -14,6 +14,8 @@ class MoveGenerator : public IMoveGenerator
    bool generate_moves (game_rules::IBoard*, std::vector<game_rules::Move>& moves, ushort kind_of_moves);
    bool generate_moves (game_rules::IBoard*, std::vector<game_rules::Move>& moves);
    bool generate_en_prise_evations (game_rules::IBoard*, std::vector<game_rules::Move>& moves);
+
+   ~MoveGenerator() {}
 };
 
 } // namespace game_engine

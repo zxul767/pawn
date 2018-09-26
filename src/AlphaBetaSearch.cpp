@@ -25,7 +25,7 @@ using game_rules::Move;
 using game_rules::IBoard;
 
 AlphaBetaSearch::AlphaBetaSearch (
-    IPositionEvaluator* position_evaluator, MoveGenerator* move_generator)
+    IPositionEvaluator* position_evaluator, IMoveGenerator* move_generator)
 {
    this->board = nullptr;
    this->move_generator = move_generator;
@@ -358,10 +358,10 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
    }
    this->move_generator->generate_moves (
        this->board, moves,
-       MoveGenerator::CAPTURES |
-       MoveGenerator::CHECKS   |
-       MoveGenerator::CHECK_EVASIONS |
-       MoveGenerator::PAWN_PROMOTIONS);
+       IMoveGenerator::CAPTURES |
+       IMoveGenerator::CHECKS   |
+       IMoveGenerator::CHECK_EVASIONS |
+       IMoveGenerator::PAWN_PROMOTIONS);
 
    // A checkmate
    if (this->board->is_king_in_check () && moves.size () == 0)
