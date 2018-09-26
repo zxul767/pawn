@@ -40,7 +40,7 @@ main ()
 
   unique_ptr<IBoard> board(new MaeBoard());
   unique_ptr<IPositionEvaluator> position_evaluator(new PositionEvaluator());
-  unique_ptr<MoveGenerator> generator(new MoveGenerator());
+  unique_ptr<IMoveGenerator> generator(new MoveGenerator());
   unique_ptr<IEngine> search_engine(
       new AlphaBetaSearch (position_evaluator.get(), generator.get()));
 
