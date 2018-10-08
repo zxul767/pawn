@@ -29,6 +29,8 @@ class IMoveGenerator
 
    virtual bool generate_moves (game_rules::IBoard*, std::vector<game_rules::Move>& moves) = 0;
    virtual bool generate_en_prise_evations (game_rules::IBoard*, std::vector<game_rules::Move>& moves) = 0;
+
+   virtual ~IMoveGenerator() {}
 };
 
 } // namespace game_engine
