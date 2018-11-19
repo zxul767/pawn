@@ -24,7 +24,7 @@ DEP_EXT = d
 PROJECT = mae
 TARBALL_TEMP_DIR = $(PROJECT)_tarball
 
-UNIT_TEST_PROJECT = mae_unittest
+UNIT_TEST_PROJECT = mae_unit_test
 
 # DIRECTORIES
 DEP_DIR = .$(DEP_EXT)
@@ -32,7 +32,7 @@ SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
 
-UNIT_TEST_DIR = unittest
+UNIT_TEST_DIR = test/unit
 UNIT_TEST_SRC_DIR = $(UNIT_TEST_DIR)/src
 UNIT_TEST_OBJ_DIR = $(UNIT_TEST_DIR)/obj
 UNIT_TEST_BIN_DIR = $(UNIT_TEST_DIR)/bin
@@ -53,7 +53,7 @@ all: ensure_repo $(BIN_DIR)/$(PROJECT)
 
 rebuild: clean all
 
-unittest: ensure_repo $(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT)
+unit_test: ensure_repo $(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT)
 	@echo "Running unit tests ..."
 	./$(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT)
 
