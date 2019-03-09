@@ -15,5 +15,5 @@ make && bin/mae
 
 ## Unit Testing
 ```c++
-make unittest
+make unit_test
 ```
