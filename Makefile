@@ -1,4 +1,4 @@
-## MAE (Motor de Ajedrez Evolutivo, Spanish for Evolutionary Chess Engine)
+## Pawn -- nee MAE (Motor de Ajedrez Evolutivo, Spanish for Evolutionary Chess Engine)
 
 # COMPILER SETTINGS
 CXX = g++
@@ -21,10 +21,10 @@ UNIT_TEST_LIBS =
 SRC_EXT = cpp
 DEP_EXT = d
 
-PROJECT = mae
+PROJECT = pawn
 TARBALL_TEMP_DIR = $(PROJECT)_tarball
 
-UNIT_TEST_PROJECT = mae_unit_test
+UNIT_TEST_PROJECT = pawn_unit_test
 
 # DIRECTORIES
 DEP_DIR = .$(DEP_EXT)
