@@ -35,7 +35,7 @@ using diagnostics::Timer;
 int
 main ()
 {
-  bool auto_play = false;
+  bool auto_play = true;
   bool xboard_mode = false;
 
   unique_ptr<IBoard> board(new MaeBoard());
