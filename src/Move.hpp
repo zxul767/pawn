@@ -13,7 +13,7 @@ class Move
    Move ();
    Move (const std::string& notation);
    Move (BoardSquare start, BoardSquare end);
-   Move (const Move&);
+   Move (const Move&) = default;
 
    enum Type {
       SIMPLE_MOVE,
