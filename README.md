@@ -15,7 +15,7 @@ If you'd rather use a GUI, you can run:
 ```bash
 make && xboard -fcp bin/pawn
 ```
-but you'll need to have `xboard` pre-installed as `pawn` doesn't have a GUI of its own.
+but you'll need to have [`xboard`](https://www.gnu.org/software/xboard/) pre-installed as `pawn` doesn't have a GUI of its own.
 
 If you find issues running any of the above, check the following sections for installation details.
 
@@ -29,7 +29,7 @@ In Debian-based distributions, you should be able to install both by running `su
 If you're using Mac OS X, both tools should be available in your terminal if you've installed `XCode`; otherwise, you can follow the instructions in [this post](https://www.freecodecamp.org/news/install-xcode-command-line-tools/) to install them.
 
 ### Graphical Interface (Optional)
-+ `xboard`
++ [`xboard`](https://www.gnu.org/software/xboard/)
 
 To install it in Linux or other Debian-based distributions, run the following command in your terminal:
 
