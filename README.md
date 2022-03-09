@@ -11,10 +11,11 @@ I will be adding details about its architecture and the research behind it later
 make && bin/pawn
 ```
 
-If you'd rather use a GUI, you can run (but you'll need to have `xboard` installed):
+If you'd rather use a GUI, you can run:
 ```bash
 make && xboard -fcp bin/pawn
 ```
+but you'll need to have `xboard` pre-installed as `pawn` doesn't have a GUI of its own.
 
 If you find issues running any of the above, check the following sections for installation details.
 
@@ -22,9 +23,10 @@ If you find issues running any of the above, check the following sections for in
 ### Build Tools
 + [`gcc`](https://gcc.gnu.org)
 + [`make`](https://www.gnu.org/software/make/)
+
 In Debian-based distributions, you should be able to install both by running `sudo apt install build-essential` in a terminal. See [this post](https://www.cyberciti.biz/faq/debian-linux-install-gnu-gcc-compiler/) for detailed instructions.
 
-If you're using Mac OS X, both tools should be available in your terminal if you've installed `XCode`, but if they're not you can follow the instructions in [this post](https://www.freecodecamp.org/news/install-xcode-command-line-tools/) to get install them. 
+If you're using Mac OS X, both tools should be available in your terminal if you've installed `XCode`; otherwise, you can follow the instructions in [this post](https://www.freecodecamp.org/news/install-xcode-command-line-tools/) to install them.
 
 ### Graphical Interface (Optional)
 + `xboard`
