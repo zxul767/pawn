@@ -11,11 +11,15 @@ I will be adding details about its architecture and the research behind it later
 make && bin/pawn
 ```
 
+<img width="709" alt="Screen Shot 2022-03-09 at 15 01 28" src="https://user-images.githubusercontent.com/442314/157535523-15d8655e-0ba4-4fa0-9d8f-2198d8cc8925.png">
+
 If you'd rather use a GUI, you can run:
 ```bash
 make && xboard -fcp bin/pawn
 ```
 but you'll need to have [`xboard`](https://www.gnu.org/software/xboard/) pre-installed as `pawn` doesn't have a GUI of its own.
+
+<img width="713" alt="Screen Shot 2022-03-09 at 15 04 31" src="https://user-images.githubusercontent.com/442314/157535930-b36ca86b-532f-4c73-b00a-eb81f7adb7c0.png">
 
 If you find issues running any of the above, check the following sections for installation details.
 
