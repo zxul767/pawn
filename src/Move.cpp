@@ -42,16 +42,6 @@ Move::Move ()
    this->captured_piece = Piece::NULL_PIECE;
 }
 
-Move::Move (const Move& move)
-{
-   this->score = move.score;
-   this->start = move.start;
-   this->end = move.end;
-   this->type = move.type;
-   this->moving_piece = move.moving_piece;
-   this->captured_piece = move.captured_piece;
-}
-
 /*=============================================================================
   Create a move without specifying its type.
 
