@@ -14,7 +14,7 @@ UNIT_TEST_INCLUDE_DIR = -I./src
 DEP_FLAGS = -MT $@ -MMD -MF $(DEP_DIR)/$*.Td
 
 # LIBRARIES
-LIBS = -lm # math
+LIBS = -lm -lstdc++ # math and standard c++ library
 UNIT_TEST_LIBS =
 
 # PROJECT SETTINGS
