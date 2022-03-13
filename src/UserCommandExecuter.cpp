@@ -67,7 +67,7 @@ UserCommandExecuter::execute (const UserCommand& command)
    case UserCommand::FEATURES:
       cout << "feature setboard=1 usermove=1 time=0 draw=0 sigint=0 "
            << "sigterm=0 variants=\"normal\" analyze=0 colors=0 "
-           << "myname=\"MaE\" done=1" << std::endl;
+           << "myname=\"Pawn\" done=1" << std::endl;
       break;
 
    case UserCommand::XBOARD_MODE:

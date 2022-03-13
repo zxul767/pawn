@@ -1,4 +1,4 @@
-## Pawn -- nee MAE (Motor de Ajedrez Evolutivo, Spanish for Evolutionary Chess Engine)
+## Pawn -- née MAE (Motor de Ajedrez Evolutivo, Spanish for Evolutionary Chess Engine)
 
 # COMPILER SETTINGS
 CXX = g++
