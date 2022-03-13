@@ -1,4 +1,5 @@
 # Pawn
+![status](https://github.com/zxul767/pawn/actions/workflows/build.yml/badge.svg)
 
 A chess engine and machine learning experimentation testbed.
 
