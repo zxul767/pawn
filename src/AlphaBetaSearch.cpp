@@ -38,38 +38,6 @@ AlphaBetaSearch::~AlphaBetaSearch ()
    delete this->transposition_table;
 }
 
-void
-AlphaBetaSearch::print_statistics (vector<Move>& principal_variation)
-{
-   if (this->n_internal_nodes)
-   {
-      this->average_branching_factor =
-            (uint)
-            ((double)(this->average_branching_factor / this->n_internal_nodes) + 0.5);
-   }
-
-   std::cerr << "Evaluation: " << this->root_value << std::endl;
-   std::cerr << "Average branching factor: "
-             << this->average_branching_factor << std::endl;
-   std::cerr << "Leaf nodes: " << this->n_leaf_nodes << std::endl;
-   std::cerr << "Nodes evaluated: " << this->n_nodes_evaluated << std::endl;
-   std::cerr << "Hash table hits: " << this->hash_table_hits << std::endl;
-
-   std::cerr << "Principal variation: " << std::endl;
-   for (uint i = 0; i < principal_variation.size (); ++i)
-      std::cerr << principal_variation[i] << std::endl;
-}
-
-void
-AlphaBetaSearch::reset_statistics ()
-{
-   this->n_nodes_evaluated = 0;
-   this->n_internal_nodes = 0;
-   this->n_leaf_nodes = 0;
-   this->average_branching_factor = 0;
-   this->hash_table_hits = 0;
-}
-
 /*==============================================================================
   Return in BEST_MOVE the most promising move that can be made in the current
   BOARD, doing a search of DEPTH levels.
@@ -78,18 +46,18 @@ AlphaBetaSearch::reset_statistics ()
   STALEMATE, DRAW_BY_REPETITION.
   ==============================================================================*/
 IEngine::GameResult
-AlphaBetaSearch::get_best_move (uint depth, IBoard* board, Move& best_move)
+AlphaBetaSearch::get_best_move (uint max_depth, IBoard* board, Move& best_move)
 {
    GameResult winner[game_rules::PLAYERS_COUNT][game_rules::PLAYERS_COUNT] = {
       { GameResult::WHITE_MATES, GameResult::BLACK_MATES },
       { GameResult::BLACK_MATES, GameResult::WHITE_MATES }
    };
 
-   if (board == 0)
+   if (board == nullptr)
       return IEngine::ERROR;
 
    this->board = board;
-   this->max_depth = depth;
+   this->max_depth = max_depth;
 
    vector<Move> principal_variation;
    this->root_value = iterative_deepening (principal_variation);
@@ -113,6 +81,12 @@ AlphaBetaSearch::get_best_move (uint depth, IBoard* board, Move& best_move)
    return this->result;
 }
 
+int
+AlphaBetaSearch::evaluate_position (const IBoard* board) {
+   this->statistics.nodes_evaluated++;
+   return this->position_evaluator->static_evaluation (board);
+}
+
 /*==========================================================================
   Perform an iterative deepening search using THIS->BOARD as the root
   node. Include Aspiration Search within the main loop to increase the
@@ -131,17 +105,19 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
 
    // This estimation of the negamax value may be really wrong if we are in
    // the middle of a tactical sequence
-   this->root_value = this->position_evaluator->static_evaluation (board);
+   this->root_value = evaluate_position(this->board);
 
-   for (uint depth = 1; depth <= this->max_depth; ++depth)
+   std::cerr << "Evaluating at depths: " << 1 << " through " << this->max_depth << std::endl;
+   uint max_depth = this->max_depth;
+   for (uint depth = 1; depth <= max_depth; ++depth)
    {
       this->max_depth = depth;
+      std::cerr << "AB search at depth: " << this->max_depth << std::endl;
+      this->statistics.reset ();
 
       // Search for the right negamax value by using reduced alpha-beta windows
       while (1)
       {
-         reset_statistics ();
-
          // Close window around the likely real value of the root node.
          alpha = root_value - search_window_size;
          beta = root_value + search_window_size;
@@ -158,7 +134,9 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
          }
          search_window_size *= 2;
       }
+      this->statistics.print();
    }
+   this->max_depth = max_depth;
 
    principal_variation.clear ();
    build_principal_variation (board, principal_variation);
@@ -166,7 +144,7 @@ AlphaBetaSearch::iterative_deepening (vector<Move>& principal_variation)
    // Ensure that the code still works even if transposition tables are
    // removed
    if (principal_variation.size () == 0)
-      principal_variation.push_back (best_move);
+      principal_variation.push_back (this->best_move);
 
    return root_value;
 }
@@ -199,6 +177,8 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
    };
    if (this->transposition_table->get_entry (key, entry))
    {
+      this->statistics.cache_hits++;
+
       if (entry.depth >= max_depth - depth)
          if (entry.accuracy == TranspositionTable::EXACT ||
              (entry.accuracy == TranspositionTable::UPPER_BOUND && entry.score >= beta) ||
@@ -206,10 +186,7 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
          {
             if (this->board->get_repetition_count () == 1)
             {
-               this->hash_table_hits++;
-               this->n_leaf_nodes++;
                this->best_move = entry.best_move;
-
                return entry.score;
             }
          }
@@ -221,21 +198,17 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
    {
       // Quiescence search may return a value that is well below the current
       // node evaluation, meaning that all captures considered are really bad.
-      this->n_nodes_evaluated++;
-      return util::Util::max (
-          this->position_evaluator->static_evaluation (this->board),
-          quiescence (0, alpha, beta));
+      return util::Util::max (evaluate_position(this->board), quiescence (0, alpha, beta));
    }
 
    this->move_generator->generate_moves (this->board, moves);
    if (moves.size () == 0)
    {
-      if (!this->board->is_king_in_check ())
+      if (this->board->is_king_in_check ())
       {
-         this->n_nodes_evaluated++;
-         return this->position_evaluator->static_evaluation (this->board);
+         return MATE_VALUE;
       }
-      return MATE_VALUE;
+      return STALEMATE;
    }
 
    // Improve move ordering by examining the principal_variation node at this ply
@@ -251,6 +224,7 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
       }
    }
 
+   this->statistics.internal_nodes++;
    uint n_moves_made = 0;
    for (uint i = 0, n = moves.size (); i < n; ++i)
    {
@@ -282,21 +256,21 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
          best_value = tentative_value;
          best_value_index = i;
          if (best_value >= beta) // Alpha-beta cutoff
+         {
+            this->statistics.alpha_beta_cutoffs++;
             break;
+         }
       }
    }
-
-   this->average_branching_factor += n_moves_made;
+   this->statistics.add_branching_factor(n_moves_made);
 
    // The king must be in mate or stalemate since no move was made
    if (n_moves_made == 0)
    {
-      std::cerr << "No moves could be done" << std::endl;
       if (this->board->is_king_in_check ())
          best_value = MATE_VALUE;
       else
       {
-         std::cerr << "Draw by stalemate" << std::endl;
          this->result = STALEMATE;
          best_value = DRAW_VALUE;
       }
@@ -314,7 +288,6 @@ AlphaBetaSearch::alpha_beta (uint depth, int alpha, int beta)
       this->transposition_table->add_entry (
           key, best_value, accuracy, moves[best_value_index], real_depth);
       this->best_move = moves[best_value_index];
-      this->n_internal_nodes++;
    }
 
    return best_value;
@@ -330,18 +303,16 @@ int
 AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
 {
    vector<Move> moves;
-   int tentative_value, node_value;
+   int tentative_value;
    int best_value = MATE_VALUE;
 
-   this->n_nodes_evaluated++;
-   node_value = this->position_evaluator->static_evaluation (board);
+   int node_value = evaluate_position (this->board);
 
    // Assumption made: making a move will improve the position
    // In zugzwang positions, this is not true.
    if (node_value >= beta)
    {
-      this->n_leaf_nodes++;
-
+      this->statistics.leaf_nodes++;
       return node_value;
    }
 
@@ -352,10 +323,10 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
    // Failing to pay attention to an ongoing check has fatal consequences
    if (depth >= MAX_QUIESCENCE_DEPTH && !this->board->is_king_in_check ())
    {
-      this->n_leaf_nodes++;
-
+      this->statistics.leaf_nodes++;
       return node_value;
    }
+
    this->move_generator->generate_moves (
        this->board, moves,
        IMoveGenerator::CAPTURES |
@@ -366,8 +337,7 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
    // A checkmate
    if (this->board->is_king_in_check () && moves.size () == 0)
    {
-      this->n_leaf_nodes++;
-
+      this->statistics.leaf_nodes++;
       return MATE_VALUE;
    }
 
@@ -377,16 +347,15 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
       // Make sure none of the pieces of the player in turn is being
       // attacked by a lower value piece
       this->move_generator->generate_en_prise_evations (this->board, moves);
-
       if (moves.size () == 0)
       {
-         this->n_leaf_nodes++;
-
+         this->statistics.leaf_nodes++;
          return node_value;
       }
    }
 
-   this->n_internal_nodes++;
+   this->statistics.internal_nodes++;
+   uint moves_explored = 0;
    for (uint i = 0, n = moves.size (); i < n; ++i)
    {
       IBoard::Error error = this->board->make_move (moves[i], /* is_computer_move: */ true);
@@ -397,8 +366,6 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
          tentative_value = DRAW_VALUE;
       else
          tentative_value = -quiescence (depth + 1, -beta, -alpha);
-
-      this->average_branching_factor++;
 
       assert(this->board->undo_move ());
 
@@ -411,9 +378,14 @@ AlphaBetaSearch::quiescence (uint depth, int alpha, int beta)
 
          best_value = tentative_value;
          if (best_value >= beta) // Alpha-beta cutoff
+         {
+            this->statistics.alpha_beta_cutoffs++;
             break;
+         }
       }
+      moves_explored++;
    }
+   this->statistics.add_branching_factor(moves_explored);
 
    // If all the possible violent moves (captures, checks, pawn promotions, ...)
    // are bad, we are not forced to make any move, unless we are in check

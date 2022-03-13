@@ -165,7 +165,7 @@ void
 UserCommandExecuter::think ()
 {
    Move best_move;
-   uint depth = 3;
+   uint depth = 5;
 
    IEngine::GameResult result = this->game_engine->get_best_move (depth, board, best_move);
 

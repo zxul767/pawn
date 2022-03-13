@@ -3,7 +3,7 @@
 # COMPILER SETTINGS
 CXX = g++
 
-CXXFLAGS = -g -Wall -Wextra -Werror -O2 -std=c++11 # compiler flags
+CXXFLAGS = -g -Wall -Wextra -Werror -O2 -std=c++14 # compiler flags
 CPPFLAGS = # preprocessor flags
 
 UNIT_TEST_INCLUDE_DIR = -I./src
