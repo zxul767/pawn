@@ -26,9 +26,7 @@ class AlphaBetaSearch : public IEngine
    int alpha_beta (uint depth, int alpha, int beta);
    int quiescence (uint depth, int alpha, int beta);
    int iterative_deepening (std::vector<game_rules::Move>& principal_variation);
-
-   void print_statistics (std::vector<game_rules::Move>& principal_variation);
-   void reset_statistics ();
+   int evaluate_position(const game_rules::IBoard* board);
 
    bool build_principal_variation (game_rules::IBoard*, std::vector<game_rules::Move>& principal_variation);
    void load_factor_weights (std::vector<int>& weights);
@@ -38,8 +36,8 @@ class AlphaBetaSearch : public IEngine
    TranspositionTable* transposition_table;
    game_rules::IBoard* board;
 
+
    GameResult result;
-   uint hash_table_hits;
    game_rules::Move best_move;
 
   public:
