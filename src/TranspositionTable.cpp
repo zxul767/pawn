@@ -8,97 +8,70 @@ namespace game_engine
 using game_rules::Move;
 using std::unordered_map;
 
-std::map<ushort, uint> TranspositionTable::possible_size;
-size_t TranspositionTable::size;
+using TT = TranspositionTable;
 
-TranspositionTable::TranspositionTable (uint size)
+std::map<uint, size_t> TranspositionTable::bits_to_table_size = {
+    {16, 1'085'137}, {32, 2'159'363}, {64, 4'142'027}, {128, 8'888'437}, {256, 1'7311'163}};
+
+size_t TranspositionTable::compute_table_size(uint size_in_bits)
 {
-   set_possible_size ();
-
-   if (TranspositionTable::possible_size.find (size) != TranspositionTable::possible_size.end ())
-      this->hash_size = TranspositionTable::possible_size[size];
-   else
-      this->hash_size = TranspositionTable::possible_size[64];
-
-   TranspositionTable::size = this->hash_size;
+    if (TT::bits_to_table_size.find(size_in_bits) == TT::bits_to_table_size.end())
+        size_in_bits = TT::DEFAULT_SIZE_IN_BITS;
+    return TT::bits_to_table_size[size_in_bits];
 }
 
-void
-TranspositionTable::set_possible_size ()
+BoardMap TranspositionTable::create_entries_table(uint size_in_bits)
 {
-   TranspositionTable::possible_size[16] = 1085137;
-   TranspositionTable::possible_size[32] = 2159363;
-   TranspositionTable::possible_size[64] = 4142027;
-   TranspositionTable::possible_size[128] = 8888437;
-   TranspositionTable::possible_size[256] = 17311163;
+    size_t table_size = TranspositionTable::compute_table_size(size_in_bits);
+    return BoardMap(table_size, BoardHasher(table_size));
 }
 
-bool
-TranspositionTable::exists (const BoardKey& board)
+TranspositionTable::TranspositionTable(uint size_in_bits) : entries{TT::create_entries_table(size_in_bits)}
 {
-   return this->entries.find (board) != this->entries.end ();
+    std::cerr << "transposition table size: " << this->entries.bucket_count() << std::endl;
 }
 
-bool
-TranspositionTable::add_entry (
-    const BoardKey& key, int score, flag accuracy, const Move& best_move, uint depth)
+bool TranspositionTable::add(const BoardKey &key, BoardEntry entry)
 {
-   auto iter = this->entries.find (key);
-
-   // This board is already in the table, so just try to update it
-   if (iter != this->entries.end ())
-   {
-      if (depth >= (*iter).second.depth)
-      {
-         (*iter).second.score = score;
-         (*iter).second.accuracy = accuracy;
-         (*iter).second.best_move = best_move;
-         (*iter).second.depth = depth;
-         return true;
-      }
-      return false;
-   }
-
-   TranspositionTable::BoardEntry entry;
-   entry.score = score;
-   entry.accuracy = accuracy;
-   entry.best_move = best_move;
-   entry.depth = depth;
-
-   this->entries.insert (std::pair<BoardKey, BoardEntry>(key, entry));
-
-   return true;
+    auto iter = this->entries.find(key);
+    if (iter != this->entries.end())
+    {
+        // Presumably, the deeper we searched, the more reliable is the information.
+        if (entry.depth >= (*iter).second.depth)
+        {
+            (*iter).second = entry;
+            return true;
+        }
+        return false;
+    }
+    this->entries.insert(std::pair<BoardKey, BoardEntry>(key, entry));
+    return true;
 }
 
-bool
-TranspositionTable::get_entry (const BoardKey& key, TranspositionTable::BoardEntry& entry)
+bool TranspositionTable::get(const BoardKey &key, BoardEntry &entry) const
 {
-   if (exists (key))
-   {
-      auto iter = this->entries.find (key);
-      entry = (*iter).second;
-      return true;
-   }
-
-   return false;
+    auto iter = this->entries.find(key);
+    if (iter != this->entries.end())
+    {
+        entry = (*iter).second;
+        return true;
+    }
+    return false;
 }
 
-uint
-TranspositionTable::get_size () const
+uint TranspositionTable::size() const
 {
-   return this->entries.size ();
+    return this->entries.size();
 }
 
-uint
-TranspositionTable::get_capacity () const
+uint TranspositionTable::capacity() const
 {
-   return this->hash_size;
+    return this->entries.bucket_count();
 }
 
-void
-TranspositionTable::reset ()
+void TranspositionTable::clear()
 {
-   this->entries.clear ();
+    this->entries.clear();
 }
 
 } // namespace game_engine
