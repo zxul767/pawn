@@ -3,7 +3,7 @@
 
 A chess engine and machine learning experimentation testbed.
 
-Originally written as a project to investigate AI techniques, Pawn is now at a decent strength to beat average players. It has been tested against some popular enginess (such as GnuChess) as part of its training to evolve with some satisfactory results.
+Originally written as a project to investigate AI techniques, `pawn` is now at a decent strength to beat average players. It has been tested against some popular enginess (such as GnuChess) as part of its training to evolve with some satisfactory results.
 
 I will be adding details about its architecture and the research behind it later on.
 
@@ -57,7 +57,7 @@ If you don't want to use the GUI, you can still play using the console by runnin
 bin/pawn
 ```
 
-In this case, you can make moves by typing the initial and final square of any piece on the board. For example, you can type `e2e4` to move the king pawn two squares forward, or `g1f3` to develop the king knight instead.
+In this case, you can make moves by typing the initial and final square of any piece on the board. For example, you can type `e2e4` to move the king pawn two squares forward, or `g1f3` to develop the king knight instead. Castling is done simply by typing the movement of the king (e.g., `e1g1` for the white king.)
 
 
 ## Unit Testing

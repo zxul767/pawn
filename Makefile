@@ -14,14 +14,15 @@ UNIT_TEST_INCLUDE_DIR = -I./src
 DEP_FLAGS = -MT $@ -MMD -MF $(DEP_DIR)/$*.Td
 
 # LIBRARIES
-LIBS = -lm -lstdc++ # math and standard c++ library
-UNIT_TEST_LIBS =
+# math and standard c++ libraries
+LIBS = -lm -lstdc++
+UNIT_TEST_LIBS = -lm -lstdc++
 
 # PROJECT SETTINGS
 SRC_EXT = cpp
 DEP_EXT = d
 
-PROJECT = pawn
+PROJECT = main
 TARBALL_TEMP_DIR = $(PROJECT)_tarball
 
 UNIT_TEST_PROJECT = pawn_unit_test
@@ -89,6 +90,7 @@ POSTCOMPILE = mv -f $(DEP_DIR)/$*.T$(DEP_EXT) $(DEP_DIR)/$*.$(DEP_EXT)
 $(BIN_DIR)/$(PROJECT): $(OBJS)
 	@echo "Linking main executable $@..."
 	$(CXX) $(OBJS) $(LIBS) -o $@
+	mv $@ $(BIN_DIR)/pawn
 
 $(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT): $(UNIT_TEST_OBJS) $(NON_MAIN_OBJS)
 	@echo "Linking main unit test runner $@..."
