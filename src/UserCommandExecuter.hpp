@@ -25,13 +25,15 @@ class UserCommand;
 class UserCommandExecuter
 {
   public:
-    UserCommandExecuter(game_rules::IBoard *, game_engine::IEngine *, diagnostics::Timer *);
+    UserCommandExecuter(
+        game_rules::IBoard *, game_engine::IEngine *, diagnostics::Timer *);
 
     bool execute(const UserCommand &);
     void show_possible_moves();
     void make_user_move(const std::string &command);
     void think();
-    void train_by_genetic_algorithm(uint population_size, uint generations_count, double mutation_probability);
+    void train_by_genetic_algorithm(
+        uint population_size, uint generations_count, double mutation_probability);
 
   private:
     diagnostics::Timer *timer;

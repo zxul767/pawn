@@ -150,21 +150,28 @@ void Pawn::compute_moves()
 
             for (Player player = WHITE; player <= BLACK; ++player)
             {
-                this->side_moves_from[square][player] = compute_side_moves(square, player);
+                this->side_moves_from[square][player] =
+                    compute_side_moves(square, player);
                 this->moves_from[square][player] = 0;
 
-                this->simple_moves_from[square][player] = compute_simple_moves(square, player);
+                this->simple_moves_from[square][player] =
+                    compute_simple_moves(square, player);
 
-                this->capture_moves_from[square][player][0] = compute_capture_move(square, player, EAST);
+                this->capture_moves_from[square][player][0] =
+                    compute_capture_move(square, player, EAST);
 
-                this->capture_moves_from[square][player][1] = compute_capture_move(square, player, WEST);
+                this->capture_moves_from[square][player][1] =
+                    compute_capture_move(square, player, WEST);
 
                 // OR simple and capture moves into general moves
-                this->moves_from[square][player] |= this->simple_moves_from[square][player];
+                this->moves_from[square][player] |=
+                    this->simple_moves_from[square][player];
 
-                this->moves_from[square][player] |= this->capture_moves_from[square][player][0];
+                this->moves_from[square][player] |=
+                    this->capture_moves_from[square][player][0];
 
-                this->moves_from[square][player] |= this->capture_moves_from[square][player][1];
+                this->moves_from[square][player] |=
+                    this->capture_moves_from[square][player][1];
 
                 // If potential moves include side moves then:
                 // moves_from[square][player] |= side_moves_from[square];

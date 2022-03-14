@@ -39,8 +39,9 @@ bitboard Bishop::get_moves(uint square, Piece::Player player, const IBoard *boar
         else
             first_blocking_piece = BoardSquare(util::Util::LSB_position(blocking_pieces));
 
-        attacks |= get_diagonal_ray_from(BoardSquare(square), ray) ^
-                   (blocking_pieces ? get_diagonal_ray_from(first_blocking_piece, ray) : 0);
+        attacks |=
+            get_diagonal_ray_from(BoardSquare(square), ray) ^
+            (blocking_pieces ? get_diagonal_ray_from(first_blocking_piece, ray) : 0);
     }
     attacks &= ~board->get_pieces(player);
 

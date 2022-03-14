@@ -41,13 +41,15 @@ class GameReader
     bool set_variable(std::string &input);
 
     bool variable_was_found(const std::string &input, uint *index_variable);
-    bool value_was_found(uint index_variable, const std::string &input, uint *index_value);
+    bool value_was_found(
+        uint index_variable, const std::string &input, uint *index_value);
 
     bool set_value(uint index_variable, const std::string &token, uint index_value);
     bool get_boolean(uint index_value) const;
 
-    void tokenize(const std::string &input, std::vector<std::string> &tokens,
-                  const std::string &delimiters = " ") const;
+    void tokenize(
+        const std::string &input, std::vector<std::string> &tokens,
+        const std::string &delimiters = " ") const;
 
     game_rules::IBoard::GameStatus get_status(uint index_value) const;
     game_rules::Piece::Player get_player_in_turn(uint index_value) const;

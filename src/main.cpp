@@ -40,7 +40,8 @@ int main()
     unique_ptr<IBoard> board(new MaeBoard());
     unique_ptr<IPositionEvaluator> position_evaluator(new PositionEvaluator());
     unique_ptr<IMoveGenerator> generator(new MoveGenerator());
-    unique_ptr<IEngine> search_engine(new AlphaBetaSearch(position_evaluator.get(), generator.get()));
+    unique_ptr<IEngine> search_engine(
+        new AlphaBetaSearch(position_evaluator.get(), generator.get()));
 
     unique_ptr<Timer> timer(new Timer);
 
@@ -50,7 +51,9 @@ int main()
         new UserCommandExecuter(board.get(), search_engine.get(), timer.get()));
 
     cerr << (*board) << endl;
-    cerr << (board->get_player_in_turn() == Piece::WHITE ? "[White's turn]: " : "[Black's turn]: ");
+    cerr
+        << (board->get_player_in_turn() == Piece::WHITE ? "[White's turn]: "
+                                                        : "[Black's turn]: ");
 
     command = command_reader->get_user_command();
     while (!command.is_quit())
@@ -115,7 +118,9 @@ int main()
         if (!xboard_mode)
         {
             cerr << (*board) << endl;
-            cerr << (board->get_player_in_turn() == Piece::WHITE ? "[White's turn]: " : "[Black's turn]: ");
+            cerr
+                << (board->get_player_in_turn() == Piece::WHITE ? "[White's turn]: "
+                                                                : "[Black's turn]: ");
         }
 
         command = command_reader->get_user_command();

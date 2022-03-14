@@ -28,10 +28,13 @@ class IMoveGenerator
     /*----------------------------------------------------------------------
       Return a vector of legal moves from the current BOARD configuration
       ---------------------------------------------------------------------*/
-    virtual bool generate_moves(game_rules::IBoard *, std::vector<game_rules::Move> &moves, ushort flags) = 0;
+    virtual bool generate_moves(
+        game_rules::IBoard *, std::vector<game_rules::Move> &moves, ushort flags) = 0;
 
-    virtual bool generate_moves(game_rules::IBoard *, std::vector<game_rules::Move> &moves) = 0;
-    virtual bool generate_en_prise_evations(game_rules::IBoard *, std::vector<game_rules::Move> &moves) = 0;
+    virtual bool generate_moves(
+        game_rules::IBoard *, std::vector<game_rules::Move> &moves) = 0;
+    virtual bool generate_en_prise_evations(
+        game_rules::IBoard *, std::vector<game_rules::Move> &moves) = 0;
 
     virtual ~IMoveGenerator()
     {

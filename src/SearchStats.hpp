@@ -39,7 +39,8 @@ class SearchStats
         cerr << "Nodes evaluated: " << this->nodes_evaluated << endl;
         cerr << "   Leaf nodes: " << this->leaf_nodes << endl;
         cerr << "   Internal nodes: " << this->internal_nodes << endl;
-        cerr << "Average branching factor: " << int(round(this->average_branching_factor)) << endl;
+        cerr << "Average branching factor: " << int(round(this->average_branching_factor))
+             << endl;
         cerr << "Transposition table hits: " << this->cache_hits << endl;
         cerr << "AlphaBeta cutoffs: " << this->alpha_beta_cutoffs << endl;
         cerr << "-------------------------------------------------------" << endl;

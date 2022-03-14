@@ -43,7 +43,8 @@ class Pawn : public Piece
 
     bitboard moves_from[BOARD_SQUARES_COUNT][PLAYERS_COUNT];
     bitboard simple_moves_from[BOARD_SQUARES_COUNT][PLAYERS_COUNT];
-    bitboard capture_moves_from[BOARD_SQUARES_COUNT][PLAYERS_COUNT][PAWN_CAPTURE_MOVES_COUNT];
+    bitboard capture_moves_from[BOARD_SQUARES_COUNT][PLAYERS_COUNT]
+                               [PAWN_CAPTURE_MOVES_COUNT];
 
     // These are not real moves, but they are useful for en-passant handling
     bitboard side_moves_from[BOARD_SQUARES_COUNT][PLAYERS_COUNT];

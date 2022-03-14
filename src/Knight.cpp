@@ -79,7 +79,8 @@ void Knight::compute_moves()
                 int y = row + dy[jump];
                 int x = col + dx[jump];
                 if (IBoard::is_inside_board(y, x))
-                    this->moves_from[square] |= (util::constants::ONE << (y * BOARD_SIZE + x));
+                    this->moves_from[square] |=
+                        (util::constants::ONE << (y * BOARD_SIZE + x));
             }
         }
 }

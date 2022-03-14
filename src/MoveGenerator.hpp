@@ -11,9 +11,11 @@ class MoveGenerator : public IMoveGenerator
     /*======================================================================
       Return a vector of legal moves from the current BOARD configuration
       =====================================================================*/
-    bool generate_moves(game_rules::IBoard *, std::vector<game_rules::Move> &moves, ushort kind_of_moves);
+    bool generate_moves(
+        game_rules::IBoard *, std::vector<game_rules::Move> &moves, ushort kind_of_moves);
     bool generate_moves(game_rules::IBoard *, std::vector<game_rules::Move> &moves);
-    bool generate_en_prise_evations(game_rules::IBoard *, std::vector<game_rules::Move> &moves);
+    bool generate_en_prise_evations(
+        game_rules::IBoard *, std::vector<game_rules::Move> &moves);
 
     ~MoveGenerator()
     {

@@ -35,8 +35,8 @@ bitboard Rook::get_moves(uint square, Piece::Player player, const IBoard *board)
         else
             first_blocking_piece = BoardSquare(util::Util::LSB_position(blocking_pieces));
 
-        attacks |=
-            get_ray_from(BoardSquare(square), ray) ^ (blocking_pieces ? get_ray_from(first_blocking_piece, ray) : 0);
+        attacks |= get_ray_from(BoardSquare(square), ray) ^
+                   (blocking_pieces ? get_ray_from(first_blocking_piece, ray) : 0);
     }
     attacks &= ~board->get_pieces(player);
 
@@ -97,7 +97,8 @@ void Rook::compute_moves()
                 {
                     y += dy[ray];
                     x += dx[ray];
-                    this->moves_from[square][ray] |= (util::constants::ONE << (y * BOARD_SIZE + x));
+                    this->moves_from[square][ray] |=
+                        (util::constants::ONE << (y * BOARD_SIZE + x));
                 }
                 this->all_moves_from[square] |= this->moves_from[square][ray];
             }

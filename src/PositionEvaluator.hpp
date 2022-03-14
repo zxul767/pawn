@@ -23,9 +23,11 @@ class PositionEvaluator : public IPositionEvaluator
 
   private:
     int material_value(util::bitboard piece, game_rules::Piece::Type) const;
-    int mobility_value(const game_rules::IBoard *, util::bitboard piece, game_rules::Piece::Type) const;
+    int mobility_value(
+        const game_rules::IBoard *, util::bitboard piece, game_rules::Piece::Type) const;
 
-    int center_control_value(const game_rules::IBoard *, util::bitboard piece, game_rules::Piece::Type) const;
+    int center_control_value(
+        const game_rules::IBoard *, util::bitboard piece, game_rules::Piece::Type) const;
 
     int king_safety_value(const game_rules::IBoard *, game_rules::Piece::Player) const;
     int development_value(const game_rules::IBoard *, game_rules::Piece::Player) const;

@@ -60,11 +60,13 @@ double FitnessEvaluator::evaluate(Chromosome &a, Chromosome &b)
 
         game_rules::Move move;
         result = this->chess_engine->get_best_move(3, this->board, move);
-        if (result == IEngine::WHITE_MATES || result == IEngine::BLACK_MATES || result == IEngine::STALEMATE)
+        if (result == IEngine::WHITE_MATES || result == IEngine::BLACK_MATES ||
+            result == IEngine::STALEMATE)
             break;
 
         // TODO: turn into an assertion
-        // if (key == this->board->get_hash_key () || lock != this->board->get_hash_lock ())
+        // if (key == this->board->get_hash_key () || lock != this->board->get_hash_lock
+        // ())
         // {
         // }
 

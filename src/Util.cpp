@@ -190,25 +190,38 @@ uint Util::count_set_bits(bitboard bitvector)
 
     // We are now using method (b)
 
-    bitvector = (((0xAAAAAAAAAAAAAAAAuLL & bitvector) >> 0x1) + ((0x5555555555555555uLL & bitvector)));
+    bitvector =
+        (((0xAAAAAAAAAAAAAAAAuLL & bitvector) >> 0x1) +
+         ((0x5555555555555555uLL & bitvector)));
 
-    bitvector = (((0xCCCCCCCCCCCCCCCCuLL & bitvector) >> 0x2) + ((0x3333333333333333uLL & bitvector)));
+    bitvector =
+        (((0xCCCCCCCCCCCCCCCCuLL & bitvector) >> 0x2) +
+         ((0x3333333333333333uLL & bitvector)));
 
-    bitvector = (((0xF0F0F0F0F0F0F0F0uLL & bitvector) >> 0x4) + ((0x0F0F0F0F0F0F0F0FuLL & bitvector)));
+    bitvector =
+        (((0xF0F0F0F0F0F0F0F0uLL & bitvector) >> 0x4) +
+         ((0x0F0F0F0F0F0F0F0FuLL & bitvector)));
 
-    bitvector = (((0xFF00FF00FF00FF00uLL & bitvector) >> 0x8) + ((0x00FF00FF00FF00FFuLL & bitvector)));
+    bitvector =
+        (((0xFF00FF00FF00FF00uLL & bitvector) >> 0x8) +
+         ((0x00FF00FF00FF00FFuLL & bitvector)));
 
-    bitvector = (((0xFFFF0000FFFF0000uLL & bitvector) >> 0x10) + ((0x0000FFFF0000FFFFuLL & bitvector)));
+    bitvector =
+        (((0xFFFF0000FFFF0000uLL & bitvector) >> 0x10) +
+         ((0x0000FFFF0000FFFFuLL & bitvector)));
 
-    bitvector = (((0xFFFFFFFF00000000uLL & bitvector) >> 0x20) + ((0x00000000FFFFFFFFuLL & bitvector)));
+    bitvector =
+        (((0xFFFFFFFF00000000uLL & bitvector) >> 0x20) +
+         ((0x00000000FFFFFFFFuLL & bitvector)));
 
     return (uint)bitvector;
 }
 
 ullong Util::random_ullong()
 {
-    return (((ullong)rand()) ^ ((ullong)rand() << 15) ^ ((ullong)rand() << 30) ^ ((ullong)rand() << 45) ^
-            ((ullong)rand() << 60));
+    return (
+        ((ullong)rand()) ^ ((ullong)rand() << 15) ^ ((ullong)rand() << 30) ^
+        ((ullong)rand() << 45) ^ ((ullong)rand() << 60));
 }
 
 void Util::to_binary(ullong value)

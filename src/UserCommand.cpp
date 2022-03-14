@@ -30,7 +30,9 @@ UserCommand::UserCommand(string &notation)
     if (UserCommand::notation_to_key.find(notation) != UserCommand::notation_to_key.end())
         this->key = UserCommand::notation_to_key[notation];
 
-    else if (notation.find("usermove") != string::npos && notation.find("accepted") == string::npos)
+    else if (
+        notation.find("usermove") != string::npos &&
+        notation.find("accepted") == string::npos)
     {
         this->key = USER_MOVE;
     }

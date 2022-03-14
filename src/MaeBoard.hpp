@@ -79,7 +79,8 @@ class MaeBoard : public IBoard
     Square board[BOARD_SQUARES_COUNT];
 
     // Hash key information
-    ullong zobrist[PIECE_KINDS_COUNT][PLAYERS_COUNT][BOARD_SQUARES_COUNT][HASH_KEYS_COUNT];
+    ullong zobrist[PIECE_KINDS_COUNT][PLAYERS_COUNT][BOARD_SQUARES_COUNT]
+                  [HASH_KEYS_COUNT];
     ullong hash_key;
     ullong hash_lock;
     ullong turn_key;

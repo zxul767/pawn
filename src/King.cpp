@@ -39,7 +39,8 @@ bitboard King::get_moves(uint square, Player player, const IBoard *board) const
         {
             // Make sure there are no attacks on squares the king has to pass
             // through while castling
-            if (!board->attacks_to(BoardSquare(square), false) && !board->attacks_to(BoardSquare(square + 1), false) &&
+            if (!board->attacks_to(BoardSquare(square), false) &&
+                !board->attacks_to(BoardSquare(square + 1), false) &&
                 !board->attacks_to(BoardSquare(square + 2), false))
             {
                 attacks |= (util::constants::ONE << (square + 2));
@@ -53,7 +54,8 @@ bitboard King::get_moves(uint square, Player player, const IBoard *board) const
         {
             // Make sure there are no attacks on squares the king has to pass
             // through while castling
-            if (!board->attacks_to(BoardSquare(square), false) && !board->attacks_to(BoardSquare(square - 1), false) &&
+            if (!board->attacks_to(BoardSquare(square), false) &&
+                !board->attacks_to(BoardSquare(square - 1), false) &&
                 !board->attacks_to(BoardSquare(square - 2), false))
             {
                 attacks |= (util::constants::ONE << (square - 2));
@@ -112,7 +114,8 @@ void King::compute_moves()
                 int x = col + dx[jump];
 
                 if (IBoard::is_inside_board(y, x))
-                    this->moves_from[square] |= (util::constants::ONE << (y * BOARD_SIZE + x));
+                    this->moves_from[square] |=
+                        (util::constants::ONE << (y * BOARD_SIZE + x));
             }
         }
 }

@@ -11,8 +11,9 @@ namespace learning
 {
 using std::vector;
 
-GeneticAlgorithm::GeneticAlgorithm(uint population_size, uint iterations_count, double mutation_probability,
-                                   FitnessEvaluator *fitness_evaluator)
+GeneticAlgorithm::GeneticAlgorithm(
+    uint population_size, uint iterations_count, double mutation_probability,
+    FitnessEvaluator *fitness_evaluator)
 {
     this->population_size = population_size;
     this->iterations_count = iterations_count;
@@ -134,7 +135,8 @@ void GeneticAlgorithm::evaluate_population()
 
     for (uint i = 0; i < this->population.size(); ++i)
     {
-        double score = this->fitness_evaluator->evaluate(this->fittest_member, population[i]);
+        double score =
+            this->fitness_evaluator->evaluate(this->fittest_member, population[i]);
         this->population[i].set_fitness(score);
 
         average_game_duration += this->population[i].get_game_duration();
@@ -148,8 +150,9 @@ void GeneticAlgorithm::evaluate_population()
 
 // Use fitness proportionate selection here (aka roulette-wheel selection) to
 // a second chance to not-so-good candidate solutions.
-void GeneticAlgorithm::select_breeding_individuals(vector<Chromosome> &population, uint breeding_population_size,
-                                                   vector<Chromosome> &selection)
+void GeneticAlgorithm::select_breeding_individuals(
+    vector<Chromosome> &population, uint breeding_population_size,
+    vector<Chromosome> &selection)
 {
     if (breeding_population_size == 0)
         return;
@@ -164,7 +167,8 @@ void GeneticAlgorithm::select_breeding_individuals(vector<Chromosome> &populatio
     for (uint i = 0; i < this->population.size(); ++i)
     {
         assert(this->population[i].get_fitness() != 0);
-        this->population[i].set_selection_probability(this->population[i].get_fitness() / population_fitness);
+        this->population[i].set_selection_probability(
+            this->population[i].get_fitness() / population_fitness);
     }
 
     double cumulative_probability = 0.0;
@@ -180,14 +184,16 @@ void GeneticAlgorithm::select_breeding_individuals(vector<Chromosome> &populatio
     uint i = 0;
     for (; i < eligible_population.size(); ++i)
     {
-        if (r > eligible_population[i].get_cumulative_probability() && i + 1 < eligible_population.size())
+        if (r > eligible_population[i].get_cumulative_probability() &&
+            i + 1 < eligible_population.size())
             continue;
         else
             break;
     }
     selection.push_back(this->population[i]);
     eligible_population.erase(eligible_population.begin() + i);
-    select_breeding_individuals(eligible_population, breeding_population_size - 1, selection);
+    select_breeding_individuals(
+        eligible_population, breeding_population_size - 1, selection);
 }
 
 void GeneticAlgorithm::set_actual_fitness()
@@ -257,7 +263,8 @@ void GeneticAlgorithm::set_material_fitness(vector<Chromosome> &subpopulation)
 
         if (subpopulation[i].get_material_balance() != 0)
         {
-            double portion = (double)best_result / (double)subpopulation[i].get_material_balance();
+            double portion =
+                (double)best_result / (double)subpopulation[i].get_material_balance();
 
             if (portion > 1.0)
                 portion = 1.0 / portion;
@@ -274,7 +281,8 @@ void GeneticAlgorithm::set_material_fitness(vector<Chromosome> &subpopulation)
     }
 }
 
-void GeneticAlgorithm::set_duration_fitness(vector<Chromosome> &subpopulation, Chromosome::Outcome type)
+void GeneticAlgorithm::set_duration_fitness(
+    vector<Chromosome> &subpopulation, Chromosome::Outcome type)
 {
     uint size = subpopulation.size();
 
@@ -301,7 +309,8 @@ void GeneticAlgorithm::set_duration_fitness(vector<Chromosome> &subpopulation, C
     {
         assert(subpopulation[i].get_game_duration() != 0);
 
-        double portion = (double)best_result / (double)subpopulation[i].get_game_duration();
+        double portion =
+            (double)best_result / (double)subpopulation[i].get_game_duration();
 
         if (type == Chromosome::LOSS)
             portion = 1 / portion;

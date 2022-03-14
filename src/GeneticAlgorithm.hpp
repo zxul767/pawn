@@ -20,8 +20,9 @@ class FitnessEvaluator;
 class GeneticAlgorithm
 {
   public:
-    GeneticAlgorithm(uint population_size, uint iterations_count, double mutation_probability,
-                     FitnessEvaluator *fitness);
+    GeneticAlgorithm(
+        uint population_size, uint iterations_count, double mutation_probability,
+        FitnessEvaluator *fitness);
 
     static constexpr double SELECTION_PERCENTAGE = 0.65;
 
@@ -32,8 +33,9 @@ class GeneticAlgorithm
   private:
     void initialize_population();
     void evaluate_population();
-    void select_breeding_individuals(std::vector<Chromosome> &population, uint breeding_population_size,
-                                     std::vector<Chromosome> &selection);
+    void select_breeding_individuals(
+        std::vector<Chromosome> &population, uint breeding_population_size,
+        std::vector<Chromosome> &selection);
 
     void reduce_population(uint size);
     void add_on_population(const std::vector<Chromosome> &elements);
@@ -41,7 +43,8 @@ class GeneticAlgorithm
 
     void set_actual_fitness();
     void set_material_fitness(std::vector<Chromosome> &sub_population);
-    void set_duration_fitness(std::vector<Chromosome> &sub_population, Chromosome::Outcome population_type);
+    void set_duration_fitness(
+        std::vector<Chromosome> &sub_population, Chromosome::Outcome population_type);
 
     uint population_size;
     uint iterations_count;

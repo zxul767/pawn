@@ -120,7 +120,8 @@ bool GameReader::set_variables()
     return true;
 }
 
-void GameReader::tokenize(const string &input, vector<string> &tokens, const string &delimiters) const
+void GameReader::tokenize(
+    const string &input, vector<string> &tokens, const string &delimiters) const
 {
     string::size_type begin = input.find_first_not_of(delimiters, 0);
     string::size_type end = input.find_first_of(delimiters, begin);
@@ -165,7 +166,8 @@ bool GameReader::variable_was_found(const string &input, uint *index_variable)
     return false;
 }
 
-bool GameReader::value_was_found(uint index_variable, const string &input, uint *index_value)
+bool GameReader::value_was_found(
+    uint index_variable, const string &input, uint *index_value)
 {
     int index = index_variable;
 
@@ -196,8 +198,9 @@ bool GameReader::set_value(uint index_variable, const string &token, uint index_
     }
     else if (index_variable >= 2 && index_variable <= 5)
     {
-        this->board->set_castling_privilege(get_color(index_variable), get_side(index_variable),
-                                            get_boolean(index_value));
+        this->board->set_castling_privilege(
+            get_color(index_variable), get_side(index_variable),
+            get_boolean(index_value));
     }
     else if (index_variable == 6)
     {
@@ -206,7 +209,8 @@ bool GameReader::set_value(uint index_variable, const string &token, uint index_
     }
     else if (index_variable >= 7 && index_variable <= 18)
     {
-        this->board->add_piece(token, get_type(index_variable), get_color(index_variable));
+        this->board->add_piece(
+            token, get_type(index_variable), get_color(index_variable));
     }
     return false;
 }

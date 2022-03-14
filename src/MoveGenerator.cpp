@@ -53,11 +53,14 @@ bool MoveGenerator::generate_moves(IBoard *board, vector<Move> &moves)
                 board->label_move(move);
                 Move::Type move_type = move.get_type();
 
-                if (move_type == Move::NORMAL_CAPTURE || move_type == Move::EN_PASSANT_CAPTURE)
+                if (move_type == Move::NORMAL_CAPTURE ||
+                    move_type == Move::EN_PASSANT_CAPTURE)
                 {
                     move.set_captured_piece(board->get_piece(current_move));
-                    double score = position_evaluator.get_piece_value(move.get_moving_piece());
-                    score /= position_evaluator.get_piece_value(move.get_captured_piece());
+                    double score =
+                        position_evaluator.get_piece_value(move.get_moving_piece());
+                    score /=
+                        position_evaluator.get_piece_value(move.get_captured_piece());
                     move.set_score((int)(10 * score));
                     captures.push_back(move);
                 }
@@ -81,7 +84,8 @@ bool MoveGenerator::generate_moves(IBoard *board, vector<Move> &moves)
   Generate pseudo legal moves of the kinds contained in FLAGS, as opposed
   to simply generating all moves.
   ==========================================================================*/
-bool MoveGenerator::generate_moves(IBoard *board, vector<Move> &moves, ushort kind_of_moves)
+bool MoveGenerator::generate_moves(
+    IBoard *board, vector<Move> &moves, ushort kind_of_moves)
 {
     PositionEvaluator evaluator;
 
@@ -116,7 +120,8 @@ bool MoveGenerator::generate_moves(IBoard *board, vector<Move> &moves, ushort ki
                 board->label_move(move);
                 Move::Type move_type = move.get_type();
 
-                if (move_type == Move::NORMAL_CAPTURE || move_type == Move::EN_PASSANT_CAPTURE)
+                if (move_type == Move::NORMAL_CAPTURE ||
+                    move_type == Move::EN_PASSANT_CAPTURE)
                 {
                     move.set_captured_piece(board->get_piece(current_move));
 
@@ -132,15 +137,18 @@ bool MoveGenerator::generate_moves(IBoard *board, vector<Move> &moves, ushort ki
                 if ((kind_of_moves & MoveGenerator::CHECKS) && move_type == Move::CHECK)
                     checks.push_back(move);
 
-                if ((kind_of_moves & MoveGenerator::PAWN_PROMOTIONS) && move_type == Move::PROMOTION_MOVE)
+                if ((kind_of_moves & MoveGenerator::PAWN_PROMOTIONS) &&
+                    move_type == Move::PROMOTION_MOVE)
                     promotions.push_back(move);
 
                 if ((kind_of_moves & MoveGenerator::SIMPLE) &&
-                    (move_type == Move::SIMPLE_MOVE || move_type == Move::CASTLE_KING_SIDE ||
+                    (move_type == Move::SIMPLE_MOVE ||
+                     move_type == Move::CASTLE_KING_SIDE ||
                      move_type == Move::CASTLE_QUEEN_SIDE))
                     other_moves.push_back(move);
 
-                if ((kind_of_moves & MoveGenerator::CHECK_EVASIONS) && board->is_king_in_check())
+                if ((kind_of_moves & MoveGenerator::CHECK_EVASIONS) &&
+                    board->is_king_in_check())
                 {
                     IBoard::Error error = board->make_move(move, true);
                     if (error == IBoard::NO_ERROR)

@@ -37,7 +37,8 @@ class IEngine
     }
 
     virtual void load_factor_weights(std::vector<int> &weights) = 0;
-    virtual GameResult get_best_move(int max_depth, game_rules::IBoard *, game_rules::Move &best_move) = 0;
+    virtual GameResult get_best_move(
+        int max_depth, game_rules::IBoard *, game_rules::Move &best_move) = 0;
 
     SearchStats statistics;
 };

@@ -48,9 +48,11 @@ class IBoard
     virtual bool load_game(const std::string &file) = 0;
     virtual bool save_game(const std::string &file) = 0;
 
-    virtual bool add_piece(const std::string &location, Piece::Type piece, Piece::Player player) = 0;
+    virtual bool add_piece(
+        const std::string &location, Piece::Type piece, Piece::Player player) = 0;
 
-    virtual bool add_piece(BoardSquare square, Piece::Type piece, Piece::Player player) = 0;
+    virtual bool add_piece(
+        BoardSquare square, Piece::Type piece, Piece::Player player) = 0;
 
     virtual bool remove_piece(const std::string &location) = 0;
     virtual bool remove_piece(BoardSquare square) = 0;
@@ -87,7 +89,8 @@ class IBoard
     virtual void set_game_status(GameStatus status) = 0;
     virtual void set_en_passant_capture_square(BoardSquare en_passant_capture_square) = 0;
     virtual void set_player_in_turn(Piece::Player player) = 0;
-    virtual void set_castling_privilege(Piece::Player player, CastleSide side, bool value) = 0;
+    virtual void set_castling_privilege(
+        Piece::Player player, CastleSide side, bool value) = 0;
 
     static bool is_inside_board(int row, int col);
     static bool is_inside_board(uint row, uint col);

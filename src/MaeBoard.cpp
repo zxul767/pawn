@@ -215,7 +215,8 @@ bool MaeBoard::remove_piece(BoardSquare square)
 
     // Remove piece in the bitboard representation
     this->pieces[board[square].player] ^= util::Util::to_bitboard[square];
-    this->piece[board[square].player][board[square].piece] ^= util::Util::to_bitboard[square];
+    this->piece[board[square].player][board[square].piece] ^=
+        util::Util::to_bitboard[square];
     this->all_pieces ^= util::Util::to_bitboard[square];
 
     Piece::Type piece = this->board[square].piece;
@@ -269,7 +270,8 @@ MaeBoard::Error MaeBoard::make_move(Move &move, bool is_computer_move)
     if (move.get_type() == Move::EN_PASSANT_CAPTURE)
     {
         uint offset = this->is_whites_turn ? BOARD_SIZE : -((int)BOARD_SIZE);
-        uint position = util::Util::MSB_position(this->en_passant_capture_square) + offset;
+        uint position =
+            util::Util::MSB_position(this->en_passant_capture_square) + offset;
         remove_piece(BoardSquare(position));
     }
 
@@ -306,7 +308,8 @@ MaeBoard::Error MaeBoard::make_move(Move &move, bool is_computer_move)
     if (!this->position_counter.add_record(key, times) && times == 3)
         return DRAW_BY_REPETITION;
 
-    if (move.get_type() == Move::NORMAL_CAPTURE || move.get_type() == Move::EN_PASSANT_CAPTURE ||
+    if (move.get_type() == Move::NORMAL_CAPTURE ||
+        move.get_type() == Move::EN_PASSANT_CAPTURE ||
         move.get_moving_piece() == Piece::PAWN)
     {
         this->fifty_move_counter = 0;
@@ -447,7 +450,8 @@ MaeBoard::Error MaeBoard::can_move(const Move &move) const
     if (this->player != this->board[start].player)
         return Error::OPPONENTS_TURN;
 
-    bitboard valid_moves = this->chessmen[move.get_moving_piece()]->get_moves(start, this->player, this);
+    bitboard valid_moves =
+        this->chessmen[move.get_moving_piece()]->get_moves(start, this->player, this);
 
     // Is MOVE.TO () included in the set of valid moves from MOVE.FROM () ?
     if (util::Util::to_bitboard[move.to()] & valid_moves)
@@ -473,7 +477,8 @@ void MaeBoard::label_move(Move &move) const
     {
         move.set_type(Move::SIMPLE_MOVE);
 
-        if ((util::Util::to_bitboard[end] & this->en_passant_capture_square) && piece == Piece::PAWN)
+        if ((util::Util::to_bitboard[end] & this->en_passant_capture_square) &&
+            piece == Piece::PAWN)
         {
             move.set_type(Move::EN_PASSANT_CAPTURE);
         }
@@ -499,7 +504,8 @@ void MaeBoard::label_move(Move &move) const
     }
 
     // Promotion moves can happen both as simple moves and as capture moves
-    if ((util::Util::to_bitboard[end] & this->eighth_rank[player]) && piece == Piece::PAWN)
+    if ((util::Util::to_bitboard[end] & this->eighth_rank[player]) &&
+        piece == Piece::PAWN)
     {
         move.set_type(Move::PROMOTION_MOVE);
     }
@@ -520,10 +526,12 @@ bitboard MaeBoard::attacks_to(BoardSquare location, bool include_king) const
     // at least one attack to LOCATION
     for (Piece::Type type = Piece::KNIGHT; type <= last_piece; ++type)
     {
-        attackers |= this->chessmen[type]->get_moves(location, this->player, this) & this->piece[opponent][type];
+        attackers |= this->chessmen[type]->get_moves(location, this->player, this) &
+                     this->piece[opponent][type];
     }
-    pawn_attacks = (pawn->get_capture_move(location, this->player, Piece::EAST) |
-                    pawn->get_capture_move(location, this->player, Piece::WEST));
+    pawn_attacks =
+        (pawn->get_capture_move(location, this->player, Piece::EAST) |
+         pawn->get_capture_move(location, this->player, Piece::WEST));
 
     attackers |= (pawn_attacks & this->piece[opponent][Piece::PAWN]);
 
@@ -542,10 +550,12 @@ bitboard MaeBoard::threats_to(BoardSquare location, Piece::Type type) const
 
     for (Piece::Type attacked = type; attacked > Piece::PAWN; --attacked)
     {
-        attackers |= this->chessmen[type]->get_moves(location, this->player, this) & this->piece[opponent][type];
+        attackers |= this->chessmen[type]->get_moves(location, this->player, this) &
+                     this->piece[opponent][type];
     }
-    pawn_attackers = (pawn->get_capture_move(location, this->player, Piece::EAST) |
-                      pawn->get_capture_move(location, this->player, Piece::WEST));
+    pawn_attackers =
+        (pawn->get_capture_move(location, this->player, Piece::EAST) |
+         pawn->get_capture_move(location, this->player, Piece::WEST));
 
     attackers |= (pawn_attackers & this->piece[opponent][Piece::PAWN]);
 
@@ -731,15 +741,17 @@ void MaeBoard::load_support_data()
 
     // Bitboards representing the eigth rank for each player
     this->eighth_rank[Piece::WHITE] = this->eighth_rank[Piece::BLACK] = 0;
-    this->eighth_rank[Piece::WHITE] |= util::Util::to_bitboard[a8] | util::Util::to_bitboard[b8] |
-                                       util::Util::to_bitboard[c8] | util::Util::to_bitboard[d8] |
-                                       util::Util::to_bitboard[e8] | util::Util::to_bitboard[f8] |
-                                       util::Util::to_bitboard[g8] | util::Util::to_bitboard[h8];
+    this->eighth_rank[Piece::WHITE] |=
+        util::Util::to_bitboard[a8] | util::Util::to_bitboard[b8] |
+        util::Util::to_bitboard[c8] | util::Util::to_bitboard[d8] |
+        util::Util::to_bitboard[e8] | util::Util::to_bitboard[f8] |
+        util::Util::to_bitboard[g8] | util::Util::to_bitboard[h8];
 
-    this->eighth_rank[Piece::BLACK] |= util::Util::to_bitboard[a1] | util::Util::to_bitboard[b1] |
-                                       util::Util::to_bitboard[c1] | util::Util::to_bitboard[d1] |
-                                       util::Util::to_bitboard[e1] | util::Util::to_bitboard[f1] |
-                                       util::Util::to_bitboard[g1] | util::Util::to_bitboard[h1];
+    this->eighth_rank[Piece::BLACK] |=
+        util::Util::to_bitboard[a1] | util::Util::to_bitboard[b1] |
+        util::Util::to_bitboard[c1] | util::Util::to_bitboard[d1] |
+        util::Util::to_bitboard[e1] | util::Util::to_bitboard[f1] |
+        util::Util::to_bitboard[g1] | util::Util::to_bitboard[h1];
 
     // Corners for each player
     this->corner[Piece::WHITE][KING_SIDE] = h1;
@@ -757,9 +769,9 @@ void MaeBoard::load_support_data()
   ============================================================================*/
 void MaeBoard::save_restore_information(const Move &move)
 {
-    BoardConfiguration restore_information(move, this->en_passant_capture_square,
-                                           this->can_do_castle[player][KING_SIDE],
-                                           this->can_do_castle[player][QUEEN_SIDE], this->hash_key, this->hash_lock);
+    BoardConfiguration restore_information(
+        move, this->en_passant_capture_square, this->can_do_castle[player][KING_SIDE],
+        this->can_do_castle[player][QUEEN_SIDE], this->hash_key, this->hash_lock);
 
     this->game_history.push(restore_information);
 }
