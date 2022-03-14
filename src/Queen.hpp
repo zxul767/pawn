@@ -6,24 +6,24 @@
   an empty board), and in specific situations (i.e. in a board with pieces)
  ==============================================================================*/
 
-#include "Rook.hpp"
 #include "Bishop.hpp"
+#include "Rook.hpp"
 
 namespace game_rules
 {
 class Queen : public Piece
 {
-public:
-   Queen ();
-   ~Queen ();
+  public:
+    Queen();
+    ~Queen();
 
-   bitboard get_moves (uint square, Player player, const IBoard* board) const;
-   bitboard get_potential_moves (uint square, Player player) const;
+    bitboard get_moves(uint square, Player player, const IBoard *board) const;
+    bitboard get_potential_moves(uint square, Player player) const;
 
-private:
-   // Queen's moves are simply the combination of Rook and Bishop's moves
-   Rook* rook;
-   Bishop* bishop;
+  private:
+    // Queen's moves are simply the combination of Rook and Bishop's moves
+    Rook *rook;
+    Bishop *bishop;
 };
 
 } // namespace game_rules

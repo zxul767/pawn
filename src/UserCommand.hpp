@@ -7,49 +7,50 @@
   start and end squares)
   ==============================================================================*/
 
-#include <string>
 #include <map>
+#include <string>
 
 namespace game_ui
 {
 class UserCommand
 {
   public:
-   enum CommandKey {
-      XBOARD_MODE,
-      FEATURES,
-      NEW_GAME,
-      QUIT,
-      THINK,
-      UNDO_MOVE,
-      SEE_MOVES,
-      USER_MOVE,
-      REMOVE,
-      MOVE,
-      TRAIN,
-      COMPUTER_PLAY,
-      UNKNOWN
-   };
+    enum CommandKey
+    {
+        XBOARD_MODE,
+        FEATURES,
+        NEW_GAME,
+        QUIT,
+        THINK,
+        UNDO_MOVE,
+        SEE_MOVES,
+        USER_MOVE,
+        REMOVE,
+        MOVE,
+        TRAIN,
+        COMPUTER_PLAY,
+        UNKNOWN
+    };
 
-   UserCommand ();
-   UserCommand (CommandKey key);
-   UserCommand (std::string& notation);
+    UserCommand();
+    UserCommand(CommandKey key);
+    UserCommand(std::string &notation);
 
-   bool is_move () const;
-   bool is_quit () const;
+    bool is_move() const;
+    bool is_quit() const;
 
-   std::string get_notation () const;
-   CommandKey get_key () const;
+    std::string get_notation() const;
+    CommandKey get_key() const;
 
   private:
-   std::string notation;
-   CommandKey key;
+    std::string notation;
+    CommandKey key;
 
-   static std::map<std::string, CommandKey> notation_to_key;
-   static std::map<CommandKey, std::string> key_to_notation;
+    static std::map<std::string, CommandKey> notation_to_key;
+    static std::map<CommandKey, std::string> key_to_notation;
 
-   static bool load_commands ();
-   static const bool commands_loaded;
+    static bool load_commands();
+    static const bool commands_loaded;
 };
 
 } // namespace game_ui

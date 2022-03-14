@@ -6,11 +6,18 @@
   the best ones when running a genetic algorithm
   ==============================================================================*/
 
-#include <string>
 #include "Util.hpp"
+#include <string>
 
-namespace game_engine { class IEngine; class PositionEvaluator; }
-namespace game_rules { class IBoard; }
+namespace game_engine
+{
+class IEngine;
+class PositionEvaluator;
+} // namespace game_engine
+namespace game_rules
+{
+class IBoard;
+}
 
 namespace learning
 {
@@ -19,16 +26,16 @@ class Chromosome;
 class FitnessEvaluator
 {
   public:
-   FitnessEvaluator (game_engine::IEngine*);
-   ~FitnessEvaluator ();
+    FitnessEvaluator(game_engine::IEngine *);
+    ~FitnessEvaluator();
 
-   double evaluate (Chromosome&, Chromosome&);
-   static const uint MAX_ALLOWED_MOVEMENTS = 70;
+    double evaluate(Chromosome &, Chromosome &);
+    static const uint MAX_ALLOWED_MOVEMENTS = 70;
 
   private:
-   game_rules::IBoard* board;
-   game_engine::IEngine* chess_engine;
-   game_engine::PositionEvaluator* evaluator;
+    game_rules::IBoard *board;
+    game_engine::IEngine *chess_engine;
+    game_engine::PositionEvaluator *evaluator;
 };
 
 } // namespace learning

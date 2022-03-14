@@ -6,11 +6,3 @@ repos:
     hooks:
       - id: clang-format
         args: ["--style=Microsoft", "-i"]
-      - id: clang-tidy
-        # without this arg, it treats *.h files as C headers
-        args: ["--extra-arg-before=-xc++"]
-      # - id: oclint
-      # - id: uncrustify
-      # - id: cppcheck
-      # - id: cpplint
-      # - id: include-what-you-use

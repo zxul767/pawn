@@ -8,9 +8,9 @@ namespace game_ui
 class UserCommandReader
 {
   public:
-   UserCommandReader ();
+    UserCommandReader();
 
-   UserCommand get_user_command ();
+    UserCommand get_user_command();
 };
 
 } // namespace game_ui
