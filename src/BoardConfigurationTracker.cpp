@@ -2,56 +2,52 @@
 
 namespace game_rules
 {
-bool
-BoardConfigurationTracker::add_record (const BoardKey& key, ushort& times)
+bool BoardConfigurationTracker::add_record(const BoardKey &key, ushort &times)
 {
-   auto iter = tracker.find (key);
+    auto iter = tracker.find(key);
 
-   if (iter != tracker.end ())
-   {
-      (*iter).second ++;
-      times = (*iter).second;
+    if (iter != tracker.end())
+    {
+        (*iter).second++;
+        times = (*iter).second;
 
-      return false;
-   }
+        return false;
+    }
 
-   tracker.insert (std::pair<BoardKey, ushort>(key, 1));
+    tracker.insert(std::pair<BoardKey, ushort>(key, 1));
 
-   return true;
+    return true;
 }
 
-bool
-BoardConfigurationTracker::decrease_record (const BoardKey& key)
+bool BoardConfigurationTracker::decrease_record(const BoardKey &key)
 {
-   auto iter = tracker.find (key);
-   if (iter != tracker.end())
-   {
-      if ((*iter).second <= 1)
-         tracker.erase (iter);
-      else
-         (*iter).second --;
+    auto iter = tracker.find(key);
+    if (iter != tracker.end())
+    {
+        if ((*iter).second <= 1)
+            tracker.erase(iter);
+        else
+            (*iter).second--;
 
-      return true;
-   }
+        return true;
+    }
 
-   return false;
+    return false;
 }
 
-ushort
-BoardConfigurationTracker::get_repetitions (const BoardKey& key) const
+ushort BoardConfigurationTracker::get_repetitions(const BoardKey &key) const
 {
-   auto iter = tracker.find (key);
+    auto iter = tracker.find(key);
 
-   if (iter != tracker.end ())
-      return (*iter).second;
+    if (iter != tracker.end())
+        return (*iter).second;
 
-   return 0;
+    return 0;
 }
 
-void
-BoardConfigurationTracker::reset ()
+void BoardConfigurationTracker::reset()
 {
-   tracker.clear ();
+    tracker.clear();
 }
 
 } // namespace game_rules

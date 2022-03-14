@@ -5,11 +5,11 @@
 
 namespace game_rules
 {
-   struct BoardKey
-   {
-      ullong hash_key;
-      ullong hash_lock;
-   };
-}
+struct BoardKey
+{
+    ullong hash_key;
+    ullong hash_lock;
+};
+} // namespace game_rules
 
 #endif // BOARD_KEY_H
