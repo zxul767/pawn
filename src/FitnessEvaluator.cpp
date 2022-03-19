@@ -10,16 +10,16 @@
 
 namespace learning
 {
-using game_rules::IBoard;
-using game_rules::Piece;
+using rules::IBoard;
+using rules::Piece;
 
-using game_engine::IEngine;
+using engine::IEngine;
 
 FitnessEvaluator::FitnessEvaluator(IEngine *chess_engine)
 {
     this->chess_engine = chess_engine;
-    this->board = new game_rules::MaeBoard();
-    this->evaluator = new game_engine::PositionEvaluator();
+    this->board = new rules::MaeBoard();
+    this->evaluator = new engine::PositionEvaluator();
 }
 
 FitnessEvaluator::~FitnessEvaluator()
@@ -54,21 +54,11 @@ double FitnessEvaluator::evaluate(Chromosome &a, Chromosome &b)
     {
         this->chess_engine->load_factor_weights(features[turn]);
 
-        // TODO: enable again once we implement the assertion below
-        // bitboard key = this->board->get_hash_key ();
-        // bitboard lock = this->board->get_hash_lock ();
-
-        game_rules::Move move;
+        rules::Move move;
         result = this->chess_engine->get_best_move(3, this->board, move);
         if (result == IEngine::WHITE_MATES || result == IEngine::BLACK_MATES ||
             result == IEngine::STALEMATE)
             break;
-
-        // TODO: turn into an assertion
-        // if (key == this->board->get_hash_key () || lock != this->board->get_hash_lock
-        // ())
-        // {
-        // }
 
         IBoard::Error error = this->board->make_move(move, true);
         if (error != IBoard::NO_ERROR && error != IBoard::DRAW_BY_REPETITION)
@@ -85,22 +75,22 @@ double FitnessEvaluator::evaluate(Chromosome &a, Chromosome &b)
 
         if (this->board->get_move_number() >= MAX_ALLOWED_MOVEMENTS)
         {
-            int r = this->evaluator->evaluate_material(board);
+            int material = this->evaluator->evaluate_material(board);
 
-            if (r == 0)
+            if (material == 0)
             {
                 result = IEngine::STALEMATE;
             }
-            else if (board->get_player_in_turn() == Piece::WHITE)
+            else if (board->current_player() == Piece::WHITE)
             {
-                if (r > 0)
+                if (material > 0)
                     result = IEngine::WHITE_MATES;
                 else
                     result = IEngine::BLACK_MATES;
             }
             else
             {
-                if (r > 0)
+                if (material > 0)
                     result = IEngine::BLACK_MATES;
                 else
                     result = IEngine::WHITE_MATES;

@@ -6,6 +6,7 @@
 
 namespace learning
 {
+using std::string;
 using std::vector;
 
 Chromosome::Chromosome()
@@ -177,9 +178,9 @@ bool Chromosome::get_gene(uint position) const
     return false;
 }
 
-std::string Chromosome::get_genes() const
+string Chromosome::get_genes() const
 {
-    std::string genes = "";
+    string genes = "";
     for (uint i = 0; i < this->gene_string.size(); ++i)
         genes += (this->gene_string[i] ? "1" : "0");
     return genes;

@@ -3,7 +3,7 @@
 
 namespace game_ui
 {
-using game_rules::Move;
+using rules::Move;
 using std::string;
 
 std::map<string, UserCommand::CommandKey> UserCommand::notation_to_key;

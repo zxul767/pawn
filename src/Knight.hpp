@@ -10,7 +10,7 @@
 #include "GameTraits.hpp"
 #include "Piece.hpp"
 
-namespace game_rules
+namespace rules
 {
 class IBoard;
 
@@ -29,6 +29,6 @@ class Knight : public Piece
     bitboard moves_from[BOARD_SQUARES_COUNT];
 };
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // KNIGHT_H

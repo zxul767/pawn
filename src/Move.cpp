@@ -5,15 +5,17 @@
 #include <cctype>
 #include <cstdlib>
 
-namespace game_rules
+namespace rules
 {
+using std::string;
+
 /*=============================================================================
   Create a move given an algebraic chess notation.
 
   For instance, the notation e2e4 denotes the movement of the king's pawn from
   its initial square to the center of the board.
   ============================================================================*/
-Move::Move(const std::string &move_notation)
+Move::Move(const string &move_notation)
 {
     if (!translate_to_square(move_notation.substr(0, 2), start) ||
         !translate_to_square(move_notation.substr(2, 2), end))
@@ -73,7 +75,7 @@ std::ostream &operator<<(std::ostream &out, const Move &move)
 {
     if (move.get_type() != Move::NULL_MOVE)
     {
-        std::string initial, final;
+        string initial, final;
         Move::translate_to_notation(move.from(), initial);
         Move::translate_to_notation(move.to(), final);
 
@@ -158,7 +160,7 @@ int Move::get_score() const
   ...
   f(A1) -> 56, f(H1) -> 63
   ============================================================================*/
-bool Move::translate_to_square(const std::string &notation, BoardSquare &square)
+bool Move::translate_to_square(const string &notation, BoardSquare &square)
 {
     if (is_valid_notation(notation))
     {
@@ -174,7 +176,7 @@ bool Move::translate_to_square(const std::string &notation, BoardSquare &square)
 /*=============================================================================
   Inverse function of translate_to_square
   ============================================================================*/
-bool Move::translate_to_notation(BoardSquare square, std::string &notation)
+bool Move::translate_to_notation(BoardSquare square, string &notation)
 {
     if (!IBoard::is_inside_board(square))
         return false;
@@ -192,7 +194,7 @@ bool Move::translate_to_notation(BoardSquare square, std::string &notation)
 
   For instance, A8 is a valid notation, whereas B10 is not.
   ============================================================================*/
-bool Move::is_valid_notation(const std::string &notation)
+bool Move::is_valid_notation(const string &notation)
 {
     if (notation.length() != 2)
         return false;
@@ -204,4 +206,4 @@ bool Move::is_valid_notation(const std::string &notation)
     return false;
 }
 
-} // namespace game_rules
+} // namespace rules

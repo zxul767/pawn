@@ -3,7 +3,7 @@
 #include <iostream>
 #include <memory>
 
-namespace game_rules
+namespace rules
 {
 const bool King::neighbors_computed = King::compute_neighbors();
 bitboard King::neighbors[BOARD_SQUARES_COUNT];
@@ -136,13 +136,13 @@ bool King::compute_neighbors()
         bitboard neighborhood = king->get_potential_moves(position, Piece::WHITE);
         bitboard actual_neighbors = neighborhood;
 
-        int square = util::Util::MSB_position(neighborhood);
+        int square = util::msb_position(neighborhood);
 
         while (neighborhood && square != -1)
         {
             actual_neighbors |= king->get_potential_moves(square, Piece::WHITE);
             neighborhood ^= (util::constants::ONE << square);
-            square = util::Util::MSB_position(neighborhood);
+            square = util::msb_position(neighborhood);
         }
 
         neighbors[position] = actual_neighbors ^ (util::constants::ONE << position);
@@ -150,4 +150,4 @@ bool King::compute_neighbors()
     return true;
 }
 
-} // namespace game_rules
+} // namespace rules

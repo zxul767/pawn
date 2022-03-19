@@ -10,7 +10,7 @@
 #include "GameTraits.hpp"
 #include "Piece.hpp"
 
-namespace game_rules
+namespace rules
 {
 class IBoard;
 
@@ -34,6 +34,6 @@ class King : public Piece
     const static bool neighbors_computed;
 };
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // KING_H

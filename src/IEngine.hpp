@@ -4,14 +4,16 @@
 #include "SearchStats.hpp"
 #include "Util.hpp"
 
-namespace game_rules
+namespace rules
 {
 class IBoard;
 class Move;
-} // namespace game_rules
+} // namespace rules
 
-namespace game_engine
+namespace engine
 {
+using std::vector;
+
 class IEngine
 {
   public:
@@ -36,13 +38,13 @@ class IEngine
     {
     }
 
-    virtual void load_factor_weights(std::vector<int> &weights) = 0;
+    virtual void load_factor_weights(vector<int> &weights) = 0;
     virtual GameResult get_best_move(
-        int max_depth, game_rules::IBoard *, game_rules::Move &best_move) = 0;
+        int max_depth, rules::IBoard *, rules::Move &best_move) = 0;
 
     SearchStats statistics;
 };
 
-} // namespace game_engine
+} // namespace engine
 
 #endif // ICHESS_ENGINE_H

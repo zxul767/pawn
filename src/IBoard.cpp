@@ -7,7 +7,7 @@
 #include "BoardTraits.hpp"
 #include "GameTraits.hpp"
 
-namespace game_rules
+namespace rules
 {
 IBoard::IBoard()
 {
@@ -71,4 +71,4 @@ std::ostream &operator<<(std::ostream &out, const IBoard &board)
     return out;
 }
 
-} // namespace game_rules
+} // namespace rules

@@ -3,13 +3,13 @@
 
 #include "Util.hpp"
 
-namespace game_rules
+namespace rules
 {
 struct BoardKey
 {
     ullong hash_key;
     ullong hash_lock;
 };
-} // namespace game_rules
+} // namespace rules
 
 #endif // BOARD_KEY_H

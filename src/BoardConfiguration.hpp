@@ -8,7 +8,7 @@
 
 #include "Move.hpp"
 
-namespace game_rules
+namespace rules
 {
 struct BoardConfiguration
 {
@@ -32,6 +32,6 @@ struct BoardConfiguration
     ullong hash_lock;
 };
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // BOARD_STATUS_H

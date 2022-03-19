@@ -8,25 +8,27 @@
 #include "Square.hpp"
 #include <stack>
 
-namespace game_rules
+namespace rules
 {
+using std::string;
+
 class MaeBoard : public IBoard
 {
   public:
     MaeBoard();
-    MaeBoard(const std::string &file);
+    MaeBoard(const string &file);
     ~MaeBoard();
 
     void clear();
     void reset();
 
-    bool load_game(const std::string &file);
-    bool save_game(const std::string &file);
+    bool load_game(const string &file);
+    bool save_game(const string &file);
 
-    bool add_piece(const std::string &location, Piece::Type type, Piece::Player);
+    bool add_piece(const string &location, Piece::Type type, Piece::Player);
     bool add_piece(BoardSquare square, Piece::Type, Piece::Player);
 
-    bool remove_piece(const std::string &location);
+    bool remove_piece(const string &location);
     bool remove_piece(BoardSquare square);
 
     Error make_move(Move &move, bool is_computer_move);
@@ -51,7 +53,7 @@ class MaeBoard : public IBoard
     BoardSquare get_initial_king_square(Piece::Player) const;
 
     Piece::Player get_piece_color(BoardSquare square) const;
-    Piece::Player get_player_in_turn() const;
+    Piece::Player current_player() const;
     Piece::Type get_piece(BoardSquare square) const;
     ullong get_hash_key() const;
     ullong get_hash_lock() const;
@@ -126,6 +128,6 @@ class MaeBoard : public IBoard
     void change_turn();
 };
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // MAE_BOARD_H

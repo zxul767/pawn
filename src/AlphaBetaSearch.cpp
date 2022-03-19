@@ -18,10 +18,10 @@
 #include <iostream>
 #include <iterator>
 
-namespace game_engine
+namespace engine
 {
-using game_rules::IBoard;
-using game_rules::Move;
+using rules::IBoard;
+using rules::Move;
 using std::vector;
 
 AlphaBetaSearch::AlphaBetaSearch(
@@ -48,7 +48,7 @@ AlphaBetaSearch::~AlphaBetaSearch()
 IEngine::GameResult AlphaBetaSearch::get_best_move(
     int max_depth, IBoard *board, Move &best_move)
 {
-    GameResult winner[game_rules::PLAYERS_COUNT][game_rules::PLAYERS_COUNT] = {
+    GameResult winner[rules::PLAYERS_COUNT][rules::PLAYERS_COUNT] = {
         {GameResult::WHITE_MATES, GameResult::BLACK_MATES},
         {GameResult::BLACK_MATES, GameResult::WHITE_MATES}};
 
@@ -61,7 +61,7 @@ IEngine::GameResult AlphaBetaSearch::get_best_move(
     int root_value = iterative_deepening_search(max_depth, principal_variation);
 
     if (abs(root_value) == abs(MATE_VALUE))
-        this->result = winner[root_value > 0 ? 0 : 1][board->get_player_in_turn()];
+        this->result = winner[root_value > 0 ? 0 : 1][board->current_player()];
 
     else if (root_value == DRAW_VALUE && result == STALEMATE)
         this->result = GameResult::STALEMATE;
@@ -189,7 +189,7 @@ int AlphaBetaSearch::search(int depth, int alpha, int beta)
     {
         // Quiescence search may return a value that is well below the current
         // node evaluation, meaning that all captures considered are really bad.
-        return util::Util::max(
+        return std::max(
             evaluate_position(this->board),
             quiescence_search(MAX_QUIESCENCE_DEPTH, alpha, beta));
     }
@@ -234,8 +234,7 @@ int AlphaBetaSearch::search(int depth, int alpha, int beta)
         else
         {
             assert(error == IBoard::NO_ERROR);
-            tentative_value =
-                -search(depth - 1, -beta, -util::Util::max(alpha, best_value));
+            tentative_value = -search(depth - 1, -beta, -std::max(alpha, best_value));
         }
 
         assert(this->board->undo_move());
@@ -437,4 +436,4 @@ void AlphaBetaSearch::load_factor_weights(vector<int> &weights)
     this->position_evaluator->load_factor_weights(weights);
 }
 
-} // namespace game_engine
+} // namespace engine

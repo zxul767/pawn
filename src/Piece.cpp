@@ -1,6 +1,6 @@
 #include "Piece.hpp"
 
-namespace game_rules
+namespace rules
 {
 std::string Piece::pieceString(Type piece_type)
 {
@@ -10,4 +10,4 @@ std::string Piece::pieceString(Type piece_type)
     return piece[piece_type];
 }
 
-} // namespace game_rules
+} // namespace rules

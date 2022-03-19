@@ -1,7 +1,7 @@
 #include "GameReader.hpp"
 #include <cctype>
 
-namespace game_persistence
+namespace serialization
 {
 using std::string;
 using std::vector;
@@ -194,7 +194,7 @@ bool GameReader::set_value(uint index_variable, const string &token, uint index_
     }
     else if (index_variable == 1)
     {
-        this->board->set_player_in_turn(get_player_in_turn(index_value));
+        this->board->set_player_in_turn(current_player(index_value));
     }
     else if (index_variable >= 2 && index_variable <= 5)
     {
@@ -220,7 +220,7 @@ IBoard::GameStatus GameReader::get_status(uint index_value) const
     return (index_value == 0 ? IBoard::GAME_OVER : IBoard::PENDING_GAME);
 }
 
-Piece::Player GameReader::get_player_in_turn(uint index_value) const
+Piece::Player GameReader::current_player(uint index_value) const
 {
     return (index_value == 0 ? Piece::WHITE : Piece::BLACK);
 }
@@ -238,12 +238,12 @@ Piece::Player GameReader::get_color(uint variable) const
     return Piece::BLACK;
 }
 
-game_rules::CastleSide GameReader::get_side(uint variable) const
+rules::CastleSide GameReader::get_side(uint variable) const
 {
     if (variable == 3 || variable == 5)
-        return game_rules::CastleSide::QUEEN_SIDE;
+        return rules::CastleSide::QUEEN_SIDE;
 
-    return game_rules::CastleSide::KING_SIDE;
+    return rules::CastleSide::KING_SIDE;
 }
 
 Piece::Type GameReader::get_type(uint variable) const
@@ -262,4 +262,4 @@ Piece::Type GameReader::get_type(uint variable) const
     return Piece::KING;
 }
 
-} // namespace game_persistence
+} // namespace serialization

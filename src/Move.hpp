@@ -5,7 +5,7 @@
 #include "Piece.hpp"
 #include <string>
 
-namespace game_rules
+namespace rules
 {
 class Move
 {
@@ -64,6 +64,6 @@ class Move
     int score;
 };
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // MOVE_H

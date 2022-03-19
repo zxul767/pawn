@@ -18,32 +18,18 @@ namespace constants
 constexpr int INFINITUM = INT_MAX / 2;
 constexpr double EPSILON = 1E-6;
 constexpr bitboard ONE = 1;
+constexpr uint SQUARES = 64;
+
 } // namespace constants
 
-class Util
-{
-  public:
-    static std::vector<bitboard> to_bitboard;
-    static bool load_to_bitboard();
-    static bool loaded;
+std::vector<bitboard> create_square_to_bitboard();
+const std::vector<bitboard> to_bitboard = create_square_to_bitboard();
 
-    static int MSB_position(bitboard bitvector);
-    static int LSB_position(bitboard bitvector);
-    static uint count_set_bits(bitboard bitvector);
-    static ullong random_ullong();
-    static double random(double low, double high);
-    static void to_binary(ullong value);
-
-    static int max(int a, int b)
-    {
-        return (a > b ? a : b);
-    }
-    static ushort bit(ushort n)
-    {
-        return 1 << n;
-    }
-};
-
+int lsb_position(bitboard bits);
+int msb_position(bitboard bits);
+uint count_set_bits(bitboard bits);
+double random(double low, double high);
+ullong random_ullong();
 bool is_odd(uint n);
 
 } // namespace util

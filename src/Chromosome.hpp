@@ -17,14 +17,17 @@
 
 namespace learning
 {
+using std::string;
+using std::vector;
+
 class Chromosome
 {
   public:
     Chromosome();
     Chromosome(uint features_count);
     Chromosome(const Chromosome &);
-    Chromosome(const std::vector<int> &features);
-    Chromosome(const std::vector<bool> &genes);
+    Chromosome(const vector<int> &features);
+    Chromosome(const vector<bool> &genes);
 
     enum Outcome
     {
@@ -34,13 +37,13 @@ class Chromosome
         ERROR
     };
 
-    void decode(std::vector<int> &features);
+    void decode(vector<int> &features);
     void mutate(double probability);
     void reproduce(Chromosome &other, std::pair<Chromosome, Chromosome> &children);
 
     double get_fitness() const;
     bool get_gene(uint position) const;
-    std::string get_genes() const;
+    string get_genes() const;
     uint get_game_duration() const;
     Outcome get_result() const;
     uint features_count() const;
@@ -67,8 +70,8 @@ class Chromosome
   private:
     static const uint BITS_PER_FEATURE = 9;
 
-    std::vector<int> features;
-    std::vector<bool> gene_string;
+    vector<int> features;
+    vector<bool> gene_string;
 
     double selection_probability;
     double cumulative_probability;
@@ -78,7 +81,7 @@ class Chromosome
     uint game_duration; // in number of moves
     int material_balance;
 
-    void encode(const std::vector<int> &features);
+    void encode(const vector<int> &features);
     void initialize_data();
 };
 

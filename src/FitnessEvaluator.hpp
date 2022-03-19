@@ -9,12 +9,13 @@
 #include "Util.hpp"
 #include <string>
 
-namespace game_engine
+namespace engine
 {
 class IEngine;
 class PositionEvaluator;
-} // namespace game_engine
-namespace game_rules
+} // namespace engine
+
+namespace rules
 {
 class IBoard;
 }
@@ -26,16 +27,16 @@ class Chromosome;
 class FitnessEvaluator
 {
   public:
-    FitnessEvaluator(game_engine::IEngine *);
+    FitnessEvaluator(engine::IEngine *);
     ~FitnessEvaluator();
 
     double evaluate(Chromosome &, Chromosome &);
     static const uint MAX_ALLOWED_MOVEMENTS = 70;
 
   private:
-    game_rules::IBoard *board;
-    game_engine::IEngine *chess_engine;
-    game_engine::PositionEvaluator *evaluator;
+    rules::IBoard *board;
+    engine::IEngine *chess_engine;
+    engine::PositionEvaluator *evaluator;
 };
 
 } // namespace learning

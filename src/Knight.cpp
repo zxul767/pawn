@@ -6,7 +6,7 @@
 #include "Knight.hpp"
 #include "IBoard.hpp"
 
-namespace game_rules
+namespace rules
 {
 Knight::Knight()
 {
@@ -85,4 +85,4 @@ void Knight::compute_moves()
         }
 }
 
-} // namespace game_rules
+} // namespace rules

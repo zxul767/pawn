@@ -179,12 +179,12 @@ void GeneticAlgorithm::select_breeding_individuals(
     }
 
     vector<Chromosome> eligible_population = this->population;
-    double r = util::Util::random(util::constants::EPSILON, cumulative_probability);
+    double random_number = util::random(util::constants::EPSILON, cumulative_probability);
 
     uint i = 0;
     for (; i < eligible_population.size(); ++i)
     {
-        if (r > eligible_population[i].get_cumulative_probability() &&
+        if (random_number > eligible_population[i].get_cumulative_probability() &&
             i + 1 < eligible_population.size())
             continue;
         else
@@ -264,7 +264,7 @@ void GeneticAlgorithm::set_material_fitness(vector<Chromosome> &subpopulation)
         if (subpopulation[i].get_material_balance() != 0)
         {
             double portion =
-                (double)best_result / (double)subpopulation[i].get_material_balance();
+                (double)best_result / subpopulation[i].get_material_balance();
 
             if (portion > 1.0)
                 portion = 1.0 / portion;
@@ -309,8 +309,7 @@ void GeneticAlgorithm::set_duration_fitness(
     {
         assert(subpopulation[i].get_game_duration() != 0);
 
-        double portion =
-            (double)best_result / (double)subpopulation[i].get_game_duration();
+        double portion = (double)best_result / subpopulation[i].get_game_duration();
 
         if (type == Chromosome::LOSS)
             portion = 1 / portion;

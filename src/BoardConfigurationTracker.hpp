@@ -10,7 +10,7 @@
 #include "BoardKey.hpp"
 #include "Util.hpp"
 
-namespace game_rules
+namespace rules
 {
 class BoardConfigurationTracker
 {
@@ -46,6 +46,6 @@ class BoardConfigurationTracker
     std::unordered_map<BoardKey, ushort, board_hasher, board_comparer> tracker;
 };
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // BOARD_CONFIGURATION_TRACKER_H

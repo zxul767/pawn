@@ -1,6 +1,6 @@
 #include "Queen.hpp"
 
-namespace game_rules
+namespace rules
 {
 Queen::Queen()
 {
@@ -20,18 +20,14 @@ Queen::~Queen()
   ===========================================================================*/
 bitboard Queen::get_moves(uint square, Player player, const IBoard *board) const
 {
-    bitboard attacks = this->bishop->get_moves(square, player, board);
-    attacks |= this->rook->get_moves(square, player, board);
-
-    return attacks;
+    return this->bishop->get_moves(square, player, board) |
+           this->rook->get_moves(square, player, board);
 }
 
 bitboard Queen::get_potential_moves(uint square, Player player) const
 {
-    bitboard moves = this->bishop->get_potential_moves(square, player);
-    moves |= this->rook->get_potential_moves(square, player);
-
-    return moves;
+    return this->bishop->get_potential_moves(square, player) |
+           this->rook->get_potential_moves(square, player);
 }
 
-} // namespace game_rules
+} // namespace rules

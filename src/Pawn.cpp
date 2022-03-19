@@ -1,7 +1,7 @@
 #include "Pawn.hpp"
 #include "IBoard.hpp"
 
-namespace game_rules
+namespace rules
 {
 Pawn::Pawn()
 {
@@ -292,4 +292,4 @@ bool Pawn::is_valid_row(uint row, Player color) const
     return row != 0;
 }
 
-} // namespace game_rules
+} // namespace rules

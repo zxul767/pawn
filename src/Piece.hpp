@@ -9,7 +9,7 @@
 #include "Util.hpp"
 #include <string>
 
-namespace game_rules
+namespace rules
 {
 using util::bitboard;
 
@@ -126,6 +126,6 @@ inline Piece::Player &operator++(Piece::Player &player)
     return (player = Piece::Player(player + 1));
 }
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // PIECE_H

@@ -3,9 +3,9 @@
 
 #include <iostream>
 
-namespace game_engine
+namespace engine
 {
-using game_rules::Move;
+using rules::Move;
 using std::unordered_map;
 
 using TT = TranspositionTable;
@@ -80,4 +80,4 @@ void TranspositionTable::clear()
     this->entries.clear();
 }
 
-} // namespace game_engine
+} // namespace engine

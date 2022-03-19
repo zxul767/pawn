@@ -6,7 +6,7 @@
 #include <iostream>
 #include <locale>
 
-namespace game_engine
+namespace engine
 {
 using std::cerr;
 using std::endl;
@@ -71,6 +71,6 @@ class SearchStats
     double average_branching_factor = 0.0;
     uint alpha_beta_cutoffs = 0;
 };
-} // namespace game_engine
+} // namespace engine
 
 #endif // SEARCH_STATS_H_

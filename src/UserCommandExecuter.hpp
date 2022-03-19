@@ -4,15 +4,17 @@
 #include "Util.hpp"
 #include <string>
 
-namespace game_rules
+namespace rules
 {
 class IBoard;
 }
-namespace game_engine
+
+namespace engine
 {
 class IEngine;
-class MoveGenerator;
-} // namespace game_engine
+class IMoveGenerator;
+} // namespace engine
+
 namespace diagnostics
 {
 class Timer;
@@ -20,26 +22,27 @@ class Timer;
 
 namespace game_ui
 {
+using std::string;
+
 class UserCommand;
 
 class UserCommandExecuter
 {
   public:
-    UserCommandExecuter(
-        game_rules::IBoard *, game_engine::IEngine *, diagnostics::Timer *);
+    UserCommandExecuter(rules::IBoard *, engine::IEngine *, diagnostics::Timer *);
 
     bool execute(const UserCommand &);
     void show_possible_moves();
-    void make_user_move(const std::string &command);
+    void make_user_move(const string &command);
     void think();
     void train_by_genetic_algorithm(
         uint population_size, uint generations_count, double mutation_probability);
 
   private:
     diagnostics::Timer *timer;
-    game_rules::IBoard *board;
-    game_engine::IEngine *game_engine;
-    game_engine::MoveGenerator *move_generator;
+    rules::IBoard *board;
+    engine::IEngine *engine;
+    engine::IMoveGenerator *move_generator;
 };
 
 } // namespace game_ui

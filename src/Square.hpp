@@ -3,7 +3,7 @@
 
 #include "Piece.hpp"
 
-namespace game_rules
+namespace rules
 {
 class Square
 {
@@ -22,6 +22,6 @@ class Square
     }
 };
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // SQUARE_H
