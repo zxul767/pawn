@@ -3,15 +3,19 @@
 
 #include <iostream>
 
-namespace game_engine
+namespace engine
 {
-using game_rules::Move;
+using rules::Move;
 using std::unordered_map;
 
 using TT = TranspositionTable;
 
 std::map<uint, size_t> TranspositionTable::bits_to_table_size = {
-    {16, 1'085'137}, {32, 2'159'363}, {64, 4'142'027}, {128, 8'888'437}, {256, 1'7311'163}};
+    {16, 1'085'137},
+    {32, 2'159'363},
+    {64, 4'142'027},
+    {128, 8'888'437},
+    {256, 17'311'163}};
 
 size_t TranspositionTable::compute_table_size(uint size_in_bits)
 {
@@ -26,9 +30,11 @@ BoardMap TranspositionTable::create_entries_table(uint size_in_bits)
     return BoardMap(table_size, BoardHasher(table_size));
 }
 
-TranspositionTable::TranspositionTable(uint size_in_bits) : entries{TT::create_entries_table(size_in_bits)}
+TranspositionTable::TranspositionTable(uint size_in_bits)
+    : entries{TT::create_entries_table(size_in_bits)}
 {
-    std::cerr << "transposition table size: " << this->entries.bucket_count() << std::endl;
+    std::cerr << "transposition table size: " << this->entries.bucket_count()
+              << std::endl;
 }
 
 bool TranspositionTable::add(const BoardKey &key, BoardEntry entry)
@@ -74,4 +80,4 @@ void TranspositionTable::clear()
     this->entries.clear();
 }
 
-} // namespace game_engine
+} // namespace engine

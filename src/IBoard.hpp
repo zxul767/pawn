@@ -15,9 +15,10 @@
 #include "Piece.hpp"
 #include "Util.hpp"
 
-namespace game_rules
+namespace rules
 {
 class Move;
+using std::string;
 
 class IBoard
 {
@@ -45,14 +46,16 @@ class IBoard
     virtual void clear() = 0;
     virtual void reset() = 0;
 
-    virtual bool load_game(const std::string &file) = 0;
-    virtual bool save_game(const std::string &file) = 0;
+    virtual bool load_game(const string &file) = 0;
+    virtual bool save_game(const string &file) = 0;
 
-    virtual bool add_piece(const std::string &location, Piece::Type piece, Piece::Player player) = 0;
+    virtual bool add_piece(
+        const string &location, Piece::Type piece, Piece::Player player) = 0;
 
-    virtual bool add_piece(BoardSquare square, Piece::Type piece, Piece::Player player) = 0;
+    virtual bool add_piece(
+        BoardSquare square, Piece::Type piece, Piece::Player player) = 0;
 
-    virtual bool remove_piece(const std::string &location) = 0;
+    virtual bool remove_piece(const string &location) = 0;
     virtual bool remove_piece(BoardSquare square) = 0;
 
     virtual Error make_move(Move &move, bool is_computer_move) = 0;
@@ -77,7 +80,7 @@ class IBoard
     virtual BoardSquare get_initial_king_square(Piece::Player player) const = 0;
 
     virtual Piece::Player get_piece_color(BoardSquare square) const = 0;
-    virtual Piece::Player get_player_in_turn() const = 0;
+    virtual Piece::Player current_player() const = 0;
     virtual Piece::Type get_piece(BoardSquare square) const = 0;
     virtual ullong get_hash_key() const = 0;
     virtual ullong get_hash_lock() const = 0;
@@ -87,7 +90,8 @@ class IBoard
     virtual void set_game_status(GameStatus status) = 0;
     virtual void set_en_passant_capture_square(BoardSquare en_passant_capture_square) = 0;
     virtual void set_player_in_turn(Piece::Player player) = 0;
-    virtual void set_castling_privilege(Piece::Player player, CastleSide side, bool value) = 0;
+    virtual void set_castling_privilege(
+        Piece::Player player, CastleSide side, bool value) = 0;
 
     static bool is_inside_board(int row, int col);
     static bool is_inside_board(uint row, uint col);
@@ -101,6 +105,6 @@ inline BoardSquare &operator++(BoardSquare &square)
     return (square = BoardSquare(square + 1));
 }
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // BOARD_H

@@ -5,25 +5,27 @@
 #include <cctype>
 #include <cstdlib>
 
-namespace game_rules
+namespace rules
 {
+using std::string;
+
 /*=============================================================================
   Create a move given an algebraic chess notation.
 
   For instance, the notation e2e4 denotes the movement of the king's pawn from
   its initial square to the center of the board.
   ============================================================================*/
-Move::Move(const std::string &move_notation)
+Move::Move(const string &move_notation)
 {
     if (!translate_to_square(move_notation.substr(0, 2), start) ||
         !translate_to_square(move_notation.substr(2, 2), end))
     {
         // Create a null move if NOTATION was incorrect
-        this->score = 0;
+        this->_score = 0;
         this->start = this->end = BoardSquare::a8;
-        this->type = NULL_MOVE;
-        this->moving_piece = Piece::NULL_PIECE;
-        this->captured_piece = Piece::NULL_PIECE;
+        this->_type = NULL_MOVE;
+        this->_moving_piece = Piece::NULL_PIECE;
+        this->_captured_piece = Piece::NULL_PIECE;
     }
 }
 
@@ -35,11 +37,11 @@ Move::Move(const std::string &move_notation)
   =============================================================================*/
 Move::Move()
 {
-    this->score = 0;
+    this->_score = 0;
     this->start = this->end = BoardSquare::a1;
-    this->type = NULL_MOVE;
-    this->moving_piece = Piece::NULL_PIECE;
-    this->captured_piece = Piece::NULL_PIECE;
+    this->_type = NULL_MOVE;
+    this->_moving_piece = Piece::NULL_PIECE;
+    this->_captured_piece = Piece::NULL_PIECE;
 }
 
 /*=============================================================================
@@ -50,12 +52,12 @@ Move::Move()
   ============================================================================*/
 Move::Move(BoardSquare start, BoardSquare end)
 {
-    this->score = 0;
+    this->_score = 0;
     this->start = start;
     this->end = end;
-    this->type = NULL_MOVE;
-    this->moving_piece = Piece::NULL_PIECE;
-    this->captured_piece = Piece::NULL_PIECE;
+    this->_type = NULL_MOVE;
+    this->_moving_piece = Piece::NULL_PIECE;
+    this->_captured_piece = Piece::NULL_PIECE;
 }
 
 /*=============================================================================
@@ -63,7 +65,7 @@ Move::Move(BoardSquare start, BoardSquare end)
   ============================================================================*/
 bool Move::is_null() const
 {
-    return this->type == NULL_MOVE;
+    return this->_type == NULL_MOVE;
 }
 
 /*=============================================================================
@@ -71,15 +73,15 @@ bool Move::is_null() const
   ============================================================================*/
 std::ostream &operator<<(std::ostream &out, const Move &move)
 {
-    if (move.get_type() != Move::NULL_MOVE)
+    if (move.type() != Move::NULL_MOVE)
     {
-        std::string initial, final;
+        string initial, final;
         Move::translate_to_notation(move.from(), initial);
         Move::translate_to_notation(move.to(), final);
 
-        if (move.get_moving_piece() != Piece::NULL_PIECE)
+        if (move.moving_piece() != Piece::NULL_PIECE)
         {
-            out << Piece::pieceString(move.get_moving_piece());
+            out << Piece::pieceString(move.moving_piece());
         }
         out << "\t" << initial << " - " << final;
     }
@@ -93,7 +95,7 @@ bool operator==(const Move &m1, const Move &m2)
 
 bool operator<(const Move &m1, const Move &m2)
 {
-    return m1.score < m2.score;
+    return m1._score < m2._score;
 }
 
 BoardSquare Move::from() const
@@ -106,44 +108,44 @@ BoardSquare Move::to() const
     return this->end;
 }
 
-Move::Type Move::get_type() const
+Move::Type Move::type() const
 {
-    return this->type;
+    return this->_type;
 }
 
 void Move::set_type(Move::Type type)
 {
-    this->type = type;
+    this->_type = type;
 }
 
-Piece::Type Move::get_moving_piece() const
+Piece::Type Move::moving_piece() const
 {
-    return this->moving_piece;
+    return this->_moving_piece;
 }
 
-Piece::Type Move::get_captured_piece() const
+Piece::Type Move::captured_piece() const
 {
-    return this->captured_piece;
+    return this->_captured_piece;
 }
 
 void Move::set_moving_piece(Piece::Type piece)
 {
-    this->moving_piece = piece;
+    this->_moving_piece = piece;
 }
 
 void Move::set_captured_piece(Piece::Type piece)
 {
-    this->captured_piece = piece;
+    this->_captured_piece = piece;
 }
 
 void Move::set_score(int score)
 {
-    this->score = score;
+    this->_score = score;
 }
 
-int Move::get_score() const
+int Move::score() const
 {
-    return this->score;
+    return this->_score;
 }
 
 /*=============================================================================
@@ -158,7 +160,7 @@ int Move::get_score() const
   ...
   f(A1) -> 56, f(H1) -> 63
   ============================================================================*/
-bool Move::translate_to_square(const std::string &notation, BoardSquare &square)
+bool Move::translate_to_square(const string &notation, BoardSquare &square)
 {
     if (is_valid_notation(notation))
     {
@@ -174,7 +176,7 @@ bool Move::translate_to_square(const std::string &notation, BoardSquare &square)
 /*=============================================================================
   Inverse function of translate_to_square
   ============================================================================*/
-bool Move::translate_to_notation(BoardSquare square, std::string &notation)
+bool Move::translate_to_notation(BoardSquare square, string &notation)
 {
     if (!IBoard::is_inside_board(square))
         return false;
@@ -192,7 +194,7 @@ bool Move::translate_to_notation(BoardSquare square, std::string &notation)
 
   For instance, A8 is a valid notation, whereas B10 is not.
   ============================================================================*/
-bool Move::is_valid_notation(const std::string &notation)
+bool Move::is_valid_notation(const string &notation)
 {
     if (notation.length() != 2)
         return false;
@@ -204,4 +206,4 @@ bool Move::is_valid_notation(const std::string &notation)
     return false;
 }
 
-} // namespace game_rules
+} // namespace rules

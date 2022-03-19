@@ -1,6 +1,6 @@
 #include "BoardConfigurationTracker.hpp"
 
-namespace game_rules
+namespace rules
 {
 bool BoardConfigurationTracker::add_record(const BoardKey &key, ushort &times)
 {
@@ -50,4 +50,4 @@ void BoardConfigurationTracker::reset()
     tracker.clear();
 }
 
-} // namespace game_rules
+} // namespace rules

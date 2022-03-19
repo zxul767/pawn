@@ -10,7 +10,7 @@
 #include "GameTraits.hpp"
 #include "Piece.hpp"
 
-namespace game_rules
+namespace rules
 {
 class IBoard;
 
@@ -31,6 +31,6 @@ class Bishop : public Piece
     bitboard all_moves_from[BOARD_SQUARES_COUNT];
 };
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // BISHOP_H

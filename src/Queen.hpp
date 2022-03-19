@@ -9,7 +9,7 @@
 #include "Bishop.hpp"
 #include "Rook.hpp"
 
-namespace game_rules
+namespace rules
 {
 class Queen : public Piece
 {
@@ -26,6 +26,6 @@ class Queen : public Piece
     Bishop *bishop;
 };
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // QUEEN_H

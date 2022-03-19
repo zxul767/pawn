@@ -1,7 +1,7 @@
 #include "GameReader.hpp"
 #include <cctype>
 
-namespace game_persistence
+namespace serialization
 {
 using std::string;
 using std::vector;
@@ -120,7 +120,8 @@ bool GameReader::set_variables()
     return true;
 }
 
-void GameReader::tokenize(const string &input, vector<string> &tokens, const string &delimiters) const
+void GameReader::tokenize(
+    const string &input, vector<string> &tokens, const string &delimiters) const
 {
     string::size_type begin = input.find_first_not_of(delimiters, 0);
     string::size_type end = input.find_first_of(delimiters, begin);
@@ -165,7 +166,8 @@ bool GameReader::variable_was_found(const string &input, uint *index_variable)
     return false;
 }
 
-bool GameReader::value_was_found(uint index_variable, const string &input, uint *index_value)
+bool GameReader::value_was_found(
+    uint index_variable, const string &input, uint *index_value)
 {
     int index = index_variable;
 
@@ -192,12 +194,13 @@ bool GameReader::set_value(uint index_variable, const string &token, uint index_
     }
     else if (index_variable == 1)
     {
-        this->board->set_player_in_turn(get_player_in_turn(index_value));
+        this->board->set_player_in_turn(current_player(index_value));
     }
     else if (index_variable >= 2 && index_variable <= 5)
     {
-        this->board->set_castling_privilege(get_color(index_variable), get_side(index_variable),
-                                            get_boolean(index_value));
+        this->board->set_castling_privilege(
+            get_color(index_variable), get_side(index_variable),
+            get_boolean(index_value));
     }
     else if (index_variable == 6)
     {
@@ -206,7 +209,8 @@ bool GameReader::set_value(uint index_variable, const string &token, uint index_
     }
     else if (index_variable >= 7 && index_variable <= 18)
     {
-        this->board->add_piece(token, get_type(index_variable), get_color(index_variable));
+        this->board->add_piece(
+            token, get_type(index_variable), get_color(index_variable));
     }
     return false;
 }
@@ -216,7 +220,7 @@ IBoard::GameStatus GameReader::get_status(uint index_value) const
     return (index_value == 0 ? IBoard::GAME_OVER : IBoard::PENDING_GAME);
 }
 
-Piece::Player GameReader::get_player_in_turn(uint index_value) const
+Piece::Player GameReader::current_player(uint index_value) const
 {
     return (index_value == 0 ? Piece::WHITE : Piece::BLACK);
 }
@@ -234,12 +238,12 @@ Piece::Player GameReader::get_color(uint variable) const
     return Piece::BLACK;
 }
 
-game_rules::CastleSide GameReader::get_side(uint variable) const
+rules::CastleSide GameReader::get_side(uint variable) const
 {
     if (variable == 3 || variable == 5)
-        return game_rules::CastleSide::QUEEN_SIDE;
+        return rules::CastleSide::QUEEN_SIDE;
 
-    return game_rules::CastleSide::KING_SIDE;
+    return rules::CastleSide::KING_SIDE;
 }
 
 Piece::Type GameReader::get_type(uint variable) const
@@ -258,4 +262,4 @@ Piece::Type GameReader::get_type(uint variable) const
     return Piece::KING;
 }
 
-} // namespace game_persistence
+} // namespace serialization

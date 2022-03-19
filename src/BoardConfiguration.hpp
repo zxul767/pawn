@@ -8,12 +8,13 @@
 
 #include "Move.hpp"
 
-namespace game_rules
+namespace rules
 {
 struct BoardConfiguration
 {
-    BoardConfiguration(const Move &move, bitboard en_passant, bool can_castle_king_side, bool can_castle_queen_side,
-                       ullong hash_key, ullong hash_lock)
+    BoardConfiguration(
+        const Move &move, bitboard en_passant, bool can_castle_king_side,
+        bool can_castle_queen_side, ullong hash_key, ullong hash_lock)
     {
         this->move = move;
         this->en_passant_capture_square = en_passant;
@@ -31,6 +32,6 @@ struct BoardConfiguration
     ullong hash_lock;
 };
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // BOARD_STATUS_H

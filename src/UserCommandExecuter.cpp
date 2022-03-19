@@ -20,21 +20,22 @@ using std::cout;
 using std::string;
 using std::vector;
 
-using game_rules::IBoard;
-using game_rules::Move;
+using rules::IBoard;
+using rules::Move;
 
-using game_engine::IEngine;
+using engine::IEngine;
 
 using learning::Chromosome;
 using learning::FitnessEvaluator;
 using learning::GeneticAlgorithm;
 
-UserCommandExecuter::UserCommandExecuter(IBoard *board, IEngine *game_engine, diagnostics::Timer *timer)
+UserCommandExecuter::UserCommandExecuter(
+    IBoard *board, IEngine *engine, diagnostics::Timer *timer)
 {
     this->timer = timer;
     this->board = board;
-    this->game_engine = game_engine;
-    this->move_generator = new game_engine::MoveGenerator();
+    this->engine = engine;
+    this->move_generator = new engine::MoveGenerator();
 }
 
 bool UserCommandExecuter::execute(const UserCommand &command)
@@ -103,7 +104,7 @@ void UserCommandExecuter::show_possible_moves()
     for (uint i = 0; i < possible_moves.size(); ++i)
         if (this->board->make_move(possible_moves[i], true) == IBoard::NO_ERROR)
         {
-            cerr << possible_moves[i] << " -> " << possible_moves[i].get_score() << std::endl;
+            cerr << possible_moves[i] << " -> " << possible_moves[i].score() << std::endl;
 
             cerr << (*board) << std::endl;
 
@@ -161,9 +162,10 @@ void UserCommandExecuter::think()
     Move best_move;
     uint depth = 5;
 
-    IEngine::GameResult result = this->game_engine->get_best_move(depth, board, best_move);
+    IEngine::GameResult result = this->engine->get_best_move(depth, board, best_move);
 
-    if (result == IEngine::NORMAL_EVALUATION || result == IEngine::BLACK_MATES || result == IEngine::WHITE_MATES)
+    if (result == IEngine::NORMAL_EVALUATION || result == IEngine::BLACK_MATES ||
+        result == IEngine::WHITE_MATES)
     {
         IBoard::Error error = this->board->make_move(best_move, true);
         if (error == IBoard::NO_ERROR)
@@ -224,13 +226,14 @@ void UserCommandExecuter::think()
     }
 }
 
-void UserCommandExecuter::train_by_genetic_algorithm(uint population_size, uint n_generations,
-                                                     double mutation_probability)
+void UserCommandExecuter::train_by_genetic_algorithm(
+    uint population_size, uint n_generations, double mutation_probability)
 {
-    std::unique_ptr<FitnessEvaluator> fitness_evaluator(new FitnessEvaluator(this->game_engine));
+    std::unique_ptr<FitnessEvaluator> fitness_evaluator(
+        new FitnessEvaluator(this->engine));
 
-    std::unique_ptr<GeneticAlgorithm> algorithm(
-        new GeneticAlgorithm(population_size, n_generations, mutation_probability, fitness_evaluator.get()));
+    std::unique_ptr<GeneticAlgorithm> algorithm(new GeneticAlgorithm(
+        population_size, n_generations, mutation_probability, fitness_evaluator.get()));
 
     vector<int> features_a;
     features_a.push_back(80);
@@ -245,7 +248,7 @@ void UserCommandExecuter::train_by_genetic_algorithm(uint population_size, uint 
     vector<int> best_features;
     algorithm->get_fittest_member().decode(best_features);
 
-    this->game_engine->load_factor_weights(best_features);
+    this->engine->load_factor_weights(best_features);
 }
 
 } // namespace game_ui

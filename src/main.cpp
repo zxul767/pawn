@@ -14,17 +14,17 @@ using std::cerr;
 using std::endl;
 using std::unique_ptr;
 
-using game_rules::IBoard;
-using game_rules::MaeBoard;
-using game_rules::Move;
-using game_rules::Piece;
+using rules::IBoard;
+using rules::MaeBoard;
+using rules::Move;
+using rules::Piece;
 
-using game_engine::AlphaBetaSearch;
-using game_engine::IEngine;
-using game_engine::IMoveGenerator;
-using game_engine::IPositionEvaluator;
-using game_engine::MoveGenerator;
-using game_engine::PositionEvaluator;
+using engine::AlphaBetaSearch;
+using engine::IEngine;
+using engine::IMoveGenerator;
+using engine::IPositionEvaluator;
+using engine::MoveGenerator;
+using engine::PositionEvaluator;
 
 using game_ui::UserCommand;
 using game_ui::UserCommandExecuter;
@@ -40,17 +40,20 @@ int main()
     unique_ptr<IBoard> board(new MaeBoard());
     unique_ptr<IPositionEvaluator> position_evaluator(new PositionEvaluator());
     unique_ptr<IMoveGenerator> generator(new MoveGenerator());
-    unique_ptr<IEngine> search_engine(new AlphaBetaSearch(position_evaluator.get(), generator.get()));
+    unique_ptr<IEngine> engine(
+        new AlphaBetaSearch(position_evaluator.get(), generator.get()));
 
     unique_ptr<Timer> timer(new Timer);
 
     UserCommand command;
     unique_ptr<UserCommandReader> command_reader(new UserCommandReader());
     unique_ptr<UserCommandExecuter> command_executer(
-        new UserCommandExecuter(board.get(), search_engine.get(), timer.get()));
+        new UserCommandExecuter(board.get(), engine.get(), timer.get()));
 
     cerr << (*board) << endl;
-    cerr << (board->get_player_in_turn() == Piece::WHITE ? "[White's turn]: " : "[Black's turn]: ");
+    cerr
+        << (board->current_player() == Piece::WHITE ? "[White's turn]: "
+                                                    : "[Black's turn]: ");
 
     command = command_reader->get_user_command();
     while (!command.is_quit())
@@ -115,7 +118,9 @@ int main()
         if (!xboard_mode)
         {
             cerr << (*board) << endl;
-            cerr << (board->get_player_in_turn() == Piece::WHITE ? "[White's turn]: " : "[Black's turn]: ");
+            cerr
+                << (board->current_player() == Piece::WHITE ? "[White's turn]: "
+                                                            : "[Black's turn]: ");
         }
 
         command = command_reader->get_user_command();

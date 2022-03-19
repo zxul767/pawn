@@ -4,14 +4,16 @@
 #include "Util.hpp"
 #include <vector>
 
-namespace game_rules
+namespace rules
 {
 class IBoard;
 class Move;
-} // namespace game_rules
+} // namespace rules
 
-namespace game_engine
+namespace engine
 {
+using std::vector;
+
 class IMoveGenerator
 {
   public:
@@ -28,16 +30,18 @@ class IMoveGenerator
     /*----------------------------------------------------------------------
       Return a vector of legal moves from the current BOARD configuration
       ---------------------------------------------------------------------*/
-    virtual bool generate_moves(game_rules::IBoard *, std::vector<game_rules::Move> &moves, ushort flags) = 0;
+    virtual bool generate_moves(
+        rules::IBoard *, vector<rules::Move> &moves, ushort flags) = 0;
 
-    virtual bool generate_moves(game_rules::IBoard *, std::vector<game_rules::Move> &moves) = 0;
-    virtual bool generate_en_prise_evations(game_rules::IBoard *, std::vector<game_rules::Move> &moves) = 0;
+    virtual bool generate_moves(rules::IBoard *, vector<rules::Move> &moves) = 0;
+    virtual bool generate_en_prise_evations(
+        rules::IBoard *, vector<rules::Move> &moves) = 0;
 
     virtual ~IMoveGenerator()
     {
     }
 };
 
-} // namespace game_engine
+} // namespace engine
 
 #endif // IMOVE_GENERATOR_H

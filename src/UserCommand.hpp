@@ -12,6 +12,8 @@
 
 namespace game_ui
 {
+using std::string;
+
 class UserCommand
 {
   public:
@@ -34,20 +36,20 @@ class UserCommand
 
     UserCommand();
     UserCommand(CommandKey key);
-    UserCommand(std::string &notation);
+    UserCommand(string &notation);
 
     bool is_move() const;
     bool is_quit() const;
 
-    std::string get_notation() const;
+    string get_notation() const;
     CommandKey get_key() const;
 
   private:
-    std::string notation;
+    string notation;
     CommandKey key;
 
-    static std::map<std::string, CommandKey> notation_to_key;
-    static std::map<CommandKey, std::string> key_to_notation;
+    static std::map<string, CommandKey> notation_to_key;
+    static std::map<CommandKey, string> key_to_notation;
 
     static bool load_commands();
     static const bool commands_loaded;

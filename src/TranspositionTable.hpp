@@ -14,9 +14,9 @@
 #include "Move.hpp"
 #include "Util.hpp"
 
-namespace game_engine
+namespace engine
 {
-using game_rules::BoardKey;
+using rules::BoardKey;
 
 enum Accuracy
 {
@@ -31,7 +31,7 @@ struct BoardEntry
     int score;
     int depth;
     Accuracy accuracy;
-    game_rules::Move best_move;
+    rules::Move best_move;
 };
 
 // This maps boards to a bucket in the hash table
@@ -85,6 +85,6 @@ class TranspositionTable
     BoardMap entries;
 };
 
-} // namespace game_engine
+} // namespace engine
 
 #endif // HASH_TRANSPOSITION_TABLE_H

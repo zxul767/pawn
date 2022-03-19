@@ -1,7 +1,7 @@
 #include "Pawn.hpp"
 #include "IBoard.hpp"
 
-namespace game_rules
+namespace rules
 {
 Pawn::Pawn()
 {
@@ -120,7 +120,7 @@ bitboard Pawn::get_double_move(uint square, Player player) const
         else
             end_square = square + offset;
 
-        return (util::constants::ONE << (end_square));
+        return util::to_bitboard[end_square];
     }
     return 0;
 }
@@ -143,6 +143,9 @@ bitboard Pawn::get_side_moves(uint square, Player player) const
   =============================================================================*/
 void Pawn::compute_moves()
 {
+    const int LEFT = 0;
+    const int RIGHT = 1;
+
     for (uint row = 0; row < BOARD_SIZE; ++row)
         for (uint col = 0; col < BOARD_SIZE; ++col)
         {
@@ -150,21 +153,28 @@ void Pawn::compute_moves()
 
             for (Player player = WHITE; player <= BLACK; ++player)
             {
-                this->side_moves_from[square][player] = compute_side_moves(square, player);
+                this->side_moves_from[square][player] =
+                    compute_side_moves(square, player);
                 this->moves_from[square][player] = 0;
 
-                this->simple_moves_from[square][player] = compute_simple_moves(square, player);
+                this->simple_moves_from[square][player] =
+                    compute_simple_moves(square, player);
 
-                this->capture_moves_from[square][player][0] = compute_capture_move(square, player, EAST);
+                this->capture_moves_from[square][player][LEFT] =
+                    compute_capture_move(square, player, EAST);
 
-                this->capture_moves_from[square][player][1] = compute_capture_move(square, player, WEST);
+                this->capture_moves_from[square][player][RIGHT] =
+                    compute_capture_move(square, player, WEST);
 
                 // OR simple and capture moves into general moves
-                this->moves_from[square][player] |= this->simple_moves_from[square][player];
+                this->moves_from[square][player] |=
+                    this->simple_moves_from[square][player];
 
-                this->moves_from[square][player] |= this->capture_moves_from[square][player][0];
+                this->moves_from[square][player] |=
+                    this->capture_moves_from[square][player][LEFT];
 
-                this->moves_from[square][player] |= this->capture_moves_from[square][player][1];
+                this->moves_from[square][player] |=
+                    this->capture_moves_from[square][player][RIGHT];
 
                 // If potential moves include side moves then:
                 // moves_from[square][player] |= side_moves_from[square];
@@ -188,7 +198,7 @@ bitboard Pawn::compute_side_moves(uint square, Player player) const
     {
         int x = column + dx[i];
         if (IBoard::is_inside_board(row, x) && is_valid_row(row, player))
-            side_moves |= (util::constants::ONE << (row * BOARD_SIZE + x));
+            side_moves |= util::to_bitboard[row * BOARD_SIZE + x];
     }
     return side_moves;
 }
@@ -214,7 +224,7 @@ bitboard Pawn::compute_capture_move(uint square, Player player, RowColumn direct
     int y = row + (player == WHITE ? -dy[position] : dy[position]);
 
     if (IBoard::is_inside_board(y, x))
-        capture_move |= (util::constants::ONE << (y * BOARD_SIZE + x));
+        capture_move |= util::to_bitboard[y * BOARD_SIZE + x];
 
     return capture_move;
 }
@@ -238,7 +248,7 @@ bitboard Pawn::compute_simple_moves(uint square, Player player) const
     {
         int y = row + (player == WHITE ? -dy[i] : dy[i]);
         if (IBoard::is_inside_board(y, column) && is_valid_row(row, player))
-            simple_moves |= (util::constants::ONE << (y * BOARD_SIZE + column));
+            simple_moves |= util::to_bitboard[y * BOARD_SIZE + column];
     }
 
     return simple_moves;
@@ -285,4 +295,4 @@ bool Pawn::is_valid_row(uint row, Player color) const
     return row != 0;
 }
 
-} // namespace game_rules
+} // namespace rules

@@ -5,7 +5,7 @@
 #include "Piece.hpp"
 #include <string>
 
-namespace game_rules
+namespace rules
 {
 class Move
 {
@@ -30,17 +30,17 @@ class Move
     BoardSquare from() const;
     BoardSquare to() const;
 
-    Type get_type() const;
+    Type type() const;
     void set_type(Type type);
 
-    Piece::Type get_moving_piece() const;
-    Piece::Type get_captured_piece() const;
+    Piece::Type moving_piece() const;
+    Piece::Type captured_piece() const;
 
     void set_moving_piece(Piece::Type piece);
     void set_captured_piece(Piece::Type piece);
 
     void set_score(int score);
-    int get_score() const;
+    int score() const;
 
     bool is_null() const;
 
@@ -56,14 +56,14 @@ class Move
   private:
     BoardSquare start;
     BoardSquare end;
-    Type type;
-    Piece::Type moving_piece;
-    Piece::Type captured_piece;
+    Type _type;
+    Piece::Type _moving_piece;
+    Piece::Type _captured_piece;
 
     // The score assigned to this move is relative to the position of the board
-    int score;
+    int _score;
 };
 
-} // namespace game_rules
+} // namespace rules
 
 #endif // MOVE_H

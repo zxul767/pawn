@@ -6,7 +6,7 @@
 #include <iostream>
 #include <locale>
 
-namespace game_engine
+namespace engine
 {
 using std::cerr;
 using std::endl;
@@ -39,7 +39,8 @@ class SearchStats
         cerr << "Nodes evaluated: " << this->nodes_evaluated << endl;
         cerr << "   Leaf nodes: " << this->leaf_nodes << endl;
         cerr << "   Internal nodes: " << this->internal_nodes << endl;
-        cerr << "Average branching factor: " << int(round(this->average_branching_factor)) << endl;
+        cerr << "Average branching factor: " << int(round(this->average_branching_factor))
+             << endl;
         cerr << "Transposition table hits: " << this->cache_hits << endl;
         cerr << "AlphaBeta cutoffs: " << this->alpha_beta_cutoffs << endl;
         cerr << "-------------------------------------------------------" << endl;
@@ -70,6 +71,6 @@ class SearchStats
     double average_branching_factor = 0.0;
     uint alpha_beta_cutoffs = 0;
 };
-} // namespace game_engine
+} // namespace engine
 
 #endif // SEARCH_STATS_H_

@@ -3,23 +3,26 @@
 
 #include "IMoveGenerator.hpp"
 
-namespace game_engine
+namespace engine
 {
+using std::vector;
+
 class MoveGenerator : public IMoveGenerator
 {
   public:
     /*======================================================================
       Return a vector of legal moves from the current BOARD configuration
       =====================================================================*/
-    bool generate_moves(game_rules::IBoard *, std::vector<game_rules::Move> &moves, ushort kind_of_moves);
-    bool generate_moves(game_rules::IBoard *, std::vector<game_rules::Move> &moves);
-    bool generate_en_prise_evations(game_rules::IBoard *, std::vector<game_rules::Move> &moves);
+    bool generate_moves(
+        rules::IBoard *, vector<rules::Move> &moves, ushort kind_of_moves);
+    bool generate_moves(rules::IBoard *, vector<rules::Move> &moves);
+    bool generate_en_prise_evations(rules::IBoard *, vector<rules::Move> &moves);
 
     ~MoveGenerator()
     {
     }
 };
 
-} // namespace game_engine
+} // namespace engine
 
 #endif // MOVE_GENERATOR_H
