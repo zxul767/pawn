@@ -143,6 +143,9 @@ bitboard Pawn::get_side_moves(uint square, Player player) const
   =============================================================================*/
 void Pawn::compute_moves()
 {
+    const int LEFT = 0;
+    const int RIGHT = 1;
+
     for (uint row = 0; row < BOARD_SIZE; ++row)
         for (uint col = 0; col < BOARD_SIZE; ++col)
         {
@@ -157,10 +160,10 @@ void Pawn::compute_moves()
                 this->simple_moves_from[square][player] =
                     compute_simple_moves(square, player);
 
-                this->capture_moves_from[square][player][0] =
+                this->capture_moves_from[square][player][LEFT] =
                     compute_capture_move(square, player, EAST);
 
-                this->capture_moves_from[square][player][1] =
+                this->capture_moves_from[square][player][RIGHT] =
                     compute_capture_move(square, player, WEST);
 
                 // OR simple and capture moves into general moves
@@ -168,10 +171,10 @@ void Pawn::compute_moves()
                     this->simple_moves_from[square][player];
 
                 this->moves_from[square][player] |=
-                    this->capture_moves_from[square][player][0];
+                    this->capture_moves_from[square][player][LEFT];
 
                 this->moves_from[square][player] |=
-                    this->capture_moves_from[square][player][1];
+                    this->capture_moves_from[square][player][RIGHT];
 
                 // If potential moves include side moves then:
                 // moves_from[square][player] |= side_moves_from[square];
