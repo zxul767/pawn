@@ -15,7 +15,7 @@ std::map<uint, size_t> TranspositionTable::bits_to_table_size = {
     {32, 2'159'363},
     {64, 4'142'027},
     {128, 8'888'437},
-    {256, 1'7311'163}};
+    {256, 17'311'163}};
 
 size_t TranspositionTable::compute_table_size(uint size_in_bits)
 {
