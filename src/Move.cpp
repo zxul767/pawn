@@ -21,11 +21,11 @@ Move::Move(const string &move_notation)
         !translate_to_square(move_notation.substr(2, 2), end))
     {
         // Create a null move if NOTATION was incorrect
-        this->score = 0;
+        this->_score = 0;
         this->start = this->end = BoardSquare::a8;
-        this->type = NULL_MOVE;
-        this->moving_piece = Piece::NULL_PIECE;
-        this->captured_piece = Piece::NULL_PIECE;
+        this->_type = NULL_MOVE;
+        this->_moving_piece = Piece::NULL_PIECE;
+        this->_captured_piece = Piece::NULL_PIECE;
     }
 }
 
@@ -37,11 +37,11 @@ Move::Move(const string &move_notation)
   =============================================================================*/
 Move::Move()
 {
-    this->score = 0;
+    this->_score = 0;
     this->start = this->end = BoardSquare::a1;
-    this->type = NULL_MOVE;
-    this->moving_piece = Piece::NULL_PIECE;
-    this->captured_piece = Piece::NULL_PIECE;
+    this->_type = NULL_MOVE;
+    this->_moving_piece = Piece::NULL_PIECE;
+    this->_captured_piece = Piece::NULL_PIECE;
 }
 
 /*=============================================================================
@@ -52,12 +52,12 @@ Move::Move()
   ============================================================================*/
 Move::Move(BoardSquare start, BoardSquare end)
 {
-    this->score = 0;
+    this->_score = 0;
     this->start = start;
     this->end = end;
-    this->type = NULL_MOVE;
-    this->moving_piece = Piece::NULL_PIECE;
-    this->captured_piece = Piece::NULL_PIECE;
+    this->_type = NULL_MOVE;
+    this->_moving_piece = Piece::NULL_PIECE;
+    this->_captured_piece = Piece::NULL_PIECE;
 }
 
 /*=============================================================================
@@ -65,7 +65,7 @@ Move::Move(BoardSquare start, BoardSquare end)
   ============================================================================*/
 bool Move::is_null() const
 {
-    return this->type == NULL_MOVE;
+    return this->_type == NULL_MOVE;
 }
 
 /*=============================================================================
@@ -73,15 +73,15 @@ bool Move::is_null() const
   ============================================================================*/
 std::ostream &operator<<(std::ostream &out, const Move &move)
 {
-    if (move.get_type() != Move::NULL_MOVE)
+    if (move.type() != Move::NULL_MOVE)
     {
         string initial, final;
         Move::translate_to_notation(move.from(), initial);
         Move::translate_to_notation(move.to(), final);
 
-        if (move.get_moving_piece() != Piece::NULL_PIECE)
+        if (move.moving_piece() != Piece::NULL_PIECE)
         {
-            out << Piece::pieceString(move.get_moving_piece());
+            out << Piece::pieceString(move.moving_piece());
         }
         out << "\t" << initial << " - " << final;
     }
@@ -95,7 +95,7 @@ bool operator==(const Move &m1, const Move &m2)
 
 bool operator<(const Move &m1, const Move &m2)
 {
-    return m1.score < m2.score;
+    return m1._score < m2._score;
 }
 
 BoardSquare Move::from() const
@@ -108,44 +108,44 @@ BoardSquare Move::to() const
     return this->end;
 }
 
-Move::Type Move::get_type() const
+Move::Type Move::type() const
 {
-    return this->type;
+    return this->_type;
 }
 
 void Move::set_type(Move::Type type)
 {
-    this->type = type;
+    this->_type = type;
 }
 
-Piece::Type Move::get_moving_piece() const
+Piece::Type Move::moving_piece() const
 {
-    return this->moving_piece;
+    return this->_moving_piece;
 }
 
-Piece::Type Move::get_captured_piece() const
+Piece::Type Move::captured_piece() const
 {
-    return this->captured_piece;
+    return this->_captured_piece;
 }
 
 void Move::set_moving_piece(Piece::Type piece)
 {
-    this->moving_piece = piece;
+    this->_moving_piece = piece;
 }
 
 void Move::set_captured_piece(Piece::Type piece)
 {
-    this->captured_piece = piece;
+    this->_captured_piece = piece;
 }
 
 void Move::set_score(int score)
 {
-    this->score = score;
+    this->_score = score;
 }
 
-int Move::get_score() const
+int Move::score() const
 {
-    return this->score;
+    return this->_score;
 }
 
 /*=============================================================================

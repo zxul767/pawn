@@ -266,7 +266,7 @@ MaeBoard::Error MaeBoard::make_move(Move &move, bool is_computer_move)
     remove_piece(end);
     add_piece(end, initial.piece, initial.player);
 
-    if (move.get_type() == Move::EN_PASSANT_CAPTURE)
+    if (move.type() == Move::EN_PASSANT_CAPTURE)
     {
         uint offset = this->is_whites_turn ? BOARD_SIZE : -((int)BOARD_SIZE);
         uint position = util::msb_position(this->en_passant_capture_square) + offset;
@@ -281,7 +281,7 @@ MaeBoard::Error MaeBoard::make_move(Move &move, bool is_computer_move)
         if (final.piece != Piece::NULL_PIECE)
             add_piece(end, final.piece, final.player);
 
-        if (move.get_type() == Move::EN_PASSANT_CAPTURE)
+        if (move.type() == Move::EN_PASSANT_CAPTURE)
         {
             int offset = (this->is_whites_turn ? BOARD_SIZE : -((int)BOARD_SIZE));
             uint position = util::msb_position(en_passant_capture_square) + offset;
@@ -306,9 +306,8 @@ MaeBoard::Error MaeBoard::make_move(Move &move, bool is_computer_move)
     if (!this->position_counter.add_record(key, times) && times == 3)
         return DRAW_BY_REPETITION;
 
-    if (move.get_type() == Move::NORMAL_CAPTURE ||
-        move.get_type() == Move::EN_PASSANT_CAPTURE ||
-        move.get_moving_piece() == Piece::PAWN)
+    if (move.type() == Move::NORMAL_CAPTURE || move.type() == Move::EN_PASSANT_CAPTURE ||
+        move.moving_piece() == Piece::PAWN)
     {
         this->fifty_move_counter = 0;
     }
@@ -355,16 +354,16 @@ bool MaeBoard::undo_move()
         return false;
     }
 
-    if (!add_piece(move.from(), move.get_moving_piece(), player))
+    if (!add_piece(move.from(), move.moving_piece(), player))
     {
         return false;
     }
 
     int board_size;
-    switch (move.get_type())
+    switch (move.type())
     {
     case Move::NORMAL_CAPTURE:
-        if (!add_piece(move.to(), move.get_captured_piece(), opponent))
+        if (!add_piece(move.to(), move.captured_piece(), opponent))
         {
             return false;
         }
@@ -406,7 +405,7 @@ bool MaeBoard::undo_move()
         board_size = (this->is_whites_turn ? -((int)BOARD_SIZE) : BOARD_SIZE);
         if (move.from() + board_size != move.to())
             // There was a capture while doing the promotion
-            if (!add_piece(move.to(), move.get_captured_piece(), opponent))
+            if (!add_piece(move.to(), move.captured_piece(), opponent))
             {
                 return false;
             }
@@ -449,7 +448,7 @@ MaeBoard::Error MaeBoard::can_move(const Move &move) const
         return Error::OPPONENTS_TURN;
 
     bitboard valid_moves =
-        this->chessmen[move.get_moving_piece()]->get_moves(start, this->player, this);
+        this->chessmen[move.moving_piece()]->get_moves(start, this->player, this);
 
     // Is MOVE.TO () included in the set of valid moves from MOVE.FROM () ?
     if (util::to_bitboard[move.to()] & valid_moves)
@@ -469,7 +468,7 @@ void MaeBoard::label_move(Move &move) const
 {
     ushort start = move.from();
     ushort end = move.to();
-    Piece::Type piece = move.get_moving_piece();
+    Piece::Type piece = move.moving_piece();
 
     if (util::to_bitboard[end] & ~all_pieces) // Apparently simple moves
     {
@@ -580,7 +579,7 @@ bool MaeBoard::is_king_in_check() const
   ============================================================================*/
 void MaeBoard::handle_en_passant_move(const Move &move)
 {
-    if (move.get_moving_piece() != Piece::PAWN)
+    if (move.moving_piece() != Piece::PAWN)
     {
         if (this->en_passant_capture_square)
         {
@@ -631,16 +630,16 @@ void MaeBoard::handle_castling_privileges(const Move &move)
     ushort end = move.to();
 
     // Check whether castling is still possible after this move is made
-    if (move.get_moving_piece() == Piece::KING)
+    if (move.moving_piece() == Piece::KING)
     {
         // If this move was a castle, move the rook next to the king
-        if (move.get_type() == Move::CASTLE_KING_SIDE)
+        if (move.type() == Move::CASTLE_KING_SIDE)
         {
             add_piece(BoardSquare(end - 1), board[end + 1].piece, board[end + 1].player);
             remove_piece(BoardSquare(end + 1));
             this->is_castled_[player][KING_SIDE] = true;
         }
-        else if (move.get_type() == Move::CASTLE_QUEEN_SIDE)
+        else if (move.type() == Move::CASTLE_QUEEN_SIDE)
         {
             add_piece(BoardSquare(end + 1), board[end - 2].piece, board[end - 2].player);
             remove_piece(BoardSquare(end - 2));
@@ -706,7 +705,7 @@ void MaeBoard::handle_castling_privileges(const Move &move)
   ===========================================================================*/
 void MaeBoard::handle_promotion_move(const Move &move)
 {
-    if (move.get_type() == Move::PROMOTION_MOVE)
+    if (move.type() == Move::PROMOTION_MOVE)
     {
         remove_piece(move.to());
         // TODO: allow the user to choose which piece they want

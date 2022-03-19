@@ -104,8 +104,7 @@ void UserCommandExecuter::show_possible_moves()
     for (uint i = 0; i < possible_moves.size(); ++i)
         if (this->board->make_move(possible_moves[i], true) == IBoard::NO_ERROR)
         {
-            cerr << possible_moves[i] << " -> " << possible_moves[i].get_score()
-                 << std::endl;
+            cerr << possible_moves[i] << " -> " << possible_moves[i].score() << std::endl;
 
             cerr << (*board) << std::endl;
 

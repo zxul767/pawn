@@ -51,16 +51,15 @@ bool MoveGenerator::generate_moves(IBoard *board, vector<Move> &moves)
                 Move move(square, current_move);
                 move.set_moving_piece(piece);
                 board->label_move(move);
-                Move::Type move_type = move.get_type();
+                Move::Type move_type = move.type();
 
                 if (move_type == Move::NORMAL_CAPTURE ||
                     move_type == Move::EN_PASSANT_CAPTURE)
                 {
                     move.set_captured_piece(board->get_piece(current_move));
                     double score =
-                        position_evaluator.get_piece_value(move.get_moving_piece());
-                    score /=
-                        position_evaluator.get_piece_value(move.get_captured_piece());
+                        position_evaluator.get_piece_value(move.moving_piece());
+                    score /= position_evaluator.get_piece_value(move.captured_piece());
                     move.set_score((int)(10 * score));
                     captures.push_back(move);
                 }
@@ -118,7 +117,7 @@ bool MoveGenerator::generate_moves(
                 Move move(square, current_move);
                 move.set_moving_piece(piece);
                 board->label_move(move);
-                Move::Type move_type = move.get_type();
+                Move::Type move_type = move.type();
 
                 if (move_type == Move::NORMAL_CAPTURE ||
                     move_type == Move::EN_PASSANT_CAPTURE)
@@ -127,8 +126,8 @@ bool MoveGenerator::generate_moves(
 
                     if (kind_of_moves & MoveGenerator::CAPTURES)
                     {
-                        double score = evaluator.get_piece_value(move.get_moving_piece());
-                        score /= evaluator.get_piece_value(move.get_captured_piece());
+                        double score = evaluator.get_piece_value(move.moving_piece());
+                        score /= evaluator.get_piece_value(move.captured_piece());
                         move.set_score((int)(10 * score));
                         captures.push_back(move);
                     }
