@@ -98,7 +98,7 @@ void Rook::compute_moves()
                     y += dy[ray];
                     x += dx[ray];
                     this->moves_from[square][ray] |=
-                        (util::constants::ONE << (y * BOARD_SIZE + x));
+                        util::to_bitboard[y * BOARD_SIZE + x];
                 }
                 this->all_moves_from[square] |= this->moves_from[square][ray];
             }

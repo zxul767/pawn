@@ -120,7 +120,7 @@ bitboard Pawn::get_double_move(uint square, Player player) const
         else
             end_square = square + offset;
 
-        return (util::constants::ONE << (end_square));
+        return util::to_bitboard[end_square];
     }
     return 0;
 }
@@ -195,7 +195,7 @@ bitboard Pawn::compute_side_moves(uint square, Player player) const
     {
         int x = column + dx[i];
         if (IBoard::is_inside_board(row, x) && is_valid_row(row, player))
-            side_moves |= (util::constants::ONE << (row * BOARD_SIZE + x));
+            side_moves |= util::to_bitboard[row * BOARD_SIZE + x];
     }
     return side_moves;
 }
@@ -221,7 +221,7 @@ bitboard Pawn::compute_capture_move(uint square, Player player, RowColumn direct
     int y = row + (player == WHITE ? -dy[position] : dy[position]);
 
     if (IBoard::is_inside_board(y, x))
-        capture_move |= (util::constants::ONE << (y * BOARD_SIZE + x));
+        capture_move |= util::to_bitboard[y * BOARD_SIZE + x];
 
     return capture_move;
 }
@@ -245,7 +245,7 @@ bitboard Pawn::compute_simple_moves(uint square, Player player) const
     {
         int y = row + (player == WHITE ? -dy[i] : dy[i]);
         if (IBoard::is_inside_board(y, column) && is_valid_row(row, player))
-            simple_moves |= (util::constants::ONE << (y * BOARD_SIZE + column));
+            simple_moves |= util::to_bitboard[y * BOARD_SIZE + column];
     }
 
     return simple_moves;
