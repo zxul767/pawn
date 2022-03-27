@@ -6,7 +6,6 @@
   an empty board), and in specific situations (i.e. in a board with pieces)
   ==============================================================================*/
 
-#include "BoardTraits.hpp"
 #include "GameTraits.hpp"
 #include "Piece.hpp"
 

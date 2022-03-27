@@ -1,7 +1,7 @@
 #ifndef IMOVE_GENERATOR_H
 #define IMOVE_GENERATOR_H
 
-#include "Util.hpp"
+#include "type_aliases.hpp"
 #include <vector>
 
 namespace rules

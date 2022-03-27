@@ -136,7 +136,7 @@ void GameReader::tokenize(
 
 bool GameReader::set_variable(string &input)
 {
-    uint index_variable, index_value;
+    uint index_variable, index_value = 0;
     vector<string> tokens;
     string delimiters = " :,";
 

@@ -2,9 +2,13 @@
 #define POSITION_EVALUATOR_H
 
 #include "IPositionEvaluator.hpp"
-#include "Piece.hpp"
 
 #include <vector>
+
+namespace rules
+{
+class Piece;
+}
 
 namespace engine
 {
@@ -22,12 +26,12 @@ class PositionEvaluator : public IPositionEvaluator
     void load_factor_weights(std::vector<int> &weights);
 
   private:
-    int material_value(util::bitboard piece, rules::Piece::Type) const;
+    int material_value(bits::bitboard piece, rules::Piece::Type) const;
     int mobility_value(
-        const rules::IBoard *, util::bitboard piece, rules::Piece::Type) const;
+        const rules::IBoard *, bits::bitboard piece, rules::Piece::Type) const;
 
     int center_control_value(
-        const rules::IBoard *, util::bitboard piece, rules::Piece::Type) const;
+        const rules::IBoard *, bits::bitboard piece, rules::Piece::Type) const;
 
     int king_safety_value(const rules::IBoard *, rules::Piece::Player) const;
     int development_value(const rules::IBoard *, rules::Piece::Player) const;

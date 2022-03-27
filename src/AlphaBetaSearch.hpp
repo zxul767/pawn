@@ -7,9 +7,7 @@
   ==============================================================================*/
 
 #include "IEngine.hpp"
-#include "IMoveGenerator.hpp"
 #include "Move.hpp"
-#include "Util.hpp"
 
 #include <fstream>
 #include <stack>
@@ -18,6 +16,8 @@
 namespace engine
 {
 using std::vector;
+
+class IMoveGenerator;
 class IPositionEvaluator;
 class TranspositionTable;
 

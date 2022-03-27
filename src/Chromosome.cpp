@@ -1,8 +1,10 @@
-#include "Chromosome.hpp"
-#include "IBoard.hpp"
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
+
+#include "Chromosome.hpp"
+#include "IBoard.hpp"
+#include "util.hpp"
 
 namespace learning
 {

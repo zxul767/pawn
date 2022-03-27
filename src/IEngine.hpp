@@ -2,7 +2,8 @@
 #define ICHESS_ENGINE_H
 
 #include "SearchStats.hpp"
-#include "Util.hpp"
+#include "util.hpp"
+#include <vector>
 
 namespace rules
 {

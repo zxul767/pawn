@@ -1,10 +1,10 @@
 #ifndef COMMAND_READER_H
 #define COMMAND_READER_H
 
-#include "UserCommand.hpp"
-
 namespace game_ui
 {
+class UserCommand;
+
 class UserCommandReader
 {
   public:

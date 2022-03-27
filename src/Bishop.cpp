@@ -1,6 +1,8 @@
+#include <iostream>
+
 #include "Bishop.hpp"
 #include "IBoard.hpp"
-#include <iostream>
+#include "bitboard.hpp"
 
 namespace rules
 {
@@ -35,9 +37,9 @@ bitboard Bishop::get_moves(uint square, Piece::Player player, const IBoard *boar
         blocking_pieces = get_diagonal_ray_from(BoardSquare(square), ray) & all_pieces;
 
         if (ray == NORTH_EAST || ray == NORTH_WEST)
-            first_blocking_piece = BoardSquare(util::msb_position(blocking_pieces));
+            first_blocking_piece = BoardSquare(bits::msb_position(blocking_pieces));
         else
-            first_blocking_piece = BoardSquare(util::lsb_position(blocking_pieces));
+            first_blocking_piece = BoardSquare(bits::lsb_position(blocking_pieces));
 
         attacks |=
             get_diagonal_ray_from(BoardSquare(square), ray) ^

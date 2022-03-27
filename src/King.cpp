@@ -1,7 +1,10 @@
-#include "King.hpp"
-#include "IBoard.hpp"
 #include <iostream>
 #include <memory>
+
+#include "BoardTraits.hpp"
+#include "IBoard.hpp"
+#include "King.hpp"
+#include "bitboard.hpp"
 
 namespace rules
 {
@@ -34,8 +37,8 @@ bitboard King::get_moves(uint square, Player player, const IBoard *board) const
     {
         // Ensure there are no pieces between the rook and the king
         if (board->can_castle(player, CastleSide::KING_SIDE) &&
-            !(all_pieces & (util::to_bitboard[square + 1])) &&
-            !(all_pieces & (util::to_bitboard[square + 2])))
+            !(all_pieces & (bits::to_bitboard[square + 1])) &&
+            !(all_pieces & (bits::to_bitboard[square + 2])))
         {
             // Make sure there are no attacks on squares the king has to pass
             // through while castling
@@ -43,14 +46,14 @@ bitboard King::get_moves(uint square, Player player, const IBoard *board) const
                 !board->attacks_to(BoardSquare(square + 1), /* include_king: */ false) &&
                 !board->attacks_to(BoardSquare(square + 2), /* include_king: */ false))
             {
-                attacks |= (util::to_bitboard[square + 2]);
+                attacks |= (bits::to_bitboard[square + 2]);
             }
         }
 
         if (board->can_castle(player, CastleSide::QUEEN_SIDE) &&
-            !(all_pieces & (util::to_bitboard[square - 1])) &&
-            !(all_pieces & (util::to_bitboard[square - 2])) &&
-            !(all_pieces & (util::to_bitboard[square - 3])))
+            !(all_pieces & (bits::to_bitboard[square - 1])) &&
+            !(all_pieces & (bits::to_bitboard[square - 2])) &&
+            !(all_pieces & (bits::to_bitboard[square - 3])))
         {
             // Make sure there are no attacks on squares the king has to pass
             // through while castling
@@ -58,7 +61,7 @@ bitboard King::get_moves(uint square, Player player, const IBoard *board) const
                 !board->attacks_to(BoardSquare(square - 1), /* include_king: */ false) &&
                 !board->attacks_to(BoardSquare(square - 2), /* include_king: */ false))
             {
-                attacks |= (util::to_bitboard[square - 2]);
+                attacks |= (bits::to_bitboard[square - 2]);
             }
         }
     }
@@ -114,7 +117,7 @@ void King::compute_moves()
                 int x = col + dx[jump];
 
                 if (IBoard::is_inside_board(y, x))
-                    this->moves_from[square] |= (util::to_bitboard[y * BOARD_SIZE + x]);
+                    this->moves_from[square] |= (bits::to_bitboard[y * BOARD_SIZE + x]);
             }
         }
 }
@@ -134,15 +137,15 @@ bool King::compute_neighbors()
     {
         bitboard neighborhood = king->get_potential_moves(position, Piece::WHITE);
         bitboard actual_neighbors = neighborhood;
-        int square = util::msb_position(neighborhood);
+        int square = bits::msb_position(neighborhood);
 
         while (neighborhood && square != -1)
         {
             actual_neighbors |= king->get_potential_moves(square, Piece::WHITE);
-            neighborhood ^= util::to_bitboard[square];
-            square = util::msb_position(neighborhood);
+            neighborhood ^= bits::to_bitboard[square];
+            square = bits::msb_position(neighborhood);
         }
-        neighbors[position] = actual_neighbors ^ util::to_bitboard[position];
+        neighbors[position] = actual_neighbors ^ bits::to_bitboard[position];
     }
     return true;
 }

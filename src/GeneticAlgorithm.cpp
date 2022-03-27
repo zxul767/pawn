@@ -1,11 +1,12 @@
-#include "GeneticAlgorithm.hpp"
-#include "Chromosome.hpp"
-#include "FitnessEvaluator.hpp"
-
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+
+#include "Chromosome.hpp"
+#include "FitnessEvaluator.hpp"
+#include "GeneticAlgorithm.hpp"
+#include "util.hpp"
 
 namespace learning
 {

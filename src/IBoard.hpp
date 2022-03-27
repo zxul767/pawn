@@ -13,11 +13,11 @@
 
 #include "BoardTraits.hpp"
 #include "Piece.hpp"
-#include "Util.hpp"
 
 namespace rules
 {
 class Move;
+
 using std::string;
 
 class IBoard

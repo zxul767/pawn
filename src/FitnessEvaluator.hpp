@@ -6,8 +6,7 @@
   the best ones when running a genetic algorithm
   ==============================================================================*/
 
-#include "Util.hpp"
-#include <string>
+#include "type_aliases.hpp"
 
 namespace engine
 {

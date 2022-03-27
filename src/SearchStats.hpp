@@ -1,7 +1,6 @@
 #ifndef SEARCH_STATS_H_
 #define SEARCH_STATS_H_
 
-#include "Util.hpp"
 #include <cmath>
 #include <iostream>
 #include <locale>

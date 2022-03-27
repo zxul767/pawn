@@ -1,4 +1,6 @@
 #include "Queen.hpp"
+#include "Bishop.hpp"
+#include "Rook.hpp"
 
 namespace rules
 {

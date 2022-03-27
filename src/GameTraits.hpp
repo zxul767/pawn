@@ -5,7 +5,7 @@
   Defines constants that represent the basic traits of the game
   ==============================================================================*/
 
-#include "Util.hpp"
+#include "type_aliases.hpp"
 
 namespace rules
 {

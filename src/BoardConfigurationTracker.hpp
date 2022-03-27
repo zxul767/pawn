@@ -5,10 +5,8 @@
   Holds a chess board configuration key to be used transposition table lookups
   ==============================================================================*/
 
-#include <unordered_map>
-
 #include "BoardKey.hpp"
-#include "Util.hpp"
+#include <unordered_map>
 
 namespace rules
 {
@@ -24,15 +22,15 @@ class BoardConfigurationTracker
     ushort get_repetitions(const BoardKey &key) const;
     void reset();
 
-    static const size_t size = 4142027;
+    static const std::size_t size = 4142027;
 
   private:
     class board_hasher
     {
       public:
-        size_t operator()(const BoardKey &board) const
+        std::size_t operator()(const BoardKey &board) const
         {
-            return (size_t)(board.hash_key % size);
+            return (std::size_t)(board.hash_key % size);
         }
     };
     class board_comparer

@@ -1,8 +1,6 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include "Util.hpp"
-#include <cmath>
 #include <ctime>
 
 namespace diagnostics

@@ -6,6 +6,7 @@
 
 #include "AlphaBetaSearch.hpp"
 #include "BoardKey.hpp"
+#include "GameTraits.hpp"
 #include "IBoard.hpp"
 #include "MoveGenerator.hpp"
 #include "PositionEvaluator.hpp"

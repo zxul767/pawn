@@ -2,7 +2,7 @@
 #include "IBoard.hpp"
 #include "Move.hpp"
 #include "PositionEvaluator.hpp"
-#include "Util.hpp"
+#include "bitboard.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -16,7 +16,8 @@ using rules::IBoard;
 using rules::Move;
 using rules::Piece;
 
-using util::bitboard;
+using bits::bitboard;
+using bits::msb_position;
 
 /*==========================================================================
   Generate all pseudo-legal moves and place captures at the beginning of
@@ -39,14 +40,14 @@ bool MoveGenerator::generate_moves(IBoard *board, vector<Move> &moves)
         while (pieces)
         {
             // extract pseudo-legal moves for the current piece
-            auto square = BoardSquare(util::msb_position(pieces));
+            auto square = BoardSquare(msb_position(pieces));
             valid_moves = board->get_moves(piece, square);
-            pieces ^= util::to_bitboard[square];
+            pieces ^= bits::to_bitboard[square];
 
             while (valid_moves)
             {
-                auto current_move = BoardSquare(util::msb_position(valid_moves));
-                valid_moves ^= util::to_bitboard[current_move];
+                auto current_move = BoardSquare(msb_position(valid_moves));
+                valid_moves ^= bits::to_bitboard[current_move];
 
                 Move move(square, current_move);
                 move.set_moving_piece(piece);
@@ -105,14 +106,14 @@ bool MoveGenerator::generate_moves(
         while (pieces)
         {
             // extract pseudo-legal moves for the current piece
-            auto square = BoardSquare(util::msb_position(pieces));
+            auto square = BoardSquare(msb_position(pieces));
             valid_moves = board->get_moves(piece, square);
-            pieces ^= util::to_bitboard[square];
+            pieces ^= bits::to_bitboard[square];
 
             while (valid_moves)
             {
-                auto current_move = BoardSquare(util::msb_position(valid_moves));
-                valid_moves ^= util::to_bitboard[current_move];
+                auto current_move = BoardSquare(msb_position(valid_moves));
+                valid_moves ^= bits::to_bitboard[current_move];
 
                 Move move(square, current_move);
                 move.set_moving_piece(piece);
@@ -200,7 +201,7 @@ bool MoveGenerator::generate_en_prise_evations(IBoard *board, vector<Move> &move
     bitboard pieces = board->get_pieces(player);
     while (pieces)
     {
-        auto from = BoardSquare(util::lsb_position(pieces));
+        auto from = BoardSquare(bits::lsb_position(pieces));
         Piece::Type piece_type = board->get_piece(from);
         bitboard threats = board->threats_to(from, piece_type);
 
@@ -216,7 +217,7 @@ bool MoveGenerator::generate_en_prise_evations(IBoard *board, vector<Move> &move
             bitboard evasions = board->get_moves(piece_type, from);
             while (evasions)
             {
-                auto to = BoardSquare(util::lsb_position(evasions));
+                auto to = BoardSquare(bits::lsb_position(evasions));
                 Move move(from, to);
                 moves.push_back(move);
                 // Watch out! removing a bit this way only works for the LSB
