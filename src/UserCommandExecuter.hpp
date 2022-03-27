@@ -1,7 +1,6 @@
 #ifndef USER_COMMAND_EXECUTER_H
 #define USER_COMMAND_EXECUTER_H
 
-#include "Util.hpp"
 #include <string>
 
 namespace rules

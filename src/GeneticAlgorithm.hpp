@@ -11,7 +11,6 @@
   ==============================================================================*/
 
 #include "Chromosome.hpp"
-#include "Util.hpp"
 
 namespace learning
 {

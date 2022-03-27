@@ -1,7 +1,7 @@
 #ifndef BOARD_KEY_H
 #define BOARD_KEY_H
 
-#include "Util.hpp"
+#include "type_aliases.hpp"
 
 namespace rules
 {

@@ -6,14 +6,13 @@
   own move rules
  ==============================================================================*/
 
-#include "Util.hpp"
+#include "bitboard.hpp"
 #include <string>
 
 namespace rules
 {
-using util::bitboard;
+using bits::bitboard;
 
-// Cannot include IBoard.h because that creates a cyclic dependency
 class IBoard;
 
 class Piece

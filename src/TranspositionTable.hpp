@@ -10,9 +10,7 @@
 #include <unordered_map>
 
 #include "BoardKey.hpp"
-#include "MaeBoard.hpp"
 #include "Move.hpp"
-#include "Util.hpp"
 
 namespace engine
 {

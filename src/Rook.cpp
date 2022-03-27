@@ -1,5 +1,6 @@
 #include "Rook.hpp"
 #include "IBoard.hpp"
+#include "bitboard.hpp"
 
 namespace rules
 {
@@ -31,9 +32,9 @@ bitboard Rook::get_moves(uint square, Piece::Player player, const IBoard *board)
         blocking_pieces = get_ray_from(BoardSquare(square), ray) & all_pieces;
 
         if (ray == NORTH || ray == WEST)
-            first_blocking_piece = BoardSquare(util::msb_position(blocking_pieces));
+            first_blocking_piece = BoardSquare(bits::msb_position(blocking_pieces));
         else
-            first_blocking_piece = BoardSquare(util::lsb_position(blocking_pieces));
+            first_blocking_piece = BoardSquare(bits::lsb_position(blocking_pieces));
 
         attacks |= get_ray_from(BoardSquare(square), ray) ^
                    (blocking_pieces ? get_ray_from(first_blocking_piece, ray) : 0);
@@ -98,7 +99,7 @@ void Rook::compute_moves()
                     y += dy[ray];
                     x += dx[ray];
                     this->moves_from[square][ray] |=
-                        util::to_bitboard[y * BOARD_SIZE + x];
+                        bits::to_bitboard[y * BOARD_SIZE + x];
                 }
                 this->all_moves_from[square] |= this->moves_from[square][ray];
             }

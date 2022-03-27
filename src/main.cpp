@@ -3,10 +3,12 @@
 #include <string>
 
 #include "AlphaBetaSearch.hpp"
+#include "IMoveGenerator.hpp"
 #include "MaeBoard.hpp"
 #include "MoveGenerator.hpp"
 #include "PositionEvaluator.hpp"
 #include "Timer.hpp"
+#include "UserCommand.hpp"
 #include "UserCommandExecuter.hpp"
 #include "UserCommandReader.hpp"
 

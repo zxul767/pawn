@@ -5,12 +5,13 @@
   Encodes the move rules for a queen, both in its general form (i.e. assumming
   an empty board), and in specific situations (i.e. in a board with pieces)
  ==============================================================================*/
-
-#include "Bishop.hpp"
-#include "Rook.hpp"
+#include "Piece.hpp"
 
 namespace rules
 {
+class Rook;
+class Bishop;
+
 class Queen : public Piece
 {
   public:

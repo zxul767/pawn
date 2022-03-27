@@ -3,18 +3,19 @@
 #include "GameTraits.hpp"
 #include "IBoard.hpp"
 #include "King.hpp"
-#include "Util.hpp"
+#include "bitboard.hpp"
+#include "util.hpp"
 #include <iostream>
 
 namespace engine
 {
 using SQ = rules::BoardSquare;
+using bits::bitboard;
+using bits::to_bitboard;
 using rules::BoardSquare;
 using rules::CastleSide;
 using rules::IBoard;
 using rules::Piece;
-using util::bitboard;
-using util::to_bitboard;
 
 PositionEvaluator::PositionEvaluator()
 {
@@ -113,7 +114,7 @@ int PositionEvaluator::evaluate_king_safety(const IBoard *board) const
 
 int PositionEvaluator::material_value(bitboard piece, Piece::Type piece_type) const
 {
-    return util::count_set_bits(piece) * piece_value[piece_type];
+    return bits::count_ones(piece) * piece_value[piece_type];
 }
 
 int PositionEvaluator::mobility_value(
@@ -122,13 +123,13 @@ int PositionEvaluator::mobility_value(
     bitboard moves = 0;
     uint n_moves = 0;
 
-    int position = util::msb_position(piece);
+    int position = bits::msb_position(piece);
     while (piece && position != -1)
     {
         moves = board->get_moves(piece_type, BoardSquare(position));
-        n_moves += util::count_set_bits(moves);
+        n_moves += bits::count_ones(moves);
         piece ^= to_bitboard[position];
-        position = util::msb_position(piece);
+        position = bits::msb_position(piece);
     }
 
     if (board->get_move_number() <= 10 && piece_type == Piece::QUEEN)
@@ -145,15 +146,15 @@ int PositionEvaluator::center_control_value(
     bitboard attacks;
     int squares_controled = 0;
 
-    squares_controled += util::count_set_bits(piece & center);
+    squares_controled += bits::count_ones(piece & center);
 
-    int position = util::msb_position(piece);
+    int position = bits::msb_position(piece);
     while (piece && position != -1)
     {
         attacks = board->get_moves(piece_type, BoardSquare(position));
-        squares_controled += util::count_set_bits(attacks & center);
+        squares_controled += bits::count_ones(attacks & center);
         piece ^= to_bitboard[position];
-        position = util::msb_position(piece);
+        position = bits::msb_position(piece);
     }
 
     return squares_controled;
