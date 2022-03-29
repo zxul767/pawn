@@ -1,5 +1,6 @@
 #include <ctime>
 #include <functional>
+#include <iomanip>
 #include <iostream>
 #include <random>
 
@@ -16,7 +17,7 @@ using std::endl;
 double benchmark_count_ones(
     std::function<uint(bits::bitboard)> count_ones, std::vector<bits::bitboard> values)
 {
-    const uint TRIALS = 5;
+    const uint TRIALS = 10;
     clock_t start = clock();
     for (auto value : values)
     {
@@ -30,7 +31,7 @@ double benchmark_count_ones(
 std::vector<bits::bitboard> generate_bitboards()
 {
     std::vector<bits::bitboard> result;
-    const uint TRIALS = 10'000;
+    const uint TRIALS = 100'000;
     for (uint trials = 0; trials < TRIALS; trials++)
     {
         result.push_back(random_bitboard(1 * BITS_IN_BITBOARD / 10));

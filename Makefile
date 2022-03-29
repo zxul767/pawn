@@ -79,7 +79,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.$(SOURCE_EXT) $(DEP_DIR)/%.$(DEP_EXT) | ensure_fold
 $(BIN_DIR)/$(PROJECT): $(OBJS)
 	@echo "$(INFO_COLOR)Linking main executable $@...$(NO_COLOR)"
 	$(CXX) $(OBJS) $(LIBS) -o $@
-	mv $@ $(BIN_DIR)/$(MAIN_BIN_NAME)
+	cp $@ $(BIN_DIR)/$(MAIN_BIN_NAME)
 	@echo "$(INFO_COLOR)Main executable is at $(OK_COLOR)$(BIN_DIR)/$(MAIN_BIN_NAME)$(NO_COLOR)"
 
 # ensure that dependency files don't get corrupted if compilation ever fails
@@ -155,12 +155,17 @@ perf_test: $(PERF_TEST_BIN_DIR)/$(PERF_TEST_PROJECT) | ensure_folders
 	@echo "$(INFO_COLOR)Running performance tests ...$(NO_COLOR)"
 	./$(PERF_TEST_BIN_DIR)/$(PERF_TEST_PROJECT)
 
+ifeq ($(COMPACT),true)
+  REPORTER = | ./compact_reporter.py
+else
+  REPORTER =
+endif
+
 unit_test: $(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT) | ensure_folders
 	@echo "$(INFO_COLOR)Running unit tests ...$(NO_COLOR)"
-	./$(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT)
+	@./$(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT) --success $(REPORTER)
 
 ensure_folders:
-	@echo "$(INFO_COLOR)Creating folder structure...$(NO_COLOR)"
 	@$(call create-folders)
 
 # mark the dependency files as "precious" to make, so they won’t be automatically deleted
