@@ -16,7 +16,7 @@ WARN_COLOR=\033[33;01m
 # compiler
 CXX = g++
 # compiler flags
-CXXFLAGS = -g -Wall -Wextra -Werror -O3 -std=c++14
+CXXFLAGS = -g -Wall -Wextra -Werror -O3 -std=c++20
 # preprocessor flags
 CPPFLAGS =
 
