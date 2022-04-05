@@ -21,6 +21,10 @@ uint count_ones_adaptive(bitboard bits);
 int msb_position(bitboard bits);
 int lsb_position(bitboard bits);
 
+inline bitboard as_bitboard(uint position)
+{
+    return ONE << position;
+}
 std::vector<bitboard> create_square_to_bitboard_map();
 const std::vector<bitboard> to_bitboard = create_square_to_bitboard_map();
 

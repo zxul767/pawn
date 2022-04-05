@@ -31,7 +31,7 @@ double benchmark_count_ones(
 std::vector<bits::bitboard> generate_bitboards()
 {
     std::vector<bits::bitboard> result;
-    const uint TRIALS = 100'000;
+    const uint TRIALS = 50'000;
     for (uint trials = 0; trials < TRIALS; trials++)
     {
         result.push_back(random_bitboard(1 * BITS_IN_BITBOARD / 10));
