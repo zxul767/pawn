@@ -28,7 +28,7 @@ inline bitboard as_bitboard(uint position)
     return ONE << position;
 }
 
-inline bitboard zero_out(bitboard &bits, uint position)
+inline bitboard turn_off_bit(bitboard &bits, uint position)
 {
     return bits &= ~as_bitboard(position);
 }

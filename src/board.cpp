@@ -7,7 +7,7 @@ using bits::count_ones;
 using bits::lsb_position;
 using bits::merge;
 using bits::merge_into;
-using bits::zero_out;
+using bits::turn_off_bit;
 using rules::as_bitboard;
 using Color = Piece::Color;
 using PieceKind = Piece::Kind;
@@ -103,8 +103,8 @@ void Board::remove_piece(Square square)
     {
         throw empty_square_error(square);
     }
-    zero_out(this->_colors[piece.color], square);
-    zero_out(this->_pieces[piece.kind], square);
+    turn_off_bit(this->_colors[piece.color], square);
+    turn_off_bit(this->_pieces[piece.kind], square);
     this->_board[square] = Piece::NULL_PIECE;
 }
 
@@ -172,7 +172,7 @@ vector<std::pair<Board::Square, Piece>> Board::pieces() const
     {
         auto square = Square(bits::lsb_position(occupied));
         result.push_back(std::make_pair(square, this->_board[square]));
-        zero_out(occupied, square);
+        turn_off_bit(occupied, square);
     }
     return result;
 }
