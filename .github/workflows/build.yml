@@ -13,22 +13,22 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install dependencies
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          sudo apt install build-essential libfmt-dev gcc-11 g++-11
+          sudo pip install rich
+        fi
+
     - name: Switch to gcc-11 on Linux
       run: |
         if [ "$RUNNER_OS" == "Linux" ]; then
-          sudo apt install gcc-11 g++-11
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
           sudo update-alternatives --set gcc /usr/bin/gcc-11
         fi
 
-    - name: Install dependencies
-      run: |
-        if [ "$RUNNER_OS" == "Linux" ]; then
-          sudo apt install build-essential libfmt-dev
-        fi
-      
     - name: Build executable
       run: make
       
     - name: Run tests
-      run: make unit_test
+      run: COMPACT=true make unit_test
