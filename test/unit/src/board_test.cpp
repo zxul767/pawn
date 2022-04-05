@@ -78,7 +78,6 @@ TEST_CASE("::game::Board")
 
     SECTION("Should get an empty board after removing all pieces", "[board]")
     {
-
         board.set(Board::a1, Piece::WHITE_KNIGHT);
         board.set(Board::h1, Piece::WHITE_ROOK);
 
@@ -151,6 +150,7 @@ TEST_CASE("::game::Board")
     {
         REQUIRE(board.is_empty());
         board.set(Board::a1, Piece::BLACK_PAWN);
+
         REQUIRE(board.is_empty() == false);
     }
 
@@ -234,7 +234,7 @@ TEST_CASE("::game::Board")
 
     // TODO: implement hash method on board
     //
-    // SECTION("Different boards should hash differently", "[board]")
+    // SECTION("Different boards should hash differently", "[board]") {}
     //
 }
 } // namespace

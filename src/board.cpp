@@ -56,7 +56,7 @@ const bitboard Board::RANKS_BB[Board::SIZE] = {
 std::array<bitboard, Board::SQUARES_COUNT> generate_squares_bitboards()
 {
     std::array<bitboard, Board::SQUARES_COUNT> squares_bb;
-    auto squares = as_bitboards(square_range(Board::a1, Board::h8, 1));
+    vector<bitboard> squares = as_bitboards(square_range(Board::a1, Board::h8, 1));
     std::copy(squares.begin(), squares.end(), squares_bb.begin());
 
     return squares_bb;
