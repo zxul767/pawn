@@ -33,6 +33,16 @@ inline bitboard zero_out(bitboard &bits, uint position)
     return bits &= ~as_bitboard(position);
 }
 
+inline void merge_into(bitboard &a, bitboard b)
+{
+    a |= b;
+}
+
+inline bitboard merge(bitboard a, bitboard b)
+{
+    return a | b;
+}
+
 bitboard random_bitboard(uint ones_count);
 
 // FIXME: deprecate this data structure in favor of the inline function
