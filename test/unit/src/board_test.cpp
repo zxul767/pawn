@@ -196,6 +196,16 @@ TEST_CASE("::game::Board")
         REQUIRE(pieces[1].second == Piece::BLACK_ROOK);
     }
 
+    SECTION("Can capture piece", "[board]")
+    {
+        board.set(Board::g1, Piece::WHITE_KNIGHT);
+        board.set(Board::f3, Piece::BLACK_QUEEN);
+
+        board.move(Board::g1, Board::f3);
+        REQUIRE(board.count() == 1);
+        REQUIRE(board[Board::f3] == Piece::WHITE_KNIGHT);
+    }
+
     SECTION("Should throw when removing a non-existing piece", "[board]")
     {
         REQUIRE_THROWS_AS(board.remove_piece(Board::a1), rules::empty_square_error &);

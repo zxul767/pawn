@@ -96,6 +96,7 @@ void Board::set(Square square, Color color, PieceKind kind)
     this->_board[square] = Piece{.kind = kind, .color = color};
 }
 
+// TODO: should we return the piece that was removed?
 void Board::remove_piece(Square square)
 {
     Piece piece = this->_board[square];
@@ -108,6 +109,7 @@ void Board::remove_piece(Square square)
     this->_board[square] = Piece::NULL_PIECE;
 }
 
+// TODO: should we return the piece that was captured?
 void Board::move(Square from, Square to)
 {
     Piece piece = this->_board[from];
@@ -119,6 +121,10 @@ void Board::move(Square from, Square to)
     if (capture.color == piece.color)
     {
         throw occupied_square_error(to);
+    }
+    if (!capture.is_null())
+    {
+        remove_piece(to);
     }
     set(to, piece.color, piece.kind);
     remove_piece(from);
