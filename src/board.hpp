@@ -20,7 +20,7 @@ class Board
     static const uint SIZE = 8;
     static const uint SQUARES_COUNT = 64;
 
-    enum Files
+    enum File
     {
         FILE_A = 0,
         FILE_B,
@@ -32,7 +32,7 @@ class Board
         FILE_H,
         NULL_FILE
     };
-    enum Ranks
+    enum Rank
     {
         RANK_1 = 0,
         RANK_2,
@@ -84,7 +84,7 @@ class Board
 
     static const std::array<bitboard, SQUARES_COUNT> SQUARES_BB;
 
-    inline static Square square(Files file, Ranks rank)
+    inline static Square square(File file, Rank rank)
     {
         return Square(rank * Board::SIZE + file);
     }
@@ -167,16 +167,16 @@ class occupied_square_error : public std::exception
 // Operator overloading
 //--------------------------------------------------------------------
 Board::Square operator++(Board::Square &square);
-Board::Ranks operator++(Board::Ranks &rank);
-Board::Files operator++(Board::Files &file);
+Board::Rank operator++(Board::Rank &rank);
+Board::File operator++(Board::File &file);
 
 //--------------------------------------------------------------------
 // Static constants generation helpers
 //--------------------------------------------------------------------
 
-// Even though we have bits::as_bitboard (which works on `int`), we want
-// to have a version that takes `Board::Square` so we can enforce the
-// usage of symbolic constants (i.e., Board::a1)
+// Even though we have bits::as_bitboard (which works on `uint`), we
+// want to have a version that takes `Board::Square` so we can enforce
+// the usage of symbolic constants (i.e., Board::a1)
 inline bitboard as_bitboard(Board::Square square)
 {
     return bits::to_bitboard[square];

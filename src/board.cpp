@@ -207,18 +207,18 @@ uint Board::count(Color color, PieceKind piece) const
 // Operator overloading
 //--------------------------------------------------------------------
 
-Board::Ranks operator++(Board::Ranks &rank)
+Board::Rank operator++(Board::Rank &rank)
 {
-    if (rank == Board::Ranks::NULL_RANK)
+    if (rank == Board::Rank::NULL_RANK)
         return rank;
-    return (rank = static_cast<Board::Ranks>(static_cast<int>(rank) + 1));
+    return (rank = static_cast<Board::Rank>(static_cast<int>(rank) + 1));
 }
 
-Board::Files operator++(Board::Files &file)
+Board::File operator++(Board::File &file)
 {
-    if (file == Board::Files::NULL_FILE)
+    if (file == Board::File::NULL_FILE)
         return file;
-    return (file = static_cast<Board::Files>(static_cast<int>(file) + 1));
+    return (file = static_cast<Board::File>(static_cast<int>(file) + 1));
 }
 
 Board::Square operator++(Board::Square &square)
