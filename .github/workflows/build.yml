@@ -17,7 +17,7 @@ jobs:
       run: |
         if [ "$RUNNER_OS" == "Linux" ]; then
           sudo apt install build-essential libfmt-dev gcc-11 g++-11
-          sudo pip install rich
+          sudo python3 -m pip install rich
         fi
 
     - name: Switch to gcc-11 on Linux
