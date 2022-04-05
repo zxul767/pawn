@@ -198,7 +198,7 @@ uint Board::count(Color color, PieceKind piece) const
 }
 
 //--------------------------------------------------------------------
-// Board::Square helpers
+// Operator overloading
 //--------------------------------------------------------------------
 
 Board::Ranks operator++(Board::Ranks &rank)

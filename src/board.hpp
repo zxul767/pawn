@@ -120,12 +120,12 @@ class Board
 
   private:
     // A bitboard representation is very useful for efficient move generation
-    // and other kinds of queries (e.g., is the king's vicinity under attack.)
+    // and other kinds of queries (e.g., is the king's vicinity under attack?)
     bitboard _colors[Piece::COLORS_COUNT];
     bitboard _pieces[Piece::PIECES_COUNT];
     // This is not strictly necessary as the bitboards above are enough to
     // calculate the piece and color in any square, but it's significantly
-    // more slowly to do it that way.
+    // slower to do it that way.
     Piece _board[SQUARES_COUNT];
 };
 
@@ -164,12 +164,19 @@ class occupied_square_error : public std::exception
 };
 
 //--------------------------------------------------------------------
-// Board::Square Helpers
+// Operator overloading
+//--------------------------------------------------------------------
+Board::Square operator++(Board::Square &square);
+Board::Ranks operator++(Board::Ranks &rank);
+Board::Files operator++(Board::Files &file);
+
+//--------------------------------------------------------------------
+// Static constants generation helpers
 //--------------------------------------------------------------------
 
 // Even though we have bits::as_bitboard (which works on `int`), we want
-// to have one that takes `Board::Square` so we can enforce the usage of
-// symbolic constants (i.e., Board::a1).
+// to have a version that takes `Board::Square` so we can enforce the
+// usage of symbolic constants (i.e., Board::a1)
 inline bitboard as_bitboard(Board::Square square)
 {
     return bits::to_bitboard[square];
@@ -179,10 +186,6 @@ bitboard as_bitboard(const vector<Board::Square> &squares);
 vector<bitboard> as_bitboards(const vector<Board::Square> &squares);
 
 vector<Board::Square> square_range(Board::Square start, Board::Square end, int offset);
-
-Board::Square operator++(Board::Square &square);
-Board::Ranks operator++(Board::Ranks &rank);
-Board::Files operator++(Board::Files &file);
 
 } // namespace rules
 
