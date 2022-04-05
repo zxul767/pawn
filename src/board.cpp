@@ -91,8 +91,8 @@ void Board::set(Square square, Color color, PieceKind kind)
     {
         throw occupied_square_error(square);
     }
-    merge_into(this->_pieces[kind], as_bitboard(square));
-    merge_into(this->_colors[color], as_bitboard(square));
+    merge_into(this->_pieces[kind], Board::SQUARES_BB[square]);
+    merge_into(this->_colors[color], Board::SQUARES_BB[square]);
     this->_board[square] = Piece{.kind = kind, .color = color};
 }
 
@@ -135,7 +135,7 @@ bool Board::is_empty() const
 
 bool Board::is_empty(Square square) const
 {
-    return (pieces_bitboard() & as_bitboard(square)) == 0;
+    return (pieces_bitboard() & Board::SQUARES_BB[square]) == 0;
 }
 
 const Piece &Board::operator[](Square square)
@@ -198,7 +198,7 @@ uint Board::count(Color color, PieceKind piece) const
 }
 
 //--------------------------------------------------------------------
-// Board::Square Helpers
+// Board::Square helpers
 //--------------------------------------------------------------------
 
 Board::Ranks operator++(Board::Ranks &rank)
@@ -221,6 +221,10 @@ Board::Square operator++(Board::Square &square)
         return square;
     return (square = static_cast<Board::Square>(static_cast<int>(square) + 1));
 }
+
+//--------------------------------------------------------------------
+// Static constants generation helpers
+//--------------------------------------------------------------------
 
 bitboard as_bitboard(const vector<Board::Square> &squares)
 {
