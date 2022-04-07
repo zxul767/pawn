@@ -28,14 +28,15 @@ inline bitboard as_bitboard(uint position)
     return ONE << position;
 }
 
+// TODO: add unit tests
 inline bitboard turn_off_bit(bitboard &bits, uint position)
 {
     return bits &= ~as_bitboard(position);
 }
 
-inline void merge_into(bitboard &a, bitboard b)
+inline bitboard merge_into(bitboard &a, bitboard b)
 {
-    a |= b;
+    return a |= b;
 }
 
 inline bitboard merge(bitboard a, bitboard b)
@@ -50,7 +51,7 @@ inline bitboard xor_into(bitboard &a, bitboard b)
 
 bitboard random_bitboard(uint ones_count);
 
-// FIXME: deprecate this data structure in favor of the inline function
+// TODO: deprecate this data structure in favor of the inline function
 // `as_bitboard(...)`
 std::vector<bitboard> create_square_to_bitboard_map();
 const std::vector<bitboard> to_bitboard = create_square_to_bitboard_map();
