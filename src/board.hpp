@@ -20,6 +20,19 @@ class Board
     static const uint SIZE = 8;
     static const uint SQUARES_COUNT = 64;
 
+    static const uint HASHES_COUNT = 2;
+    static const uint ZOBRIST_RANDOM_SEED = 42;
+    enum HashKind
+    {
+        HASH = 0,
+        HASH_LOCK = 1
+    };
+    struct HashKey
+    {
+        ullong key;
+        ullong lock;
+    };
+
     enum File
     {
         FILE_A = 0,
@@ -106,7 +119,7 @@ class Board
     bool is_empty() const;
     bool is_empty(Square) const;
 
-    const Piece &operator[](Square);
+    const Piece &operator[](Square) const;
     bitboard pieces_bitboard() const;
     bitboard pieces_bitboard(Piece::Color, Piece::Kind) const;
     bitboard pieces_bitboard(Piece::Color) const;
@@ -118,6 +131,11 @@ class Board
     uint count(Piece::Color) const;
     uint count(Piece::Kind) const;
 
+    /*
+     * Hashing (for transposition tables and position repetition counting)
+     */
+    HashKey hash() const;
+
   private:
     // A bitboard representation is very useful for efficient move generation
     // and other kinds of queries (e.g., is the king's vicinity under attack?)
@@ -127,6 +145,15 @@ class Board
     // calculate the piece and color in any square, but it's significantly
     // slower to do it that way.
     Piece _board[SQUARES_COUNT];
+
+    /*
+     * Hashing (for transposition tables and position repetition counting)
+     */
+    HashKey _hash;
+    // TODO: should this be static data?
+    ullong _zobrist[Piece::COLORS_COUNT][Piece::PIECES_COUNT][SQUARES_COUNT]
+                   [HASHES_COUNT];
+    void update_hashes(Square square, Piece::Color color, Piece::Kind kind);
 };
 
 class empty_square_error : public std::exception

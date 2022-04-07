@@ -1,4 +1,5 @@
 #include "board.hpp"
+#include "util.hpp"
 #include <algorithm>
 
 namespace rules
@@ -8,6 +9,7 @@ using bits::lsb_position;
 using bits::merge;
 using bits::merge_into;
 using bits::turn_off_bit;
+using bits::xor_into;
 using rules::as_bitboard;
 using Color = Piece::Color;
 using PieceKind = Piece::Kind;
@@ -61,6 +63,7 @@ std::array<bitboard, Board::SQUARES_COUNT> generate_squares_bitboards()
 
     return squares_bb;
 }
+
 const std::array<bitboard, Board::SQUARES_COUNT> Board::SQUARES_BB =
     generate_squares_bitboards();
 
@@ -74,6 +77,17 @@ Board::Board()
 
     for (uint square = 0; square < SQUARES_COUNT; ++square)
         this->_board[square] = Piece::NULL_PIECE;
+
+    // TODO: add link to documentation on how zobrist hashing works.
+    // TODO: research how to use modern C++ random number generators
+    //       as this is likely to be an okay but not great generator.
+    srand(ZOBRIST_RANDOM_SEED);
+    this->_hash = HashKey{.key = 0, .lock = 0};
+    for (uint color = 0; color < Piece::COLORS_COUNT; ++color)
+        for (uint piece = 0; piece < Piece::PIECES_COUNT; ++piece)
+            for (uint square = 0; square < SQUARES_COUNT; ++square)
+                for (uint hash = 0; hash < HASHES_COUNT; hash++)
+                    this->_zobrist[color][piece][square][hash] = util::random_ullong();
 }
 
 //--------------------------------------------------------------------
@@ -94,6 +108,8 @@ void Board::set(Square square, Color color, PieceKind kind)
     merge_into(this->_pieces[kind], Board::SQUARES_BB[square]);
     merge_into(this->_colors[color], Board::SQUARES_BB[square]);
     this->_board[square] = Piece{.kind = kind, .color = color};
+
+    update_hashes(square, color, kind);
 }
 
 // TODO: should we return the piece that was removed?
@@ -107,6 +123,8 @@ void Board::remove_piece(Square square)
     turn_off_bit(this->_colors[piece.color], square);
     turn_off_bit(this->_pieces[piece.kind], square);
     this->_board[square] = Piece::NULL_PIECE;
+
+    update_hashes(square, piece.color, piece.kind);
 }
 
 // TODO: should we return the piece that was captured?
@@ -144,7 +162,7 @@ bool Board::is_empty(Square square) const
     return (pieces_bitboard() & Board::SQUARES_BB[square]) == 0;
 }
 
-const Piece &Board::operator[](Square square)
+const Piece &Board::operator[](Square square) const
 {
     return this->_board[square];
 }
@@ -201,6 +219,20 @@ uint Board::count(Color color) const
 uint Board::count(Color color, PieceKind piece) const
 {
     return count_ones(pieces_bitboard(color) & pieces_bitboard(piece));
+}
+
+//--------------------------------------------------------------------
+// Hashes (for transposition tables and position repetition counting)
+//--------------------------------------------------------------------
+Board::HashKey Board::hash() const
+{
+    return this->_hash;
+}
+
+void Board::update_hashes(Square square, Color color, PieceKind kind)
+{
+    xor_into(this->_hash.key, this->_zobrist[color][kind][square][HASH]);
+    xor_into(this->_hash.lock, this->_zobrist[color][kind][square][HASH_LOCK]);
 }
 
 //--------------------------------------------------------------------

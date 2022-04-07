@@ -232,9 +232,44 @@ TEST_CASE("::game::Board")
         REQUIRE_THROWS_AS(board.move(Board::a1, Board::a8), rules::empty_square_error &);
     }
 
-    // TODO: implement hash method on board
-    //
-    // SECTION("Different boards should hash differently", "[board]") {}
-    //
+    SECTION("Should get a zero hash on an empty board", "[board]")
+    {
+        REQUIRE(board.hash().key == 0);
+        REQUIRE(board.hash().lock == 0);
+    }
+
+    SECTION("Should get a zero hash when emptying a board", "[board]")
+    {
+        board.set(Board::a1, Piece::WHITE_KNIGHT);
+
+        REQUIRE(board.hash().key != 0);
+        REQUIRE(board.hash().lock != 0);
+        board.remove_piece(Board::a1);
+
+        REQUIRE(board.hash().key == 0);
+        REQUIRE(board.hash().lock == 0);
+    }
+
+    SECTION("Should get different hashes for different boards", "[board]")
+    {
+        board.set(Board::a1, Piece::WHITE_KNIGHT);
+        auto [key, lock] = std::tuple(board.hash().key, board.hash().lock);
+        REQUIRE(key != lock);
+
+        board.set(Board::g1, Piece::BLACK_KNIGHT);
+        REQUIRE(board.hash().key != board.hash().lock);
+        REQUIRE(key != board.hash().key);
+        REQUIRE(lock != board.hash().lock);
+    }
+
+    SECTION("Should get different hashes when moving a piece", "[board]")
+    {
+        board.set(Board::d1, Piece::WHITE_QUEEN);
+        auto [key, lock] = std::tuple(board.hash().key, board.hash().lock);
+
+        board.move(Board::d1, Board::d5);
+        REQUIRE(key != board.hash().key);
+        REQUIRE(lock != board.hash().lock);
+    }
 }
 } // namespace

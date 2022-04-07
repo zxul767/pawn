@@ -43,6 +43,11 @@ inline bitboard merge(bitboard a, bitboard b)
     return a | b;
 }
 
+inline bitboard xor_into(bitboard &a, bitboard b)
+{
+    return a ^= b;
+}
+
 bitboard random_bitboard(uint ones_count);
 
 // FIXME: deprecate this data structure in favor of the inline function
