@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <locale>
+#include <memory>
 
 namespace engine
 {
