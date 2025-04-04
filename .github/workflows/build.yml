@@ -8,17 +8,27 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Install dependencies
-      run: sudo apt install build-essential
-      
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          sudo apt-get -qq install build-essential libfmt-dev gcc-11 g++-11
+          sudo python3 -m pip install rich --quiet
+        fi
+
+    - name: Switch to gcc-11 on Linux
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
+          sudo update-alternatives --set gcc /usr/bin/gcc-11
+        fi
+
     - name: Build executable
       run: make
       
     - name: Run tests
-      run: make unit_test
+      run: COMPACT=true make unit_test
