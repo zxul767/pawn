@@ -3,7 +3,7 @@
 
 namespace rules
 {
-struct Piece
+struct BoardPiece
 {
   public:
     static const int PIECES_COUNT = 6;
@@ -27,29 +27,29 @@ struct Piece
         NULL_COLOR = 2
     };
 
-    const static Piece WHITE_ROOK;
-    const static Piece WHITE_KNIGHT;
-    const static Piece WHITE_BISHOP;
-    const static Piece WHITE_KING;
-    const static Piece WHITE_QUEEN;
-    const static Piece WHITE_PAWN;
-    const static Piece BLACK_ROOK;
-    const static Piece BLACK_KNIGHT;
-    const static Piece BLACK_BISHOP;
-    const static Piece BLACK_KING;
-    const static Piece BLACK_QUEEN;
-    const static Piece BLACK_PAWN;
-    const static Piece NULL_PIECE;
+    const static BoardPiece WHITE_ROOK;
+    const static BoardPiece WHITE_KNIGHT;
+    const static BoardPiece WHITE_BISHOP;
+    const static BoardPiece WHITE_KING;
+    const static BoardPiece WHITE_QUEEN;
+    const static BoardPiece WHITE_PAWN;
+    const static BoardPiece BLACK_ROOK;
+    const static BoardPiece BLACK_KNIGHT;
+    const static BoardPiece BLACK_BISHOP;
+    const static BoardPiece BLACK_KING;
+    const static BoardPiece BLACK_QUEEN;
+    const static BoardPiece BLACK_PAWN;
+    const static BoardPiece NULL_PIECE;
 
-    bool operator==(const Piece &other) const;
+    bool operator==(const BoardPiece &other) const;
     bool is_null() const;
 
     Kind kind;
     Color color;
 };
 
-Piece::Kind operator++(Piece::Kind &kind);
-Piece::Color operator++(Piece::Color &color);
+BoardPiece::Kind operator++(BoardPiece::Kind &kind);
+BoardPiece::Color operator++(BoardPiece::Color &color);
 
 } // namespace rules
 

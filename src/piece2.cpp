@@ -2,42 +2,42 @@
 
 namespace rules
 {
-const Piece Piece::WHITE_PAWN = {.kind = PAWN, .color = WHITE};
-const Piece Piece::WHITE_ROOK = {.kind = ROOK, .color = WHITE};
-const Piece Piece::WHITE_KNIGHT = {.kind = KNIGHT, .color = WHITE};
-const Piece Piece::WHITE_BISHOP = {.kind = BISHOP, .color = WHITE};
-const Piece Piece::WHITE_KING = {.kind = KING, .color = WHITE};
-const Piece Piece::WHITE_QUEEN = {.kind = QUEEN, .color = WHITE};
+const BoardPiece BoardPiece::WHITE_PAWN = {.kind = PAWN, .color = WHITE};
+const BoardPiece BoardPiece::WHITE_ROOK = {.kind = ROOK, .color = WHITE};
+const BoardPiece BoardPiece::WHITE_KNIGHT = {.kind = KNIGHT, .color = WHITE};
+const BoardPiece BoardPiece::WHITE_BISHOP = {.kind = BISHOP, .color = WHITE};
+const BoardPiece BoardPiece::WHITE_KING = {.kind = KING, .color = WHITE};
+const BoardPiece BoardPiece::WHITE_QUEEN = {.kind = QUEEN, .color = WHITE};
 
-const Piece Piece::BLACK_PAWN = {.kind = PAWN, .color = BLACK};
-const Piece Piece::BLACK_ROOK = {.kind = ROOK, .color = BLACK};
-const Piece Piece::BLACK_KNIGHT = {.kind = KNIGHT, .color = BLACK};
-const Piece Piece::BLACK_BISHOP = {.kind = BISHOP, .color = BLACK};
-const Piece Piece::BLACK_KING = {.kind = KING, .color = BLACK};
-const Piece Piece::BLACK_QUEEN = {.kind = QUEEN, .color = BLACK};
+const BoardPiece BoardPiece::BLACK_PAWN = {.kind = PAWN, .color = BLACK};
+const BoardPiece BoardPiece::BLACK_ROOK = {.kind = ROOK, .color = BLACK};
+const BoardPiece BoardPiece::BLACK_KNIGHT = {.kind = KNIGHT, .color = BLACK};
+const BoardPiece BoardPiece::BLACK_BISHOP = {.kind = BISHOP, .color = BLACK};
+const BoardPiece BoardPiece::BLACK_KING = {.kind = KING, .color = BLACK};
+const BoardPiece BoardPiece::BLACK_QUEEN = {.kind = QUEEN, .color = BLACK};
 
-const Piece Piece::NULL_PIECE = {.kind = NULL_KIND, .color = NULL_COLOR};
+const BoardPiece BoardPiece::NULL_PIECE = {.kind = NULL_KIND, .color = NULL_COLOR};
 
-Piece::Color operator++(Piece::Color &color)
+BoardPiece::Color operator++(BoardPiece::Color &color)
 {
-    if (color == Piece::NULL_COLOR)
+    if (color == BoardPiece::NULL_COLOR)
         return color;
-    return (color = static_cast<Piece::Color>(static_cast<int>(color) + 1));
+    return (color = static_cast<BoardPiece::Color>(static_cast<int>(color) + 1));
 }
 
-Piece::Kind operator++(Piece::Kind &kind)
+BoardPiece::Kind operator++(BoardPiece::Kind &kind)
 {
-    if (kind == Piece::NULL_KIND)
+    if (kind == BoardPiece::NULL_KIND)
         return kind;
-    return (kind = static_cast<Piece::Kind>(static_cast<int>(kind) + 1));
+    return (kind = static_cast<BoardPiece::Kind>(static_cast<int>(kind) + 1));
 }
 
-bool Piece::operator==(const Piece &other) const
+bool BoardPiece::operator==(const BoardPiece &other) const
 {
     return (other.kind == this->kind && other.color == this->color);
 }
 
-bool Piece::is_null() const
+bool BoardPiece::is_null() const
 {
     return this->color == NULL_COLOR && this->kind == NULL_KIND;
 };

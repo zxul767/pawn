@@ -11,8 +11,8 @@ using bits::merge_into;
 using bits::turn_off_bit;
 using bits::xor_into;
 using rules::as_bitboard;
-using Color = Piece::Color;
-using PieceKind = Piece::Kind;
+using Color = BoardPiece::Color;
+using PieceKind = BoardPiece::Kind;
 
 //--------------------------------------------------------------------
 // Bitboard Constants
@@ -69,22 +69,22 @@ const std::array<bitboard, Board::SQUARES_COUNT> Board::SQUARES_BB =
 
 Board::Board()
 {
-    for (uint color = 0; color < Piece::COLORS_COUNT; ++color)
+    for (uint color = 0; color < BoardPiece::COLORS_COUNT; ++color)
         this->_colors[color] = 0;
 
-    for (uint piece = 0; piece < Piece::PIECES_COUNT; ++piece)
+    for (uint piece = 0; piece < BoardPiece::PIECES_COUNT; ++piece)
         this->_pieces[piece] = 0;
 
     for (uint square = 0; square < SQUARES_COUNT; ++square)
-        this->_board[square] = Piece::NULL_PIECE;
+        this->_board[square] = BoardPiece::NULL_PIECE;
 
     // TODO: add link to documentation on how zobrist hashing works.
     // TODO: research how to use modern C++ random number generators
     //       as this is likely to be an okay but not great generator.
     srand(ZOBRIST_RANDOM_SEED);
     this->_hash = HashKey{.key = 0, .lock = 0};
-    for (uint color = 0; color < Piece::COLORS_COUNT; ++color)
-        for (uint piece = 0; piece < Piece::PIECES_COUNT; ++piece)
+    for (uint color = 0; color < BoardPiece::COLORS_COUNT; ++color)
+        for (uint piece = 0; piece < BoardPiece::PIECES_COUNT; ++piece)
             for (uint square = 0; square < SQUARES_COUNT; ++square)
                 for (uint hash = 0; hash < HASHES_COUNT; hash++)
                     this->_zobrist[color][piece][square][hash] = util::random_ullong();
@@ -94,7 +94,7 @@ Board::Board()
 // Mutators
 //--------------------------------------------------------------------
 
-void Board::set(Square square, Piece piece)
+void Board::set(Square square, BoardPiece piece)
 {
     set(square, piece.color, piece.kind);
 }
@@ -107,7 +107,7 @@ void Board::set(Square square, Color color, PieceKind kind)
     }
     merge_into(this->_pieces[kind], Board::SQUARES_BB[square]);
     merge_into(this->_colors[color], Board::SQUARES_BB[square]);
-    this->_board[square] = Piece{.kind = kind, .color = color};
+    this->_board[square] = BoardPiece{.kind = kind, .color = color};
 
     update_hashes(square, color, kind);
 }
@@ -115,14 +115,14 @@ void Board::set(Square square, Color color, PieceKind kind)
 // TODO: should we return the piece that was removed?
 void Board::remove_piece(Square square)
 {
-    Piece piece = this->_board[square];
+    BoardPiece piece = this->_board[square];
     if (piece.is_null())
     {
         throw empty_square_error(square);
     }
     turn_off_bit(this->_colors[piece.color], square);
     turn_off_bit(this->_pieces[piece.kind], square);
-    this->_board[square] = Piece::NULL_PIECE;
+    this->_board[square] = BoardPiece::NULL_PIECE;
 
     update_hashes(square, piece.color, piece.kind);
 }
@@ -130,12 +130,12 @@ void Board::remove_piece(Square square)
 // TODO: should we return the piece that was captured?
 void Board::move(Square from, Square to)
 {
-    Piece piece = this->_board[from];
+    BoardPiece piece = this->_board[from];
     if (piece.is_null())
     {
         throw empty_square_error(from);
     }
-    Piece capture = this->_board[to];
+    BoardPiece capture = this->_board[to];
     if (capture.color == piece.color)
     {
         throw occupied_square_error(to);
@@ -162,7 +162,7 @@ bool Board::is_empty(Square square) const
     return (pieces_bitboard() & Board::SQUARES_BB[square]) == 0;
 }
 
-const Piece &Board::operator[](Square square) const
+const BoardPiece &Board::operator[](Square square) const
 {
     return this->_board[square];
 }
@@ -187,9 +187,9 @@ bitboard Board::pieces_bitboard(Color color, PieceKind piece) const
     return pieces_bitboard(color) & pieces_bitboard(piece);
 }
 
-vector<std::pair<Board::Square, Piece>> Board::pieces() const
+vector<std::pair<Board::Square, BoardPiece>> Board::pieces() const
 {
-    vector<std::pair<Square, Piece>> result;
+    vector<std::pair<Square, BoardPiece>> result;
 
     bitboard occupied = pieces_bitboard();
     while (occupied)

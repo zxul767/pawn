@@ -107,8 +107,8 @@ class Board
     //--------------------------------------------------------------------
     // Mutators
     //--------------------------------------------------------------------
-    void set(Square, Piece);
-    void set(Square, Piece::Color, Piece::Kind);
+    void set(Square, BoardPiece);
+    void set(Square, BoardPiece::Color, BoardPiece::Kind);
 
     void remove_piece(Square);
     void move(Square from, Square to);
@@ -119,17 +119,17 @@ class Board
     bool is_empty() const;
     bool is_empty(Square) const;
 
-    const Piece &operator[](Square) const;
+    const BoardPiece &operator[](Square) const;
     bitboard pieces_bitboard() const;
-    bitboard pieces_bitboard(Piece::Color, Piece::Kind) const;
-    bitboard pieces_bitboard(Piece::Color) const;
-    bitboard pieces_bitboard(Piece::Kind) const;
-    vector<std::pair<Square, Piece>> pieces() const;
+    bitboard pieces_bitboard(BoardPiece::Color, BoardPiece::Kind) const;
+    bitboard pieces_bitboard(BoardPiece::Color) const;
+    bitboard pieces_bitboard(BoardPiece::Kind) const;
+    vector<std::pair<Square, BoardPiece>> pieces() const;
 
     uint count() const;
-    uint count(Piece::Color, Piece::Kind) const;
-    uint count(Piece::Color) const;
-    uint count(Piece::Kind) const;
+    uint count(BoardPiece::Color, BoardPiece::Kind) const;
+    uint count(BoardPiece::Color) const;
+    uint count(BoardPiece::Kind) const;
 
     /*
      * Hashing (for transposition tables and position repetition counting)
@@ -139,21 +139,21 @@ class Board
   private:
     // A bitboard representation is very useful for efficient move generation
     // and other kinds of queries (e.g., is the king's vicinity under attack?)
-    bitboard _colors[Piece::COLORS_COUNT];
-    bitboard _pieces[Piece::PIECES_COUNT];
+    bitboard _colors[BoardPiece::COLORS_COUNT];
+    bitboard _pieces[BoardPiece::PIECES_COUNT];
     // This is not strictly necessary as the bitboards above are enough to
     // calculate the piece and color in any square, but it's significantly
     // slower to do it that way.
-    Piece _board[SQUARES_COUNT];
+    BoardPiece _board[SQUARES_COUNT];
 
     /*
      * Hashing (for transposition tables and position repetition counting)
      */
     HashKey _hash;
     // TODO: should this be static data?
-    ullong _zobrist[Piece::COLORS_COUNT][Piece::PIECES_COUNT][SQUARES_COUNT]
+    ullong _zobrist[BoardPiece::COLORS_COUNT][BoardPiece::PIECES_COUNT][SQUARES_COUNT]
                    [HASHES_COUNT];
-    void update_hashes(Square square, Piece::Color color, Piece::Kind kind);
+    void update_hashes(Square square, BoardPiece::Color color, BoardPiece::Kind kind);
 };
 
 class empty_square_error : public std::exception

@@ -11,9 +11,9 @@ using bits::msb_position;
 
 using rules::as_bitboard;
 using rules::Board;
-using rules::Piece;
-using Color = rules::Piece::Color;
-using PieceKind = rules::Piece::Kind;
+using Piece = rules::BoardPiece;
+using Color = Piece::Color;
+using PieceKind = Piece::Kind;
 
 TEST_CASE("::game::Board")
 {
