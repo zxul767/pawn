@@ -26,12 +26,25 @@ If you find issues running any of the above, check the following sections for in
 
 ## Dependencies
 ### Build Tools
-+ [`gcc`](https://gcc.gnu.org)
++ A C++20-capable compiler, such as [`gcc`](https://gcc.gnu.org)
 + [`make`](https://www.gnu.org/software/make/)
++ [`fmt`](https://fmt.dev/) development headers and library
 
-In Debian-based distributions, you should be able to install both by running `sudo apt install build-essential` in a terminal. See [this post](https://www.cyberciti.biz/faq/debian-linux-install-gnu-gcc-compiler/) for detailed instructions.
+In Debian-based distributions, you should be able to install these by running:
+
+```bash
+sudo apt-get install build-essential libfmt-dev
+```
+
+See [this post](https://www.cyberciti.biz/faq/debian-linux-install-gnu-gcc-compiler/) for detailed instructions on installing GNU compiler tools.
 
 If you're using Mac OS X, both tools should be available in your terminal if you've installed `XCode`; otherwise, you can follow the instructions in [this post](https://www.freecodecamp.org/news/install-xcode-command-line-tools/) to install them.
+
+To install `fmt` on Mac OS X:
+
+```bash
+brew install fmt
+```
 
 ### Graphical Interface (Optional)
 + [`xboard`](https://www.gnu.org/software/xboard/)
@@ -61,8 +74,8 @@ In this case, you can make moves by typing the initial and final square of any p
 
 
 ## Unit Testing
-Unit testing is very much absent at this point, but the infrastructure to add tests is in place.
+The unit test target builds and runs the Catch-based tests under `test/unit`.
 
-```c++
+```bash
 make unit_test
 ```
