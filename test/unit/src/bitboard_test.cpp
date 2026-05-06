@@ -62,6 +62,10 @@ TEST_CASE("::bits")
 
     SECTION("lsb_position (smoke)", "[bits][lsb][smoke]")
     {
+        for (uint i = 0; i < bits::BITS_IN_BITBOARD; ++i)
+        {
+            REQUIRE(lsb_position(as_bitboard(i)) == i);
+        }
         REQUIRE(lsb_position(0) == -1);
         REQUIRE(lsb_position(0b0001) == 0);
         REQUIRE(lsb_position(0b0010) == 1);
@@ -75,6 +79,10 @@ TEST_CASE("::bits")
 
     SECTION("msb_position (smoke)", "[bits][msb][smoke]")
     {
+        for (uint i = 0; i < bits::BITS_IN_BITBOARD; ++i)
+        {
+            REQUIRE(msb_position(as_bitboard(i)) == i);
+        }
         REQUIRE(msb_position(0) == -1);
         REQUIRE(msb_position(0b0001) == 0);
         REQUIRE(msb_position(0b0010) == 1);
