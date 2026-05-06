@@ -270,10 +270,9 @@ int AlphaBetaSearch::search(int depth, int alpha, int beta)
     }
     else
     {
-        Accuracy accuracy =
-            best_value >= beta
-                ? Accuracy::UPPER_BOUND
-                : best_value > alpha ? Accuracy::EXACT : Accuracy::LOWER_BOUND;
+        Accuracy accuracy = best_value >= beta   ? Accuracy::UPPER_BOUND
+                            : best_value > alpha ? Accuracy::EXACT
+                                                 : Accuracy::LOWER_BOUND;
 
         this->transposition_table->add(
             key, BoardEntry{
