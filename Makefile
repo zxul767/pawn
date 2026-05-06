@@ -160,15 +160,13 @@ perf_test: $(PERF_TEST_BIN_DIR)/$(PERF_TEST_PROJECT) | ensure_folders
 	@echo "$(INFO_COLOR)Running performance tests ...$(NO_COLOR)"
 	./$(PERF_TEST_BIN_DIR)/$(PERF_TEST_PROJECT)
 
-ifeq ($(COMPACT),true)
-  REPORTER = | uv run ./compact_reporter.py
-else
-  REPORTER =
-endif
-
 unit_test: $(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT) | ensure_folders
 	@echo "$(INFO_COLOR)Running unit tests ...$(NO_COLOR)"
-	@./$(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT) --success $(REPORTER)
+ifeq ($(COMPACT),true)
+	@bash -o pipefail -c './$(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT) --success | uv run ./compact_reporter.py'
+else
+	@./$(UNIT_TEST_BIN_DIR)/$(UNIT_TEST_PROJECT) --success
+endif
 
 ensure_folders:
 	@$(call create-folders)
