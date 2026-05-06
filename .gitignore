@@ -12,3 +12,6 @@
 *.tar.gz
 
 bin/
+
+# Python virtual environments
+.venv/

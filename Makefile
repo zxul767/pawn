@@ -161,7 +161,7 @@ perf_test: $(PERF_TEST_BIN_DIR)/$(PERF_TEST_PROJECT) | ensure_folders
 	./$(PERF_TEST_BIN_DIR)/$(PERF_TEST_PROJECT)
 
 ifeq ($(COMPACT),true)
-  REPORTER = | ./compact_reporter.py
+  REPORTER = | uv run ./compact_reporter.py
 else
   REPORTER =
 endif

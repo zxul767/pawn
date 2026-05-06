@@ -29,6 +29,7 @@ If you find issues running any of the above, check the following sections for in
 + A C++20-capable compiler, such as [`gcc`](https://gcc.gnu.org)
 + [`make`](https://www.gnu.org/software/make/)
 + [`fmt`](https://fmt.dev/) development headers and library
++ [`uv`](https://docs.astral.sh/uv/) for Python development tools
 
 In Debian-based distributions, you should be able to install these by running:
 
@@ -45,6 +46,22 @@ To install `fmt` on Mac OS X:
 ```bash
 brew install fmt
 ```
+
+After installing `uv`, sync the Python development tools with:
+
+```bash
+uv sync --dev
+```
+
+This installs tools such as `pre-commit` and the compact test reporter's `rich` dependency into the project virtual environment.
+
+To install the Git pre-commit hook from that environment:
+
+```bash
+uv run pre-commit install
+```
+
+`pre-commit` does not need to be installed globally. The Git hook can call the copy installed in the project virtual environment.
 
 ### Graphical Interface (Optional)
 + [`xboard`](https://www.gnu.org/software/xboard/)
@@ -78,4 +95,10 @@ The unit test target builds and runs the Catch-based tests under `test/unit`.
 
 ```bash
 make unit_test
+```
+
+For compact test output, first run `uv sync --dev`, then:
+
+```bash
+COMPACT=true make unit_test
 ```

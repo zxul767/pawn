@@ -3,7 +3,6 @@ import fileinput
 from functools import partial
 from collections import defaultdict
 
-# pip install rich
 from rich.console import Console
 console = Console()
 
